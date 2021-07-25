@@ -30,6 +30,11 @@
             });
         })()
 
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            startDate: 'now'
+        });
+
         bsCustomFileInput.init()
     });
 
