@@ -22,7 +22,7 @@
     <div class="content-wrapper">
         <nav class="navbar absolute transparent inverse-text navbar-hover-opacity nav-uppercase navbar-expand-lg">
             <div class="container flex-row justify-content-center">
-                <div class="navbar-brand"><a href="index.html"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo.png 1x, <?= base_url() ?>assets/snowlake/images/logo@2x.png 2x" class="logo-dark" alt="" /><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" class="logo-light" alt="" /></a></div>
+                <div class="navbar-brand"><a href="<?= base_url() ?>"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo.png 1x, <?= base_url() ?>assets/snowlake/images/logo@2x.png 2x" class="logo-dark" alt="" /><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" class="logo-light" alt="" /></a></div>
                 <div class="navbar-other ml-auto order-lg-3">
                     <ul class="navbar-nav flex-row align-items-center" data-sm-skip="true">
                         <li class="nav-item">
@@ -48,7 +48,7 @@
                 <!-- /.navbar-other -->
                 <div class="navbar-collapse offcanvas-nav">
                     <div class="offcanvas-header d-lg-none d-xl-none">
-                        <a href="index.html"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" alt="" /></a>
+                        <a href="<?= base_url() ?>"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" alt="" /></a>
                         <button class="plain offcanvas-close offcanvas-nav-close"><i class="jam jam-close"></i></button>
                     </div>
                     <?php $this->load->view('templates/frontend/navbar') ?>
@@ -61,7 +61,7 @@
 
         <div class="offcanvas-info inverse-text">
             <button class="plain offcanvas-close offcanvas-info-close"><i class="jam jam-close"></i></button>
-            <a href="index.html"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" alt="" /></a>
+            <a href="<?= base_url() ?>"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" alt="" /></a>
             <div class="space30"></div>
             <p>Snowlake is a multi-concept and powerful site template contains rich layouts with possibility of unlimited combinations & beautiful elements.</p>
             <div class="space20"></div>

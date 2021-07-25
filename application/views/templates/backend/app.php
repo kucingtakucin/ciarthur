@@ -46,7 +46,7 @@
         <div class="page-header">
             <div class="header-wrapper row m-0">
                 <div class="header-logo-wrapper col-1">
-                    <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt=""></a></div>
+                    <div class="logo-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt=""></a></div>
                     <div class="toggle-sidebar"><i class="status_toggle middle" data-feather="grid" id="sidebar-toggle"> </i></div>
                 </div>
                 <div class="nav-right col-11 pull-right right-header p-0">
@@ -72,8 +72,8 @@
         <div class="page-body-wrapper horizontal-menu">
             <!-- Page Sidebar Start-->
             <div class="sidebar-wrapper">
-                <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt=""></a></div>
-                <div class="logo-icon-wrapper"><a href="index.html"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo-icon.png" alt=""></a></div>
+                <div class="logo-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt=""></a></div>
+                <div class="logo-icon-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo-icon.png" alt=""></a></div>
                 <nav>
                     <div class="sidebar-main">
                         <div id="sidebar-menu">
