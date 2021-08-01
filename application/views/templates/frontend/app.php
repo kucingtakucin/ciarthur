@@ -16,9 +16,18 @@
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/color/purple.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/font/font2.css">
+    <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
 </head>
 
 <body>
+    <div class="preloader-container">
+        <svg class="preloader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340">
+            <circle cx="170" cy="170" r="160" stroke="#E2007C" />
+            <circle cx="170" cy="170" r="135" stroke="#404041" />
+            <circle cx="170" cy="170" r="110" stroke="#E2007C" />
+            <circle cx="170" cy="170" r="85" stroke="#404041" />
+        </svg>
+    </div>
     <div class="content-wrapper">
         <nav class="navbar absolute transparent inverse-text navbar-hover-opacity nav-uppercase navbar-expand-lg">
             <div class="container flex-row justify-content-center">
@@ -124,6 +133,11 @@
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.video.min.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/scripts.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.preloader-container').fadeOut(500)
+        })
+    </script>
 </body>
 
 </html>

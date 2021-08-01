@@ -35,9 +35,20 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
 </head>
 
 <body>
+    <div class="preloader-container">
+        <svg class="preloader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340">
+            <circle cx="170" cy="170" r="160" stroke="#E2007C" />
+            <circle cx="170" cy="170" r="135" stroke="#404041" />
+            <circle cx="170" cy="170" r="110" stroke="#E2007C" />
+            <circle cx="170" cy="170" r="85" stroke="#404041" />
+        </svg>
+    </div>
+
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
@@ -147,6 +158,11 @@
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <!-- login js-->
     <!-- Plugin used-->
+    <script>
+        $(document).ready(function() {
+            $('.preloader-container').fadeOut(500)
+        })
+    </script>
     <?php $this->load->view($script) ?>
 </body>
 

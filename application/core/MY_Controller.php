@@ -7,6 +7,6 @@ class MY_Controller extends CI_Controller
     {
         parent::__construct();
         $this->load->model('ion_auth_model');
-        $this->load->library('session');
+        $this->load->library(['session', 'ion_auth']);
     }
 }

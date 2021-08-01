@@ -26,6 +26,36 @@ function redirect_to()
     }
 }
 
+function logged_in()
+{
+    $ci = &get_instance();
+    return $ci->ion_auth->logged_in();
+}
+
+function user()
+{
+    $ci = &get_instance();
+    return $ci->ion_auth_model->user()->row();
+}
+
+function get_user_id()
+{
+    $ci = &get_instance();
+    return $ci->ion_auth->get_user_id();
+}
+
+function is_admin()
+{
+    $ci = &get_instance();
+    return $ci->ion_auth->is_admin();
+}
+
+function in_group($group)
+{
+    $ci = &get_instance();
+    return $ci->ion_auth_model->in_group($group);
+}
+
 function check_group($group)
 {
     $ci = &get_instance();

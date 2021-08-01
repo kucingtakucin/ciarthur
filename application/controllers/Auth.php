@@ -384,7 +384,18 @@ class Auth extends CI_Controller
 			$this->data['user'] = $this->ion_auth->user($id)->row();
 			$this->data['identity'] = $this->config->item('identity', 'ion_auth');
 
-			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'deactivate_user', $this->data);
+			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'deactivate_user', $this->data);
+			$this->templates->load([
+				'title' => 'Deactivate User',
+				'type' => 'backend',
+				'user' => $this->data['user'],
+				'csrf' => $this->data['csrf'],
+				'identity' => $this->data['identity'],
+				'uri_segment' => $this->_path,
+				'page' => $this->_path . 'deactivate_user',
+				'script' => $this->_path . 'index_js',
+				'modals' => []
+			]);
 		} else {
 			// do we really want to deactivate?
 			if ($this->input->post('confirm') == 'yes') {

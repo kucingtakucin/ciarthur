@@ -44,22 +44,8 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
-                <table id="table_data" class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Foto</th>
-                            <th>NIM</th>
-                            <th>Nama</th>
-                            <th>Prodi</th>
-                            <th>Fakultas</th>
-                            <th>Angkatan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table_body"></tbody>
-                </table>
+            <div class="col-md-12 table-responsive">
+                <table id="table_data" class="table table-striped table-hover"></table>
             </div>
         </div>
     </div>

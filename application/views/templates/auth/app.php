@@ -32,9 +32,18 @@
     <link id="color" rel="stylesheet" href="<?= base_url() ?>/assets/cuba/css/color-1.css" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/cuba/css/responsive.css">
+    <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
 </head>
 
 <body>
+    <div class="preloader-container">
+        <svg class="preloader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340">
+            <circle cx="170" cy="170" r="160" stroke="#E2007C" />
+            <circle cx="170" cy="170" r="135" stroke="#404041" />
+            <circle cx="170" cy="170" r="110" stroke="#E2007C" />
+            <circle cx="170" cy="170" r="85" stroke="#404041" />
+        </svg>
+    </div>
     <!-- login page start-->
     <div class="container-fluid">
         <div class="row">
@@ -59,6 +68,11 @@
         <!-- Theme js-->
         <script src="<?= base_url() ?>/assets/cuba/js/script.js"></script>
         <!-- login js-->
+        <script>
+            $(document).ready(function() {
+                $('.preloader-container').fadeOut(500)
+            })
+        </script>
         <!-- Plugin used-->
         <?php $this->load->view($script) ?>
     </div>
