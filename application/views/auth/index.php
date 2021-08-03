@@ -7,7 +7,7 @@
 
 <div class="card">
 	<div class="card-body">
-		<div id="infoMessage"><?php echo $message; ?></div>
+		<div id="infoMessage" class="text-primary"><?php echo $message; ?></div>
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<!-- <button type="button" class="btn btn-primary btn-pill float-right" id="tombol_tambah"><i class="fa fa-plus"></i> Tambah Data</button> -->

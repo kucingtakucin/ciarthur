@@ -44,7 +44,7 @@
                   <h3><?php echo lang('edit_user_groups_heading'); ?></h3>
                   <div class="form-check form-check-inline">
                         <?php foreach ($groups as $group) : ?>
-                              <input type="checkbox" name="groups[]" class="form-check-input" value="<?php echo $group['id']; ?>" <?php echo (in_array($group, $currentGroups)) ? 'checked="checked"' : null; ?>>
+                              <input type="radio" name="groups[]" class="form-check-input" value="<?php echo $group['id']; ?>" <?php echo (in_array($group, $currentGroups)) ? 'checked="checked"' : null; ?>>
                               <label class="checkbox form-check-label mr-3">
                                     <?php echo htmlspecialchars($group['name'], ENT_QUOTES, 'UTF-8'); ?>
                               </label>

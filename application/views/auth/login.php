@@ -1,6 +1,6 @@
 <div class="login-card">
     <div>
-        <div><a class="logo text-left" href="index.html"><img class="img-fluid for-light" src="<?= base_url() ?>assets/cuba/images/logo/login.png" alt="looginpage"><img class="img-fluid for-dark" src="<?= base_url() ?>assets/cuba/images/logo/logo_dark.png" alt="looginpage"></a></div>
+        <div><a class="logo text-left" href="<?= base_url() ?>"><img class="img-fluid for-light" src="<?= base_url() ?>assets/cuba/images/logo/login.png" alt="looginpage"><img class="img-fluid for-dark" src="<?= base_url() ?>assets/cuba/images/logo/logo_dark.png" alt="looginpage"></a></div>
         <div class="login-main">
             <div id="infoMessage" class="text-danger mb-3"><?php echo $message; ?></div>
 
@@ -15,6 +15,9 @@
                     <label class="col-form-label" for="password">Password</label>
                     <input class="form-control" type="password" id="password" name="password">
                     <div class="show-hide"><span class="show"> </span></div>
+                </div>
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="6LdJtNgbAAAAAJpRrKl8M71EQeoBJhjfpFSYRdnt"></div>
                 </div>
                 <div class="form-group mb-0">
                     <div class="checkbox p-0">
