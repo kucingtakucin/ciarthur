@@ -2,7 +2,6 @@
     const BASE_URL = "<?= base_url($uri_segment) ?>"
     let datatable, id_data, get_data, csrf,
         tambah_data, ubah_data, hapus_data;
-
     // Document ready
     $(() => {
 
@@ -652,5 +651,118 @@
             select2_in_form('ubah')
         })
         // ================================================== //
+
+        /**
+         * Keperluan WebGIS dengan Leaflet
+         */
+        // ================================================== //
+        let map = L.map("map", {
+            center: [-7.5828, 111.0444],
+            zoom: 12,
+            layers: [
+                /** OpenStreetMap Tile Layer */
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+                // L.marker([-7.541355, 111.0377783], { //-7.641355, 111.0377783
+                //     icon: L.icon({
+                //         iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
+                //         iconSize: [40, 40], // size of the icon
+                //         iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
+                //         popupAnchor: [0, -30] // point from which the popup should open relative to the iconAnchor
+                //     })
+                // }).bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup()
+            ]
+        })
+
+        let map_tambah = L.map("map-tambah", {
+            center: [-7.5828, 111.0444],
+            zoom: 12,
+            layers: [
+                /** OpenStreetMap Tile Layer */
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+
+            ]
+        })
+
+        let marker_tambah;
+        map_tambah.on('click', (event) => {
+            if (marker_tambah) map_tambah.removeLayer(marker_tambah)
+            marker_tambah = L.marker([event.latlng.lat, event.latlng.lng], { //-7.641355, 111.0377783
+                icon: L.icon({
+                    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
+                    iconSize: [40, 40], // size of the icon
+                    iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
+                    popupAnchor: [0, -30] // point from which the popup should open relative to the iconAnchor
+                })
+            })
+            marker_tambah.addTo(map_tambah)
+            marker_tambah.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
+
+            $('#tambah_latitude').val(event.latlng.lat)
+            $('#tambah_longitude').val(event.latlng.lng)
+        })
+
+        /** Legend */
+        let legend = L.control({
+            position: "bottomleft"
+        })
+
+        legend.onAdd = (map) => {
+            let div = L.DomUtil.create("div", "legend");
+            div.innerHTML += "<h3><b>KABUPATEN KARANGANYAR</b></h3>";
+            return div;
+        }
+
+        legend.addTo(map)
+
+        /** GeoJSON Features */
+        $.getJSON(BASE_URL + 'get_geojson', response => {
+            let geojson = L.geoJSON(response, {
+                onEachFeature: (feature, layer) => {
+                    layer.on({
+                        mouseover: (event) => {
+                            let layer = event.target;
+                            layer.setStyle({
+                                weight: 5,
+                                dashArray: '',
+                                fillOpacity: 0.7
+                            });
+                            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                layer.bringToFront();
+                            }
+                        },
+                        mouseout: (event) => {
+                            geojson.resetStyle(event.target)
+                        },
+                        click: (event) => {
+                            map.fitBounds(event.target.getBounds());
+                        }
+                    })
+                }
+            }).addTo(map)
+        })
+
+        fetch(BASE_URL + 'get_kecamatan')
+            .then(response => {
+                if (response.ok) return response.json()
+                throw new Error(response.statusText)
+            })
+            .then(response => {
+                response.data.map(item => {
+                    L.marker([item.latitude, item.longitude])
+                        .addTo(map)
+                        .bindPopup(
+                            new L.Popup({
+                                autoClose: false,
+                                closeOnClick: false
+                            })
+                            .setContent(`<b>${item.nama}</b>`)
+                            .setLatLng([item.latitude, item.longitude])
+                        ).openPopup();
+                })
+            })
     })
 </script>

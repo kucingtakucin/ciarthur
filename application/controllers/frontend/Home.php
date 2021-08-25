@@ -13,7 +13,7 @@ class Home extends MY_Controller
 
     public function index()
     {
-        $this->templates->load([
+        $this->templates->render([
             'title' => 'Home',
             'type' => 'frontend',
             'uri_segment' => $this->_path,

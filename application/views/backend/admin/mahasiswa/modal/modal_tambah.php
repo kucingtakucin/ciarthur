@@ -1,7 +1,7 @@
-<div class="modal fade" id="tambah_modal_tambah" role="dialog" aria-labelledby="modal-popin" aria-hidden="true">
+<div class="modal fade" id="modal_tambah" role="dialog" aria-labelledby="modal-popin" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form class="needs-validation" id="tambah_form_tambah" method="post" enctype="multipart/form-data" novalidate>
+            <form class="needs-validation" id="form_tambah" method="post" enctype="multipart/form-data" novalidate>
                 <div class="modal-header">
                     <h5 class="modal-title">Form Tambah Data</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close" data-original-title="" title=""><span aria-hidden="true">×</span></button>
@@ -62,6 +62,27 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-12" for="latitude">Latitude</label>
+                                <input type="text" id="tambah_latitude" class="form-control" name="latitude" required autocomplete="off" placeholder="Masukkan Latitude">
+                                <?= validation_feedback("latitude", "wajib diisi") ?>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-12" for="longitude">Longitude</label>
+                                <input type="text" id="tambah_longitude" class="form-control" name="longitude" required autocomplete="off" placeholder="Masukkan Longitude">
+                                <?= validation_feedback("longitude", "wajib diisi") ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="height: 50vh;">
+                            <div id="map-tambah" style="width: 100%; height: 100%; z-index: 0;"></div>
                         </div>
                     </div>
                 </div>

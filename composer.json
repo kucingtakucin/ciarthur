@@ -20,7 +20,8 @@
 		"chriskacerguis/codeigniter-restserver": "dev-master",
 		"google/recaptcha": "^1.2",
 		"seunmatt/codeigniter-log-viewer": "^1.1",
-		"ozdemir/datatables": "^2.3"
+		"ozdemir/datatables": "^2.3",
+		"guzzlehttp/guzzle": "^7.0"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

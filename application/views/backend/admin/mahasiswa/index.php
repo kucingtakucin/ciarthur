@@ -36,6 +36,12 @@
 </div>
 
 <div class="card">
+    <div class="card-body" style="height: 100vh;">
+        <div id="map" style="width: 100%; height: 100%; z-index: 0;"></div>
+    </div>
+</div>
+
+<div class="card">
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-md-12 d-flex justify-content-end flex-row">

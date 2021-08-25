@@ -1,6 +1,7 @@
 <?php
 
 use Dompdf\Dompdf;
+use GuzzleHttp\Client;
 use Ozdemir\Datatables\Datatables;
 use Ozdemir\Datatables\DB\CodeigniterAdapter;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -106,6 +107,21 @@ class Mahasiswa extends MY_Controller
                 'data' => $this->db->where('fakultas_id', $this->input->get('fakultas_id'))
                     ->like('nama', $this->input->get('search'))
                     ->get('prodi')->result()
+            ]));
+    }
+
+    /**
+     * Keperluan AJAX Leaflet
+     *
+     * @return CI_Output
+     */
+    public function get_kecamatan(): CI_Output
+    {
+        return $this->output->set_content_type('application/json')
+            ->set_status_header(200)
+            ->set_output(json_encode([
+                'status' => true,
+                'data' => $this->db->get('kecamatan')->result()
             ]));
     }
 
@@ -448,6 +464,27 @@ class Mahasiswa extends MY_Controller
 
         // Output the generated PDF to Browser
         $dompdf->stream('data_mahasiswa.pdf');
+    }
+
+    public function get_geojson()
+    {
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'https://covid19.karanganyarkab.go.id/assets/maps/map-kab-kra.geojson',
+            // You can set any number of default request options.
+        ]);
+        $response = $client->request('POST', '', [
+            'form_params' => [
+                'field_name' => 'abc',
+                'other_field' => '123',
+                'nested_field' => [
+                    'nested' => 'hello'
+                ]
+            ]
+        ]);
+
+        return $this->output->set_content_type('application/json')
+            ->set_output($response->getBody());
     }
 }
 
