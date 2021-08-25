@@ -101,14 +101,25 @@
 			$("body").removeClass("offcanvas");
 		}
 	});
+
+	if (eval(localStorage.getItem('darkMode'))) {
+		$('.mode i').addClass('fa-lightbulb-o').removeClass('fa-moon-o')
+		$('body').addClass('dark-only')
+	} else {
+		$('.mode i').addClass('fa-moon-o').removeClass('fa-lightbulb-o')
+		$('body').removeClass('dark-only')
+	}
+
 	$(".mode").on("click", function () {
 		$('.mode i').toggleClass("fa-moon-o").toggleClass("fa-lightbulb-o");
 		$('body').toggleClass("dark-only");
+		
+		if ($('body').hasClass('dark-only')) {
+			localStorage.setItem('darkMode', true)
+		} else {
+			localStorage.setItem('darkMode', false)
+		}
 	});
-
-
-
-
 
 })(jQuery);
 
@@ -153,6 +164,7 @@ function toggleFullScreen() {
 		}
 	}
 }
+
 (function ($, window, document, undefined) {
 	"use strict";
 	var $ripple = $(".js-ripple");

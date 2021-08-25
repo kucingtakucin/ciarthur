@@ -66,6 +66,9 @@
         <!-- Sidebar jquery-->
         <script src="<?= base_url() ?>/assets/cuba/js/config.js"></script>
         <!-- Plugins JS start-->
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
+
         <!-- Plugins JS Ends-->
         <!-- Theme js-->
         <script src="<?= base_url() ?>/assets/cuba/js/script.js"></script>

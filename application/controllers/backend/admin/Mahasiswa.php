@@ -1,22 +1,42 @@
 <?php
 
+use Dompdf\Dompdf;
+use Ozdemir\Datatables\Datatables;
+use Ozdemir\Datatables\DB\CodeigniterAdapter;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpWord\TemplateProcessor;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Mahasiswa extends MY_Controller
 {
     private $_path = 'backend/admin/mahasiswa/'; // Contoh 'backend/admin/dashboard'
 
+    /**
+     * Mahasiswa constructor
+     */
     public function __construct()
     {
         parent::__construct();
         check_group("admin");
-        $this->load->model($this->_path . 'M_Mahasiswa');
-        $this->load->library(['upload', 'image_lib', 'datatables']);
+        $this->load->model($this->_path . 'M_Mahasiswa');   // Load model M_Mahasisw
+        $this->load->library(['upload', 'image_lib']);  // Load library upload, image_lib
     }
 
-    public function index()
+    /**
+     * Halaman index
+     *
+     * @return CI_Loader
+     */
+    public function index(): CI_Loader
     {
-        $this->templates->load([
+        return $this->templates->render([
             'title' => 'Mahasiswa',
             'type' => 'backend', // auth, frontend, backend
             'uri_segment' => $this->_path,
@@ -25,33 +45,43 @@ class Mahasiswa extends MY_Controller
             'modals' => [
                 $this->_path . 'modal/modal_tambah',
                 $this->_path . 'modal/modal_ubah',
-            ]
+            ],
         ]);
     }
 
-    public function data()
+    /**
+     * Keperluan DataTables server-side
+     *
+     * @return CI_Output
+     */
+    public function data(): CI_Output
     {
-        $this->datatables->setTable("{$this->M_Mahasiswa->table} a");
-        $this->datatables->setColumnOrder([null, null, 'a.nim', 'a.nama', 'a.prodi_id', 'a.fakultas_id', 'a.angkatan', null]);
-        $this->datatables->setColumnSearch(['a.nim', 'a.nama']);
-        $this->datatables->setOrder(['a.nama' => 'asc']);
-        $this->datatables->generateTable(function () {
-            $this->db->select('a.*, b.nama as nama_prodi, c.nama as nama_fakultas');
-            $this->db->join('prodi b', 'b.id = a.prodi_id');
-            $this->db->join('fakultas c', 'c.id = a.fakultas_id');
-            $this->db->where('a.is_active', '1');
+        $datatables = new Datatables(new CodeigniterAdapter());
+        $datatables->query(
+            "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto_thumb,
+            b.nama AS nama_prodi, c.nama AS nama_fakultas,
+            a.prodi_id, a.fakultas_id
+            FROM mahasiswa AS a
+            JOIN prodi AS b ON b.id = a.prodi_id
+            JOIN fakultas AS c ON c.id = a.fakultas_id
+            WHERE a.is_active = '1'"
+        );
 
-            // Keperluan filter
-            if ($this->input->get('fakultas_id')) {
-                $this->db->where('a.fakultas_id', $this->input->get('fakultas_id'));
-                if ($this->input->get('prodi_id')) {
-                    $this->db->where('a.prodi_id', $this->input->get('prodi_id'));
-                }
-            }
+        // Add row index
+        $datatables->add('DT_Row_Index', function () {
+            return 0;
         });
+
+        return $this->output->set_content_type('application/json')
+            ->set_output($datatables->generate());
     }
 
-    public function get_fakultas()
+    /**
+     * Keperluan AJAX Select2
+     *
+     * @return CI_Output
+     */
+    public function get_fakultas(): CI_Output
     {
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
@@ -62,7 +92,12 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
-    public function get_prodi()
+    /**
+     * Keperluan AJAX Select2
+     *
+     * @return CI_Output
+     */
+    public function get_prodi(): CI_Output
     {
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
@@ -74,7 +109,12 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
-    public function insert()
+    /**
+     * Keperluan CRUD tambah data
+     *
+     * @return CI_Output
+     */
+    public function insert(): CI_Output
     {
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -132,7 +172,12 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
-    public function get_where()
+    /**
+     * Keperluan CRUD get where data
+     *
+     * @return CI_Output
+     */
+    public function get_where(): CI_Output
     {
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
@@ -148,7 +193,12 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
-    public function update()
+    /**
+     * Keperluan CRUD update data
+     *
+     * @return CI_Output
+     */
+    public function update(): CI_Output
     {
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -217,7 +267,12 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
-    public function delete()
+    /**
+     * Keperluan CRUD delete data
+     *
+     * @return CI_Output
+     */
+    public function delete(): CI_Output
     {
         $data = $this->M_Mahasiswa->get_where([
             'a.id' => $this->input->post('id', true),
@@ -246,6 +301,154 @@ class Mahasiswa extends MY_Controller
                 'message' => 'Deleted successfuly',
             ]));
     }
+
+    /**
+     * Keperluan export Excel
+     *
+     * @return void
+     */
+    public function export_excel(): void
+    {
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getActiveSheet()->setTitle('Data Mahasiswa');
+        $spreadsheet->getProperties()->setCreator('Mahasiswa')
+            ->setLastModifiedBy('Mahasiswa')
+            ->setTitle('Data Mahasiswa')
+            ->setSubject('Data Mahasiswa')
+            ->setDescription('Data Mahasiswa')
+            ->setKeywords('data mahasiswa');
+
+        $spreadsheet->getActiveSheet()->getStyle('B5:G5')
+            ->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setARGB('FFFA65');
+
+        $spreadsheet->getActiveSheet(0)
+            ->setCellValue('F2', 'DATA MAHASISWA')
+            ->getStyle('D2')
+            ->getFont()->setBold(true);
+
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('B5', '#')
+            ->getStyle('B5')
+            ->getFont()->setBold(true);
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('C5', 'NIM')
+            ->getStyle('C5')
+            ->getFont()
+            ->setBold(true);
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('D5', 'NAMA LENGKAP')
+            ->getStyle('D5')
+            ->getFont()
+            ->setBold(true);
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('E5', 'ANGKATAN')
+            ->getStyle('E5')
+            ->getFont()
+            ->setBold(true);
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('F5', 'PROGRAM STUDI')
+            ->getStyle('F5')
+            ->getFont()
+            ->setBold(true);
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('G5', 'FAKULTAS')
+            ->getStyle('G5')
+            ->getFont()
+            ->setBold(true);
+
+        $spreadsheet->getActiveSheet(0)->getStyle('B5:G5')
+            ->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet(0)->getStyle('B5:G5')
+            ->getAlignment()
+            ->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->getRowDimension('5')->setRowHeight(30);
+
+        $columns = ['B', 'C', 'D', 'E', 'F', 'G'];
+
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($column)
+                ->setAutoSize(true);
+            $spreadsheet->getActiveSheet()
+                ->getStyle("{$column}5")
+                ->getBorders()
+                ->getOutline()
+                ->setBorderStyle(Border::BORDER_THIN)
+                ->setColor(new Color('000000'));
+        }
+
+        $data = $this->M_Mahasiswa->get();
+
+        $no = 0;
+        $awal = 6;
+        foreach ($data as $datum) {
+            $spreadsheet->setActiveSheetIndex(0)->setCellValue('B' . $awal, ++$no);
+            $spreadsheet->setActiveSheetIndex(0)->setCellValue('C' . $awal, $datum->nim);
+            $spreadsheet->setActiveSheetIndex(0)->setCellValue('D' . $awal, $datum->nama);
+            $spreadsheet->setActiveSheetIndex(0)->setCellValueExplicit('E' . $awal, "{$datum->angkatan}", DataType::TYPE_STRING);
+            $spreadsheet->setActiveSheetIndex(0)->setCellValue('F' . $awal, $datum->nama_prodi);
+            $spreadsheet->setActiveSheetIndex(0)->setCellValue('G' . $awal, $datum->nama_fakultas);
+
+            foreach ($columns as $column) {
+                $spreadsheet->getActiveSheet()
+                    ->getStyle($column . $awal)
+                    ->getBorders()
+                    ->getOutline()
+                    ->setBorderStyle(Border::BORDER_THIN)
+                    ->setColor(new Color('000000'));
+            }
+            $awal++;
+        }
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="data_mahasiswa.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+    }
+
+    /**
+     * Keperluan export Word
+     *
+     * @return void
+     */
+    public function export_word(): void
+    {
+        $templateProcessor = new TemplateProcessor('assets/templates/word/template_word.docx');
+        // $templateProcessor->setValue('param', 'value');
+
+        header('Content-Type: application/octet-stream');
+        header("Content-Disposition: attachment; filename=data_mahasiswa.docx");
+        header('Cache-Control: max-age=0');
+        $templateProcessor->saveAs('php://output');
+    }
+
+    /**
+     * Keperluan export PDF
+     *
+     * @return void
+     */
+    public function export_pdf(): void
+    {
+        // instantiate and use the dompdf class
+        $dompdf = new Dompdf();
+        $dompdf->getOptions()->setChroot('assets/templates/pdf');
+        $dompdf->loadHtml('hello world');
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'potrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream('data_mahasiswa.pdf');
+    }
 }
 
-/* End of file Home.php */
+/* End of file Mahasiswa.php */

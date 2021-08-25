@@ -1,5 +1,8 @@
 <?php
 
+use Ozdemir\Datatables\Datatables;
+use Ozdemir\Datatables\DB\CodeigniterAdapter;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class NamaController extends MY_Controller
@@ -31,7 +34,15 @@ class NamaController extends MY_Controller
 
     public function data()
     {
-        $this->M_NamaModel->generate_table();
+        $datatables = new Datatables(new CodeigniterAdapter());
+        $datatables->query("");
+
+        $datatables->add('DT_Row_Index', function () {
+            return 0;
+        });
+
+        return $this->output->set_content_type('application/json')
+            ->set_output($datatables->generate());
     }
 
     public function insert()

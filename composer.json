@@ -18,7 +18,9 @@
 		"league/glide": "^2.0",
 		"mailjet/mailjet-apiv3-php": "^1.5",
 		"chriskacerguis/codeigniter-restserver": "dev-master",
-		"google/recaptcha": "^1.2"
+		"google/recaptcha": "^1.2",
+		"seunmatt/codeigniter-log-viewer": "^1.1",
+		"ozdemir/datatables": "^2.3"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

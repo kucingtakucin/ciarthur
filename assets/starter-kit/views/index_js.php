@@ -4,15 +4,15 @@
         tambah_data, ubah_data, hapus_data;
 
     /**
-     * Keperluan DataTable, Datepicker, dan BsCustomFileInput
+     * Keperluan DataTable, Datepicker, Summernote dan BsCustomFileInput
      */
     // ================================================== //
     datatable = $('#table_data').DataTable({
         serverSide: true,
         processing: true,
-        ordering: true,
         destroy: true,
-        autoWidth: false,
+        responsive: true,
+        colReorder: true,
         ajax: {
             url: BASE_URL + 'data',
             type: 'GET',
@@ -26,17 +26,16 @@
             {
                 searchable: false,
                 orderable: false,
-                targets: 0
+                targets: [0, 7]
             }
         ],
         order: [
-            [1, 'desc']
+            [7, 'desc']
         ],
         columns: [{
                 title: '#',
                 name: '#',
-                data: null,
-                defaultContent: ''
+                data: 'DT_Row_Index',
             },
             {
                 title: 'Foto',
@@ -44,7 +43,7 @@
                 data: 'foto_thumb',
                 render: (foto_thumb) => {
                     return $('<img>', {
-                        src: `<?= BASE_URL() ?>uploads/mahasiswa/${foto_thumb}`,
+                        src: `<?= base_url() ?>uploads/mahasiswa/${foto_thumb}`,
                         class: "img-thumnail rounded-circle",
                         alt: 'Foto'
                     }).prop('outerHTML')
@@ -57,19 +56,29 @@
                 title: 'Nama',
                 name: 'nama',
                 data: 'nama',
-            }, {
+                render: (nama) => {
+                    return $('<span>', {
+                        html: nama,
+                        class: 'nama'
+                    }).prop('outerHTML')
+                }
+            },
+            {
                 title: 'Program Studi',
                 name: 'nama_prodi',
                 data: 'nama_prodi',
-            }, {
+            },
+            {
                 title: 'Fakultas',
                 name: 'nama_fakultas',
                 data: 'nama_fakultas',
-            }, {
+            },
+            {
                 title: 'Angkatan',
                 name: 'angkatan',
                 data: 'angkatan',
-            }, {
+            },
+            {
                 title: 'Aksi',
                 name: 'id',
                 data: 'id',
@@ -114,9 +123,12 @@
     });
 
     $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
-        startDate: 'now'
-    });
+        format: 'yyyy-mm-dd',
+        endDate: 'now',
+        clearBtn: true,
+        todayBtn: 'linked',
+        autoclose: true
+    })
 
     bsCustomFileInput.init()
     // ================================================== //
@@ -152,11 +164,9 @@
         }
     }).on('select2:select', function(event) {
         $(`#filter_prodi`).prop('disabled', false)
-        datatable.ajax.url(BASE_URL + 'data?' + (
-            new URLSearchParams({
-                fakultas_id: event.params.data.id
-            }).toString()
-        )).draw();
+        datatable.column('nama_fakultas:name')
+            .search(event.params.data.text)
+            .draw()
 
         $(`#filter_prodi`).select2({
             placeholder: 'Pilih Program Studi',
@@ -186,12 +196,9 @@
                 }
             }
         }).on('select2:select', function(event) {
-            datatable.ajax.url(BASE_URL + 'data?' + (
-                new URLSearchParams({
-                    fakultas_id: event.params.data.fakultas_id,
-                    prodi_id: event.params.data.id,
-                }).toString()
-            )).draw();
+            datatable.column('nama_prodi:name')
+                .search(event.params.data.text)
+                .draw()
         })
     })
 
@@ -393,7 +400,7 @@
     // ================================================== //
 
     /**
-     * Keperluan event click tombol dan submit form
+     * Keperluan event click tombol, validasi dan submit form
      */
     // ================================================== //
     $('#tombol_tambah').click(event => {

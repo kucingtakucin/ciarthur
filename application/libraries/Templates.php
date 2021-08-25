@@ -11,9 +11,15 @@ class Templates
         $this->ci = &get_instance();
     }
 
-    public function load($data)
+    /**
+     * Render template
+     *
+     * @param array $data
+     * @return CI_Loader
+     */
+    public function render(array $data): CI_Loader
     {
-        $this->ci->load->view("templates/{$data['type']}/app", $data);
+        return $this->ci->load->view("templates/{$data['type']}/app", $data);
     }
 }
 

@@ -2,7 +2,7 @@
 
 class M_NamaModel extends CI_Model
 {
-    private $table = 'nama_table'; // nama table
+    public $table = 'nama_table'; // nama table
 
     public function insert($data = [])
     {

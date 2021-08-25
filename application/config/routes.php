@@ -53,5 +53,7 @@ $route['default_controller'] = 'frontend/home';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
 $route['email'] = 'email/email';
+
+$route['logs'] = "logViewerController/index";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

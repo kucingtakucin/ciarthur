@@ -14,7 +14,7 @@ class Dashboard extends MY_Controller
 
 	public function index()
 	{
-		$this->templates->load([
+		$this->templates->render([
 			'title' => 'Dashboard',
 			'type' => 'backend',
 			'uri_segment' => $this->_path,

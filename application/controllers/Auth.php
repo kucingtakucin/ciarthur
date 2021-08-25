@@ -1,11 +1,15 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+use ReCaptcha\ReCaptcha;
+
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Class Auth
  * @property Ion_auth|Ion_auth_model $ion_auth        The ION Auth spark
  * @property CI_Form_validation      $form_validation The form validation library
  */
-class Auth extends CI_Controller
+class Auth extends MY_Controller
 {
 	public $data = [];
 	private $_path = 'auth/';
@@ -14,7 +18,7 @@ class Auth extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(['ion_auth', 'form_validation']);
+		$this->load->library(['form_validation']);
 		$this->load->helper(['url', 'language']);
 
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
@@ -23,15 +27,66 @@ class Auth extends CI_Controller
 	}
 
 	/**
+	 * Log the user in
+	 */
+	public function login()
+	{
+		$this->data['title'] = $this->lang->line('login_heading');
+		$recaptcha = new ReCaptcha('6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o');
+		$recaptcha->setExpectedHostname('appt.demoo.id')
+			->verify($this->input->post('g-recaptcha-response'));
+
+		if ($this->input->method() == 'post') {
+			// check to see if the user is logging in
+			// check for "remember me"
+			$remember = (bool)$this->input->post('remember');
+
+			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
+				//if the login is successful
+				//redirect them back to the home page
+				return $this->output->set_content_type('application/json')
+					->set_output(json_encode([
+						'status' => true,
+						'message' => 'Login Berhasil!',
+						'redirect' => redirect_to()
+					]));
+			} else {
+				// if the login was un-successful
+				// redirect them back to the login page
+				return $this->output->set_content_type('application/json')
+					->set_status_header(404)
+					->set_output(json_encode([
+						'status' => false,
+						'message' => $this->ion_auth->errors()
+					]));
+			}
+		} elseif ($this->input->method('get')) {
+			// the user is not logging in so display the login page
+			// set the flash data error message if there is one
+
+			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
+			$this->templates->render([
+				'title' => 'Login',
+				'type' => 'auth',
+				'uri_segment' => $this->_path,
+				'page' => $this->_path . 'login',
+				'script' => $this->_path . 'index_js',
+				'modal' => [],
+			]);
+		}
+	}
+
+	/**
 	 * Redirect if needed, otherwise display the user list
 	 */
 	public function index()
 	{
 
-		if (!$this->ion_auth->logged_in()) {
-			// redirect them to the login page
-			redirect('auth/login', 'refresh');
-		} else if (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
+		// if (!$this->ion_auth->logged_in()) {
+		// 	// redirect them to the login page
+		// 	redirect('auth/login', 'refresh');
+		// } else 
+		if (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
 		{
 			// redirect them to the home page because they must be an administrator to view this
 			show_error('You must be an administrator to view this page.');
@@ -52,7 +107,7 @@ class Auth extends CI_Controller
 			}
 
 			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $this->data);
-			$this->templates->load([
+			$this->templates->render([
 				'title' => $this->data['title'],
 				'type' => 'backend',
 				'message' => $this->data['message'],
@@ -61,57 +116,6 @@ class Auth extends CI_Controller
 				'page' => $this->_path . 'index',
 				'script' => $this->_path . 'index_js',
 				'modals' => []
-			]);
-		}
-	}
-
-	/**
-	 * Log the user in
-	 */
-	public function login()
-	{
-		$this->data['title'] = $this->lang->line('login_heading');
-
-		// validate form input
-		$this->form_validation->set_rules('identity', str_replace(':', '', $this->lang->line('login_identity_label')), 'required');
-		$this->form_validation->set_rules('password', str_replace(':', '', $this->lang->line('login_password_label')), 'required');
-		$this->form_validation->set_rules('g-recaptcha-response', 'g-recaptcha-response', 'required');
-		$recaptcha = new \ReCaptcha\ReCaptcha('6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o');
-		$resp = $recaptcha->setExpectedHostname('appt.demoo.id')
-			->verify($this->input->post('g-recaptcha-response'));
-
-		if ($this->form_validation->run() === TRUE && $resp->isSuccess()) {
-			// check to see if the user is logging in
-			// check for "remember me"
-			$remember = (bool)$this->input->post('remember');
-
-			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
-				//if the login is successful
-				//redirect them back to the home page
-				$this->session->set_flashdata('message', $this->ion_auth->messages());
-
-				// redirect to ...
-				redirect(redirect_to(), 'refresh');
-			} else {
-				// if the login was un-successful
-				// redirect them back to the login page
-				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/login', 'refresh'); // use redirects instead of loading views for compatibility with MY_Controller libraries
-			}
-		} else {
-			// the user is not logging in so display the login page
-			// set the flash data error message if there is one
-			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-
-			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
-			$this->templates->load([
-				'title' => 'Login',
-				'type' => 'auth',
-				'message' => $this->data['message'],
-				'uri_segment' => $this->_path,
-				'page' => $this->_path . 'login',
-				'script' => $this->_path . 'index_js',
-				'modal' => []
 			]);
 		}
 	}
@@ -389,7 +393,7 @@ class Auth extends CI_Controller
 			$this->data['identity'] = $this->config->item('identity', 'ion_auth');
 
 			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'deactivate_user', $this->data);
-			$this->templates->load([
+			$this->templates->render([
 				'title' => 'Deactivate User',
 				'type' => 'backend',
 				'user' => $this->data['user'],
@@ -520,7 +524,7 @@ class Auth extends CI_Controller
 			];
 
 			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'create_user', $this->data);
-			$this->templates->load([
+			$this->templates->render([
 				'title' => $this->data['title'],
 				'type' => 'backend',
 				'identity_column' => $this->data['identity_column'],
@@ -676,7 +680,7 @@ class Auth extends CI_Controller
 		];
 
 		// $this->_render_page('auth/edit_user', $this->data);
-		$this->templates->load([
+		$this->templates->render([
 			'title' => $this->data['title'],
 			'type' => 'backend',
 			'first_name' => $this->data['first_name'],
@@ -741,7 +745,7 @@ class Auth extends CI_Controller
 		];
 
 		// $this->_render_page('auth/create_group', $this->data);
-		$this->templates->load([
+		$this->templates->render([
 			'title' => $this->data['title'],
 			'type' => 'backend',
 			'message' => $this->data['message'],
@@ -816,7 +820,7 @@ class Auth extends CI_Controller
 		];
 
 		// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'edit_group', $this->data);
-		$this->templates->load([
+		$this->templates->render([
 			'title' => $this->data['title'],
 			'type' => 'backend',
 			'message' => $this->data['message'],

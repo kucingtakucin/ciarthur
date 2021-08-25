@@ -6,7 +6,10 @@ class M_Mahasiswa extends CI_Model
 
     public function get()
     {
-        return $this->db->get($this->table)->result();
+        return $this->db->select('a.*, b.nama as nama_fakultas, c.nama as nama_prodi')
+            ->join('fakultas b', 'b.id = a.fakultas_id')
+            ->join('prodi c', 'c.id = a.prodi_id')
+            ->get("{$this->table} a")->result();
     }
 
     public function insert($data = [])
