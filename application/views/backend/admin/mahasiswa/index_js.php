@@ -1,7 +1,8 @@
 <script>
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, id_data, get_data, csrf,
-        tambah_data, ubah_data, hapus_data;
+    let datatable, id_data, get_data, csrf, status_crud = false,
+        tambah_data, ubah_data, hapus_data,
+        map, map_modal, marker_modal, legend;
     // Document ready
     $(() => {
 
@@ -71,39 +72,45 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    Swal.fire({
-                        title: 'Loading...',
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    })
+                    if (!status_crud) {
+                        Swal.fire({
+                            title: 'Loading...',
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        })
+                    }
                 },
                 complete: () => {
-                    Swal.close()
+                    if (!status_crud) {
+                        Swal.close()
+                    } else {
+                        status_crud = false
+                    }
                 }
             },
             columnDefs: [{
-                    targets: [0, 1, 2, 3, 4, 5, 6, 7], // Sesuaikan dengan jumlah kolom
+                    targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Sesuaikan dengan jumlah kolom
                     className: 'text-center'
                 },
                 {
+                    targets: [0, 7, 8],
                     searchable: false,
                     orderable: false,
-                    targets: [0, 7]
                 }
             ],
             order: [
-                [7, 'desc']
+                [8, 'desc']
             ],
-            columns: [{
+            columns: [{ // 0
                     title: '#',
                     name: '#',
                     data: 'DT_Row_Index',
                 },
-                {
+                { // 1
                     title: 'Foto',
                     name: 'foto_thumb',
                     data: 'foto_thumb',
@@ -114,11 +121,13 @@
                             alt: 'Foto'
                         }).prop('outerHTML')
                     }
-                }, {
+                },
+                { // 2
                     title: 'NIM',
                     name: 'nim',
                     data: 'nim',
-                }, {
+                },
+                { // 3
                     title: 'Nama',
                     name: 'nama',
                     data: 'nama',
@@ -129,22 +138,36 @@
                         }).prop('outerHTML')
                     }
                 },
-                {
+                { // 4
                     title: 'Program Studi',
                     name: 'nama_prodi',
                     data: 'nama_prodi',
                 },
-                {
+                { // 5
                     title: 'Fakultas',
                     name: 'nama_fakultas',
                     data: 'nama_fakultas',
                 },
-                {
+                { // 6
                     title: 'Angkatan',
                     name: 'angkatan',
                     data: 'angkatan',
                 },
-                {
+                { // 7
+                    title: 'LatLng',
+                    name: 'latlng',
+                    data: (data) => {
+                        return $('<span>', {
+                                class: 'badge badge-primary',
+                                html: data.latitude ? data.latitude : '-'
+                            }).prop('outerHTML') + '<br>' +
+                            $('<span>', {
+                                class: 'badge badge-primary',
+                                html: data.longitude ? data.longitude : '-'
+                            }).prop('outerHTML')
+                    }
+                },
+                { // 8
                     title: 'Aksi',
                     name: 'id',
                     data: 'id',
@@ -271,7 +294,7 @@
         // ================================================== //
 
         /**
-         * Keperluan CRUD
+         * Keperluan status_CRUD
          */
         // ================================================== //
         get_data = async (form) => {
@@ -305,6 +328,8 @@
                 $('#form_ubah input#ubah_nim[name=nim]').val(row.nim);
                 $('#form_ubah input#ubah_nama[name=nama]').val(row.nama);
                 $('#form_ubah input#ubah_angkatan[name=angkatan]').val(row.angkatan);
+                $('#form_ubah input#ubah_latitude[name=latitude]').val(row.latitude);
+                $('#form_ubah input#ubah_longitude[name=longitude]').val(row.longitude);
 
                 $('#form_ubah select#ubah_select_fakultas.select_fakultas')
                     .append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
@@ -384,6 +409,7 @@
                 if (response.ok) return response.json()
                 throw new Error(response.statusText)
             }).then(response => {
+                status_crud = true
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -438,6 +464,7 @@
                 if (response.ok) return response.json()
                 throw new Error(response.statusText)
             }).then(response => {
+                status_crud = true
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -499,6 +526,7 @@
                         if (response.ok) return response.json()
                         throw new Error(response.statusText)
                     }).then(response => {
+                        status_crud = true
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -656,7 +684,7 @@
          * Keperluan WebGIS dengan Leaflet
          */
         // ================================================== //
-        let map = L.map("map", {
+        map = L.map("map", {
             center: [-7.5828, 111.0444],
             zoom: 12,
             layers: [
@@ -664,49 +692,56 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }),
-                // L.marker([-7.541355, 111.0377783], { //-7.641355, 111.0377783
-                //     icon: L.icon({
-                //         iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-                //         iconSize: [40, 40], // size of the icon
-                //         iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
-                //         popupAnchor: [0, -30] // point from which the popup should open relative to the iconAnchor
-                //     })
-                // }).bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup()
             ]
         })
 
-        let map_tambah = L.map("map-tambah", {
-            center: [-7.5828, 111.0444],
-            zoom: 12,
-            layers: [
-                /** OpenStreetMap Tile Layer */
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }),
+        const map_inside_modal = (status) => {
 
-            ]
-        })
+            if (map_modal) map_modal.remove()
+            map_modal = L.map(`map-${status}`, {
+                center: [-7.5828, 111.0444],
+                zoom: 12,
+                layers: [
+                    /** OpenStreetMap Tile Layer */
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }),
 
-        let marker_tambah;
-        map_tambah.on('click', (event) => {
-            if (marker_tambah) map_tambah.removeLayer(marker_tambah)
-            marker_tambah = L.marker([event.latlng.lat, event.latlng.lng], { //-7.641355, 111.0377783
-                icon: L.icon({
-                    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-                    iconSize: [40, 40], // size of the icon
-                    iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
-                    popupAnchor: [0, -30] // point from which the popup should open relative to the iconAnchor
-                })
+                ]
             })
-            marker_tambah.addTo(map_tambah)
-            marker_tambah.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
 
-            $('#tambah_latitude').val(event.latlng.lat)
-            $('#tambah_longitude').val(event.latlng.lng)
+            setTimeout(() => {
+                map_modal.invalidateSize()
+            }, 500);
+
+            map_modal.on('click', (event) => {
+                if (marker_modal) map_modal.removeLayer(marker_modal)
+                marker_modal = L.marker([event.latlng.lat, event.latlng.lng], { //-7.641355, 111.0377783
+                    icon: L.icon({
+                        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
+                        iconSize: [40, 40], // size of the icon
+                        iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
+                        popupAnchor: [0, -30] // point from which the popup should open relative to the iconAnchor
+                    })
+                })
+                marker_modal.addTo(map_modal)
+                marker_modal.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
+
+                $(`#${status}_latitude`).val(event.latlng.lat)
+                $(`#${status}_longitude`).val(event.latlng.lng)
+            })
+        }
+
+        $('#modal_tambah').on('show.bs.modal', () => {
+            map_inside_modal('tambah')
+        })
+
+        $('#modal_ubah').on('show.bs.modal', () => {
+            map_inside_modal('ubah')
         })
 
         /** Legend */
-        let legend = L.control({
+        legend = L.control({
             position: "bottomleft"
         })
 
@@ -753,6 +788,33 @@
             .then(response => {
                 response.data.map(item => {
                     L.marker([item.latitude, item.longitude])
+                        .addTo(map)
+                        .bindPopup(
+                            new L.Popup({
+                                autoClose: false,
+                                closeOnClick: false
+                            })
+                            .setContent(`<b>${item.nama}</b>`)
+                            .setLatLng([item.latitude, item.longitude])
+                        ).openPopup();
+                })
+            })
+
+        fetch(BASE_URL + 'get_latlng')
+            .then(response => {
+                if (response.ok) return response.json()
+                throw new Error(response.statusText)
+            })
+            .then(response => {
+                response.data.map(item => {
+                    L.marker([item.latitude, item.longitude], {
+                            icon: L.icon({
+                                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
+                                iconSize: [40, 40], // size of the icon
+                                iconAnchor: [20, 40], // point of the icon which will correspond to marker's location
+                                popupAnchor: [0, -30] // point from which the popup should open relative to the iconAnchor
+                            })
+                        })
                         .addTo(map)
                         .bindPopup(
                             new L.Popup({

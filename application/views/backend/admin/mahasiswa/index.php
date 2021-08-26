@@ -44,11 +44,11 @@
 <div class="card">
     <div class="card-body">
         <div class="row mb-3">
-            <div class="col-md-12 d-flex justify-content-end flex-row">
-                <button type="button" class="btn btn-primary btn-pill mr-2" id="tombol_export_word"><i class="fa fa-file-word-o"></i> Export DOCX</button>
-                <button type="button" class="btn btn-danger btn-pill mr-2" id="tombol_export_pdf"><i class="fa fa-file-pdf-o"></i> Export PDF</button>
-                <button type="button" class="btn btn-success btn-pill mr-2" id="tombol_export_excel"><i class="fa fa-file-excel-o"></i> Export XLSX</button>
-                <button type="button" class="btn btn-info btn-pill" id="tombol_tambah"><i class="fa fa-plus"></i> Tambah Data</button>
+            <div class="col-md-12 d-flex justify-content-end flex-row flex-wrap align-content-center">
+                <button type="button" class="btn btn-primary btn-pill mr-2 mt-2" id="tombol_export_word"><i class="fa fa-file-word-o"></i> Export DOCX</button>
+                <button type="button" class="btn btn-danger btn-pill mr-2 mt-2" id="tombol_export_pdf"><i class="fa fa-file-pdf-o"></i> Export PDF</button>
+                <button type="button" class="btn btn-success btn-pill mr-2 mt-2" id="tombol_export_excel"><i class="fa fa-file-excel-o"></i> Export XLSX</button>
+                <button type="button" class="btn btn-info btn-pill mt-2" id="tombol_tambah"><i class="fa fa-plus"></i> Tambah Data</button>
             </div>
         </div>
 

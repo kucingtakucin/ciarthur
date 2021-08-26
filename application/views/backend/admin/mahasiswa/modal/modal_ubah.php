@@ -61,6 +61,27 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-12" for="latitude">Latitude</label>
+                                <input type="text" id="ubah_latitude" class="form-control" name="latitude" required autocomplete="off" placeholder="Masukkan Latitude">
+                                <?= validation_feedback("latitude", "wajib diisi") ?>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-12" for="longitude">Longitude</label>
+                                <input type="text" id="ubah_longitude" class="form-control" name="longitude" required autocomplete="off" placeholder="Masukkan Longitude">
+                                <?= validation_feedback("longitude", "wajib diisi") ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="height: 50vh;">
+                            <div id="map-ubah" style="width: 100%; height: 100%; z-index: 0;"></div>
+                        </div>
+                    </div>
                     <input type="hidden" name="old_foto" id="ubah_old_foto">
                     <input type="hidden" name="old_foto_thumb" id="ubah_old_foto_thumb">
                 </div>

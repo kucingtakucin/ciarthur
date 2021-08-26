@@ -61,7 +61,7 @@ class Mahasiswa extends MY_Controller
         $datatables->query(
             "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto_thumb,
             b.nama AS nama_prodi, c.nama AS nama_fakultas,
-            a.prodi_id, a.fakultas_id
+            a.prodi_id, a.fakultas_id, a.latitude, a.longitude
             FROM mahasiswa AS a
             JOIN prodi AS b ON b.id = a.prodi_id
             JOIN fakultas AS c ON c.id = a.fakultas_id
@@ -107,6 +107,23 @@ class Mahasiswa extends MY_Controller
                 'data' => $this->db->where('fakultas_id', $this->input->get('fakultas_id'))
                     ->like('nama', $this->input->get('search'))
                     ->get('prodi')->result()
+            ]));
+    }
+
+    /**
+     * Keperluan AJAX Leaflet
+     * 
+     * @return CI_Output
+     */
+    public function get_latlng(): CI_Output
+    {
+        return $this->output->set_content_type('application/json')
+            ->set_status_header(200)
+            ->set_output(json_encode([
+                'status' => true,
+                'data' => $this->db->select('nama, latitude, longitude')
+                    ->get('mahasiswa')
+                    ->result()
             ]));
     }
 
@@ -172,6 +189,8 @@ class Mahasiswa extends MY_Controller
                 'prodi_id' => $this->input->post('prodi_id', true),
                 'fakultas_id' => $this->input->post('fakultas_id', true),
                 'angkatan' => $this->input->post('angkatan', true),
+                'latitude' => $this->input->post('latitude', true),
+                'longitude' => $this->input->post('longitude', true),
                 'foto' => $this->upload->data('file_name'),
                 'foto_thumb' => $this->upload->data('raw_name') . '_thumb' . $this->upload->data('file_ext'),
                 'is_active' => '1',
@@ -264,6 +283,8 @@ class Mahasiswa extends MY_Controller
                 'prodi_id' => $this->input->post('prodi_id', true),
                 'fakultas_id' => $this->input->post('fakultas_id', true),
                 'angkatan' => $this->input->post('angkatan', true),
+                'latitude' => $this->input->post('latitude', true),
+                'longitude' => $this->input->post('longitude', true),
                 'foto' => $_FILES['foto']['error'] === 4
                     ? $this->input->post('old_foto') : $this->upload->data('file_name'),
                 'foto_thumb' => $_FILES['foto']['error'] === 4
