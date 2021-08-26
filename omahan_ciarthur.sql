@@ -1,55 +1,70 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: omahan_ciarthur
--- ------------------------------------------------------
--- Server version	5.7.26
+-- Host: mysql-development
+-- Generation Time: Aug 26, 2021 at 03:46 AM
+-- Server version: 5.7.26
+-- PHP Version: 7.4.20
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `omahan_ciarthur`
+--
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `ci_sessions`
 --
 
-DROP TABLE IF EXISTS `ci_sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ci_sessions` (
   `id` varchar(128) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
-  `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
-  `data` blob NOT NULL,
-  KEY `ci_sessions_timestamp` (`timestamp`)
+  `timestamp` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `data` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `ci_sessions`
 --
 
-LOCK TABLES `ci_sessions` WRITE;
-/*!40000 ALTER TABLE `ci_sessions` DISABLE KEYS */;
-INSERT INTO `ci_sessions` VALUES ('cbbc020ae5eb872a7f088e0046b8deb661ce0de8','172.31.0.1',1627211524,_binary '__ci_last_regenerate|i:1627211524;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('56f10d17bde56c45eb2772d00f85c2d7331a81f8','172.31.0.1',1627211832,_binary '__ci_last_regenerate|i:1627211832;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('3b263f8ad6e6739a7c7538c33af34d80f5f0867b','172.31.0.1',1627212133,_binary '__ci_last_regenerate|i:1627212133;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('ef4e14386797d76aacb95b642aa6acb3411b01db','172.31.0.1',1627211840,_binary '__ci_last_regenerate|i:1627211840;'),('eed5c1d61c4b49137cc89436e3d4a06f01824cf8','172.31.0.1',1627211840,_binary '__ci_last_regenerate|i:1627211840;'),('2161530f00be66b53d36f55dafcfd9718f0cbabb','172.31.0.1',1627212754,_binary '__ci_last_regenerate|i:1627212754;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('07ba624df857515ef0b6736dfeb2e2bd49c67e61','172.31.0.1',1627213064,_binary '__ci_last_regenerate|i:1627213064;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('9a51af7e2aad5a2efbffe017bd774f72bd2971fc','172.31.0.1',1627213385,_binary '__ci_last_regenerate|i:1627213385;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('45b7384e52a248879eeb70b28e6daa1a642550de','172.31.0.1',1627213783,_binary '__ci_last_regenerate|i:1627213783;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('c0b8080e97d6ff756efaad5c919e3a69d99ca55a','172.31.0.1',1627214688,_binary '__ci_last_regenerate|i:1627214688;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('39f1072dec733123107c7099735afab4711012a6','172.31.0.1',1627215078,_binary '__ci_last_regenerate|i:1627215078;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('a52a8899938557bb75904bc7199bf5710f0ce30a','172.31.0.1',1627215434,_binary '__ci_last_regenerate|i:1627215434;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('3cc0fd57a8a3d8b4ecc32a6c3896653169573507','172.31.0.1',1627215768,_binary '__ci_last_regenerate|i:1627215768;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('05b2328177f938f2e23d35fe8b3703f8fa7424aa','172.31.0.1',1627216071,_binary '__ci_last_regenerate|i:1627216071;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('7f8f8e81b3fee35ce749d352d6139172ab18b7e6','172.31.0.1',1627216658,_binary '__ci_last_regenerate|i:1627216658;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('8c41f4d5d66771a6f8dda2e5bf3826e82c9a5702','172.31.0.1',1627217136,_binary '__ci_last_regenerate|i:1627217136;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('af68c2bc87a8c8e1494c15948fe9892400a13c8c','172.31.0.1',1627217685,_binary '__ci_last_regenerate|i:1627217685;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('9505c3d1ea4f73e1d99fff73c3c0c54ebfed4402','172.31.0.1',1627218035,_binary '__ci_last_regenerate|i:1627218035;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('3f700f874c75687ccb4ad24e30040db72be5b1be','172.31.0.1',1627218718,_binary '__ci_last_regenerate|i:1627218718;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('138c9699a76f572a870e5f807d801e52788d36ef','172.31.0.1',1627219083,_binary '__ci_last_regenerate|i:1627219083;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('b484f8bfb674c208621860bb1399d421e6f7c648','172.31.0.1',1627219526,_binary '__ci_last_regenerate|i:1627219526;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('736d96d889c0b6002694730e9e396bcc2f659598','172.31.0.1',1627220075,_binary '__ci_last_regenerate|i:1627220075;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('5f176e5217163de4ed6da07fc96360f50fbd4db8','172.31.0.1',1627220386,_binary '__ci_last_regenerate|i:1627220386;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('949160b830172ba0de97126ee53210e99134e4b7','172.31.0.1',1627220755,_binary '__ci_last_regenerate|i:1627220755;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('d5d4c517af658e33a6d873021b13dbf0e0d2e493','172.31.0.1',1627221217,_binary '__ci_last_regenerate|i:1627221217;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('49bf169aaf641c9e83729b0865257422ad21617c','172.31.0.1',1627221606,_binary '__ci_last_regenerate|i:1627221606;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('39d12b420d685010be0e9091b349dfaf481e1f86','172.31.0.1',1627221917,_binary '__ci_last_regenerate|i:1627221917;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('909426917781f832b6ca40d305f5fb61fa5901e3','172.31.0.1',1627222265,_binary '__ci_last_regenerate|i:1627222265;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('3844025aa9fc13cea8fa7f3098717df743ea693a','172.31.0.1',1627222625,_binary '__ci_last_regenerate|i:1627222625;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('909dbf33c3d2b000292ea9f7575bfa5e9796b824','172.31.0.1',1627223182,_binary '__ci_last_regenerate|i:1627223182;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('4015ebb97fcd34faf08a1486ba990fea621ef943','172.31.0.1',1627222737,_binary '__ci_last_regenerate|i:1627222737;'),('312758c23701003d9d974bbbe175defd315b8e6d','172.31.0.1',1627223521,_binary '__ci_last_regenerate|i:1627223521;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('6f07a865725387d07eac3e958330dbd341a7a295','172.31.0.1',1627223985,_binary '__ci_last_regenerate|i:1627223985;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('0a741b2d4890e39df02ba58e6c0133c3945fdb0d','172.31.0.1',1627224359,_binary '__ci_last_regenerate|i:1627224359;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('2e52b340f8a2e6b5f3974c5144514d70ddf56103','172.31.0.1',1627224001,_binary '__ci_last_regenerate|i:1627224001;'),('d9bf791e0ca31606c131623029a47351a2d46c6d','172.31.0.1',1627224685,_binary '__ci_last_regenerate|i:1627224685;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('71674c748e920b98393556c8d40c1a020f7e2219','172.31.0.1',1627225148,_binary '__ci_last_regenerate|i:1627225148;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('7be75347b72a979c11d317b0cc0c5c5efa62ba97','172.31.0.1',1627225457,_binary '__ci_last_regenerate|i:1627225457;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";csrfkey|s:8:\"fV4eZxBS\";__ci_vars|a:2:{s:7:\"csrfkey\";s:3:\"new\";s:9:\"csrfvalue\";s:3:\"new\";}csrfvalue|s:20:\"XPyjgKNR3BrxHwvGTi72\";'),('efaca95a3b027d06bb860ff9642f792e80d2468a','172.31.0.1',1627225162,_binary '__ci_last_regenerate|i:1627225162;'),('05251ded8953e89331d1728d4de9ef0b6807c436','172.31.0.1',1627225760,_binary '__ci_last_regenerate|i:1627225760;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";'),('5fd2a73d247121473d9a81e12a089647735d737a','172.31.0.1',1627225824,_binary '__ci_last_regenerate|i:1627225760;identity|s:13:\"administrator\";username|s:13:\"administrator\";email|s:15:\"admin@admin.com\";user_id|s:1:\"1\";old_last_login|s:10:\"1627208336\";last_check|i:1627210291;ion_auth_session_hash|s:40:\"6583d6c4f205998ecacc9f51b68a2a2e44ea0006\";');
-/*!40000 ALTER TABLE `ci_sessions` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
+('515568ca481cf251232c3222b23d346af40378df', '172.31.0.1', 1629941465, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934313436353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('2663b4a9d6a800a1ab71d3a2b062e9153ac738ec', '172.31.0.1', 1629941321, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934313332313b),
+('3514adde9f6e3ec389cae6f9a096ae54d227acf0', '172.31.0.1', 1629941383, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934313338333b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393339363737223b6c6173745f636865636b7c693a313632393934313338333b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('c71d2bff02ca9058b2c898116cf55e9e3c24b3fa', '172.31.0.1', 1629941847, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934313834373b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393339363737223b6c6173745f636865636b7c693a313632393934313338333b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('67181dc407bcbc7ebd20cccc2d314721cd07707c', '172.31.0.1', 1629942087, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934323038373b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('1341571865ea656b14b307da5dbb3532e29ff8a7', '172.31.0.1', 1629948456, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934383435363b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393339363737223b6c6173745f636865636b7c693a313632393934313338333b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('6b8f55e52937241c3c6452610b7ef0efedca4fd4', '172.31.0.1', 1629944206, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934343230363b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('2d53496a2f946c9bd1004444da2860d920675be6', '172.31.0.1', 1629944725, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934343732353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('b4f500e5a7ff47468180f7d608d136502b4bfdc9', '172.31.0.1', 1629945145, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934353134353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('5f4f63ad0992df32c29121b506974fb0302af476', '172.31.0.1', 1629946111, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934363131313b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('c1f0b2679f3642115c3b3de377f8ece07503cc60', '172.31.0.1', 1629946665, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934363636353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('4091daddb321d15e99459b874dc75303d580b21f', '172.31.0.1', 1629946977, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934363937373b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('777dc7354135364f5e390dff33987c245412fdbe', '172.31.0.1', 1629947515, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934373531353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('2036b95aca24fa16428e43143db3a16ff87ecb80', '172.31.0.1', 1629947817, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934373831373b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('9730a341bb453ef24f1495f1a3d298b9ada8877c', '172.31.0.1', 1629948195, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934383139353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('a1c0c84011a51b0586e659c8004a230739aee507', '172.31.0.1', 1629948288, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934383139353b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393132323631223b6c6173745f636865636b7c693a313632393933393637373b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b),
+('0f5070e98a23a04aec83cee6a7c7b3c7ddfd80fd', '172.31.0.1', 1629948486, 0x5f5f63695f6c6173745f726567656e65726174657c693a313632393934383435363b6964656e746974797c733a31333a2261646d696e6973747261746f72223b757365726e616d657c733a31333a2261646d696e6973747261746f72223b656d61696c7c733a31353a2261646d696e4061646d696e2e636f6d223b757365725f69647c733a313a2231223b6f6c645f6c6173745f6c6f67696e7c733a31303a2231363239393339363737223b6c6173745f636865636b7c693a313632393934313338333b696f6e5f617574685f73657373696f6e5f686173687c733a38303a226131616539636435393865396661353765326631316630323536356633373630613064316366306562623037323465386464353037613164613965316137616233353733353363303633316139333461223b);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `fakultas`
 --
 
-DROP TABLE IF EXISTS `fakultas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `fakultas` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL,
   `nama` varchar(100) DEFAULT NULL,
   `is_active` enum('0','1') DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
@@ -57,80 +72,104 @@ CREATE TABLE `fakultas` (
   `updated_at` datetime DEFAULT NULL,
   `updated_by` bigint(20) DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  `deleted_by` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `deleted_by` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `fakultas`
 --
 
-LOCK TABLES `fakultas` WRITE;
-/*!40000 ALTER TABLE `fakultas` DISABLE KEYS */;
-INSERT INTO `fakultas` VALUES (1,'SENI RUPA DAN DESAIN','1',NULL,NULL,NULL,NULL,NULL,NULL),(2,'ILMU SOSIAL DAN POLITIK','1',NULL,NULL,NULL,NULL,NULL,NULL),(3,'HUKUM','1',NULL,NULL,NULL,NULL,NULL,NULL),(4,'EKONOMI DAN BISNIS','1',NULL,NULL,NULL,NULL,NULL,NULL),(5,'KEDOKTERAN','1',NULL,NULL,NULL,NULL,NULL,NULL),(6,'PERTANIAN','1',NULL,NULL,NULL,NULL,NULL,NULL),(7,'TEKNIK','1',NULL,NULL,NULL,NULL,NULL,NULL),(8,'KEGURUAN DAN ILMU PENDIDIKAN','1',NULL,NULL,NULL,NULL,NULL,NULL),(9,'MATEMATIKA DAN ILMU PENGETAHUAN ALAM','1',NULL,NULL,NULL,NULL,NULL,NULL),(10,'ILMU BUDAYA','1',NULL,NULL,NULL,NULL,NULL,NULL),(11,'KEOLAHRAGAAN','1',NULL,NULL,NULL,NULL,NULL,NULL),(12,'VOKASI','1',NULL,NULL,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `fakultas` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `fakultas` (`id`, `nama`, `is_active`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) VALUES
+(1, 'SENI RUPA DAN DESAIN', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'ILMU SOSIAL DAN POLITIK', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'HUKUM', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'EKONOMI DAN BISNIS', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'KEDOKTERAN', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 'PERTANIAN', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'TEKNIK', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'KEGURUAN DAN ILMU PENDIDIKAN', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'MATEMATIKA DAN ILMU PENGETAHUAN ALAM', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(16, 'ILMU BUDAYA', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(18, 'KEOLAHRAGAAN', '1', NULL, NULL, NULL, NULL, NULL, NULL),
+(19, 'VOKASI', '1', NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `groups`
 --
 
-DROP TABLE IF EXISTS `groups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `groups` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id` mediumint(8) UNSIGNED NOT NULL,
   `name` varchar(20) NOT NULL,
-  `description` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `description` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `groups`
 --
 
-LOCK TABLES `groups` WRITE;
-/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'admin','Administrator'),(2,'members','General User');
-/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+(1, 'admin', 'Administrator'),
+(2, 'members', 'General User');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kecamatan`
+--
+
+CREATE TABLE `kecamatan` (
+  `id` int(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `latitude` varchar(100) NOT NULL,
+  `longitude` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `kecamatan`
+--
+
+INSERT INTO `kecamatan` (`id`, `nama`, `latitude`, `longitude`) VALUES
+(1, 'Kec. Jatipuro', '-7.74449', '111.0138203'),
+(2, 'Kec. Jatiyoso', '-7.704725', '111.1035213'),
+(6, 'Kec. Tawangmangu', '-7.661433', '111.1271453'),
+(5, 'Kec. Matesih', '-7.641355', '111.0377783'),
+(4, 'Kec. Jumantono', '-7.669329', '110.9841663'),
+(7, 'Kec. Ngargoyoso', '-7.602591', '111.1036263'),
+(3, 'Kec. Jumapolo', '-7.71191', '110.9601813'),
+(9, 'Kec. Karanganyar', '-7.5988', '110.9485'),
+(8, 'Kec. Karangpandan', '-7.6045', '111.0703'),
+(10, 'Kec. Tasikmadu', '-7.57096', '110.9363933'),
+(11, 'Kec. Jaten', '-7.559027', '110.8827473'),
+(14, 'Kec. Kebakkramat', '-7.511256', '110.9125403'),
+(12, 'Kec. Colomadu', '-7.53242', '110.74892'),
+(13, 'Kec. Gondangrejo', '-7.495469', '110.8421953'),
+(15, 'Kec. Mojogedang', '-7.546056', '110.9842383'),
+(16, 'Kec. Kerjo', '-7.536727', '111.0618333'),
+(17, 'Kec. Jenawi', '-7.539923', '111.1273113');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `login_attempts`
 --
 
-DROP TABLE IF EXISTS `login_attempts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `login_attempts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL,
   `ip_address` varchar(45) NOT NULL,
   `login` varchar(100) NOT NULL,
-  `time` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `time` int(11) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `login_attempts`
---
-
-LOCK TABLES `login_attempts` WRITE;
-/*!40000 ALTER TABLE `login_attempts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `login_attempts` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `mahasiswa`
 --
 
-DROP TABLE IF EXISTS `mahasiswa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mahasiswa` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL,
   `nim` varchar(100) DEFAULT NULL,
   `nama` varchar(100) DEFAULT NULL,
   `foto` varchar(100) DEFAULT NULL,
@@ -138,36 +177,34 @@ CREATE TABLE `mahasiswa` (
   `angkatan` varchar(5) DEFAULT NULL,
   `prodi_id` varchar(100) DEFAULT NULL,
   `fakultas_id` varchar(100) DEFAULT NULL,
+  `latitude` varchar(100) NOT NULL,
+  `longitude` varchar(100) NOT NULL,
   `is_active` enum('0','1') DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `created_by` bigint(20) DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `updated_by` bigint(20) DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  `deleted_by` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `deleted_by` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mahasiswa`
 --
 
-LOCK TABLES `mahasiswa` WRITE;
-/*!40000 ALTER TABLE `mahasiswa` DISABLE KEYS */;
-INSERT INTO `mahasiswa` VALUES (5,'M3119001','Adam Arthur Faizal','15ba5d5a5c915c8b35be4f04ac26bef7.png','15ba5d5a5c915c8b35be4f04ac26bef7_thumb.png','2019','138','9','1','2021-07-23 15:16:14',1,NULL,NULL,NULL,NULL),(6,'M3119000','Mbah Putih','6c1eeb201aa7a8afa13408e0bfe49d64.jpg',NULL,'2019','134','9','0','2021-07-23 15:24:36',1,'2021-07-25 12:37:16',1,'2021-07-25 12:56:05',NULL),(7,'M3119000','Mbah Putih','70122e4a7b8c329f9aaada648dad8d56.jpg','70122e4a7b8c329f9aaada648dad8d56_thumb.jpg','2019','138','9','1','2021-07-25 12:59:11',1,'2021-07-25 14:00:59',1,NULL,NULL);
-/*!40000 ALTER TABLE `mahasiswa` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `mahasiswa` (`id`, `nim`, `nama`, `foto`, `foto_thumb`, `angkatan`, `prodi_id`, `fakultas_id`, `latitude`, `longitude`, `is_active`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) VALUES
+(5, 'M3119001', 'Adam Arthur Faizal', '15ba5d5a5c915c8b35be4f04ac26bef7.png', '15ba5d5a5c915c8b35be4f04ac26bef7_thumb.png', '2019', '132', '19', '-7.597110704888518', '110.96311569213869', '1', '2021-07-23 15:16:14', 1, '2021-08-26 03:16:06', 1, NULL, NULL),
+(7, 'M3119000', 'Mbah Putih', '70122e4a7b8c329f9aaada648dad8d56.jpg', '70122e4a7b8c329f9aaada648dad8d56_thumb.jpg', '2019', '134', '9', '-7.5865445849007465', '110.92397689819336', '1', '2021-07-25 12:59:11', 1, '2021-08-26 03:18:02', 1, NULL, NULL),
+(8, 'M3119085', 'Tri Wulandari', 'bed43c4d486aefd72d91e0ee243eb67e.png', 'bed43c4d486aefd72d91e0ee243eb67e_thumb.png', '2019', '132', '19', '-7.678904102911628', '110.9696388244629', '1', '2021-08-24 15:41:30', 1, '2021-08-26 03:18:23', 1, NULL, NULL);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `prodi`
 --
 
-DROP TABLE IF EXISTS `prodi`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `prodi` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL,
   `nama` varchar(100) DEFAULT NULL,
   `fakultas_id` varchar(100) DEFAULT NULL,
   `is_active` enum('0','1') DEFAULT NULL,
@@ -176,30 +213,274 @@ CREATE TABLE `prodi` (
   `updated_at` datetime DEFAULT NULL,
   `updated_by` bigint(20) DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  `deleted_by` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=481 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `deleted_by` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `prodi`
 --
 
-LOCK TABLES `prodi` WRITE;
-/*!40000 ALTER TABLE `prodi` DISABLE KEYS */;
-INSERT INTO `prodi` VALUES (12,'S-1 Seni Rupa Murni','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(13,'S-1 Desain Komunikasi Visual','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(14,'S-1 Desain Interior','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(15,'S-1 Kriya Seni','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(134,'S-1 Matematika','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(135,'S-1 Fisika','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(136,'S-1 Kimia','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(137,'S-1 Biologi','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(138,'S-1 Informatika','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(141,'S-1 Farmasi','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(172,'S-2 Biosains','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(173,'S-2 Ilmu Fisika','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(178,'S-2 Seni Rupa','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(354,'S-1 Statistika','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(382,'S-2 Kimia','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(476,'S-1 Ilmu Lingkungan','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(479,'S-3 Biologi','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(480,'S-3 Fisika','9',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `prodi` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `prodi` (`id`, `nama`, `fakultas_id`, `is_active`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`) VALUES
+(1, 'D-3 Bahasa Inggris', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'D-3 Desain Komunikasi Visual', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'D-3 Bahasa Mandarin', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'D-3 Usaha Perjalanan Wisata', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'S-1 Sastra Daerah/Sastra Jawa', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 'S-1 Sastra Indonesia', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'S-1 Sastra Inggris', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'S-1 Sastra Inggris (Transfer)', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 'S-1 Ilmu Sejarah', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 'S-1 Seni Rupa Murni', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(13, 'S-1 Desain Komunikasi Visual', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 'S-1 Desain Interior', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(15, 'S-1 Kriya Seni', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(16, 'S-1 Sastra Arab', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(18, 'S-1 Ilmu Administrasi Negara', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(19, 'S-1 Ilmu Komunikasi', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(20, 'S-1 Sosiologi', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(21, 'S-1 Hubungan Internasional', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(22, 'S-1 Ilmu Administrasi Negara (Transfer)', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(23, 'S-1 Ilmu Komunikasi (Transfer)', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(26, 'D-3 Manajemen Administrasi', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(27, 'D-3 Perpustakaan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(28, 'S-1 Sosiologi (Transfer)', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(29, 'S-1 Hukum', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(30, 'D-3 Manajemen Bisnis', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(31, 'D-3 Manajemen Pemasaran', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(32, 'D-3 Manajemen Perdagangan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(33, 'D-3 Akuntansi', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(34, 'D-3 Perpajakan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(35, 'D-3 Keuangan Perbankan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(36, 'S-1 Ekonomi Pembangunan', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(37, 'S-1 Ekonomi Pembangunan (Transfer)', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(38, 'S-1 Manajemen', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(39, 'S-1 Manajemen (Transfer)', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(40, 'S-1 Akuntansi', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(41, 'S-1 Akuntansi (Transfer)', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(42, 'D-3 Hiperkes dan Keselamatan Kerja', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(43, 'D-3 Kebidanan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(44, 'D-4 Kebidanan', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(46, 'D-4 Keselamatan dan Kesehatan Kerja', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(47, 'S-1 Pendidikan Dokter', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(48, 'S-1 Psikologi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(49, 'Profesi Dokter', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(50, 'D-3 Agribisnis Minat Agrofarmaka', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(51, 'D-3 Teknologi Hasil Pertanian', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(55, 'S-1 Agronomi', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(56, 'S-1 Ilmu Tanah', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(58, 'S-1 Penyuluhan dan Komunikasi Pertanian', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(59, 'S-1 Peternakan', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(60, 'S-1 Teknologi Hasil Pertanian', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(61, 'S-1 Agroteknologi', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(62, 'S-1 Agribisnis', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(63, 'S-1 Ilmu Dan Teknologi Pangan', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(64, 'D-3 Teknik Kimia', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(65, 'S-1 Teknik Sipil', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(66, 'S-1 Arsitektur', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(67, 'S-1 Perencanaan Wilayah dan Kota', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(68, 'S-1 Teknik Mesin', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(69, 'S-1 Teknik Kimia', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(70, 'S-1 Teknik Kimia (Transfer)', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(71, 'S-1 Teknik Industri', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(72, 'S-1 Teknik Industri (Transfer)', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(73, 'S-1 Teknik Sipil (Transfer)', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(77, 'S-1 Bimbingan Konseling', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(78, 'S-1 Pendidikan Luar Biasa', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(79, 'S-1 Pendidikan Bahasa Indonesia', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(80, 'S-1 Pendidikan Bahasa Inggris', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(81, 'S-1 Pendidikan Seni Rupa', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(83, 'S-1 Pendidikan Seni Rupa (PPKHB)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(84, 'S-1 Pendidikan Matematika', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(85, 'S-1 Pendidikan Fisika', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(86, 'S-1 Pendidikan Kimia', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(87, 'S-1 Pendidikan Biologi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(88, 'S-1 Pendidikan Ekonomi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(89, 'S-1 Pendidikan Administrasi Perkantoran', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(90, 'S1 PENDIDIKAN TATA NIAGA', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(91, 'S-1 Pendidikan Sejarah', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(92, 'S-1 Pendidikan Geografi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(93, 'S-1 PPKN', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(94, 'S-1 Pendidikan Sosiologi - Antropologi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(95, 'S-1 Pendidikan Teknik Bangunan', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(96, 'S-1 Pendidikan Teknik Mesin', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(97, 'S-1 Pendidikan Jasmani Kesehatan', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(98, 'S-1 Pendidikan Kepelatihan dan Olahraga', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(100, 'S-1 PGSD', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(101, 'S-1 PAUD', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(104, 'S-1 Pendidikan Kimia (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(106, 'S-1 Pendidikan Bahasa Jawa', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(116, 'S-1 Pendidikan Teknik Informatika dan Komputer', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(121, 'S-1 Pendidikan Jasmani Kesehatan (PPKHB)', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(123, 'S-1 Pendidikan Luar Biasa (PPKHB)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(132, 'D-3 Teknik Informatika', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(133, 'D-3 Farmasi', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(134, 'S-1 Matematika', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(135, 'S-1 Fisika', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(136, 'S-1 Kimia', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(137, 'S-1 Biologi', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(138, 'S-1 Informatika', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(141, 'S-1 Farmasi', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(144, 'S-2 Ilmu Keolahragaan', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(145, 'S-2 Linguistik Deskriptif', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(146, 'S-2 Linguistik Penerjemahan', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(147, 'S-2 Ilmu Komunikasi (Riset dan Pengembangan Ilmu Komunikasi)', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(148, 'S-2 Ilmu Komunikasi (Menejemen Komunikasi)', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(149, 'S-2 Magister Administrasi Publik', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(150, 'S-2 Sosiologi', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(151, 'S-2 Kedokteran Keluarga : Pend. Profesi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(154, 'S-2 Kedokteran Keluarga', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(155, 'S-2 Agronomi', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(158, 'S-2 Agribisnis', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(160, 'S-2 Teknologi Pendidikan', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(161, 'S-2 Pend Kepedudukan dan Lingkungan Hidup', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(162, 'S-2 Pendidikan Sains Minat Fisika', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(163, 'S-2 Pendidikan Sains Minat Biologi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(164, 'S-2 Pendidikan Sains Minat IPA', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(165, 'S-2 Pendidikan Sains Minat Kimia', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(166, 'S-2 Pendidikan Bahasa Indonesia', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(167, 'S-2 Pendidikan Bahasa Jawa', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(168, 'S-2 Pendidikan Matematika', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(169, 'S-2 Pendidikan Sejarah', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(170, 'S-2 Pendidikan Geografi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(171, 'S-2 Pendidikan Bahasa Inggris', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(172, 'S-2 Biosains', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(173, 'S-2 Ilmu Fisika', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(174, 'S-2 Teknik Sipil', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(175, 'S-2 Teknik Mesin', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(176, 'S-2 Pendidikan Ekonomi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(177, 'S-2 Kedokteran Keluarga : Ilmu Biomedik', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(178, 'S-2 Seni Rupa', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(179, 'S-2 Kenotariatan', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(180, 'S-3 Linguistik Deskriptif', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(181, 'S-3 Linguistik Pragmatik', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(182, 'S-3 Linguistik Penerjemahan', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(183, 'S-3 Ilmu Pertanian', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(187, 'S-3 Pendidikan Bahasa Indonesia', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(194, 'S-3 Ilmu Pendidikan', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(195, 'S-3 Ilmu Kedokteran', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(204, 'D-3 TEKNIK SIPIL', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(219, 'S-1 Pendidikan Akuntansi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(221, 'D-3 Hubungan Masyarakat', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(222, 'D-3 Penyiaran', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(223, 'D-3 Periklanan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(225, 'Pendidikan Profesi Akuntansi', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(226, 'S-1 PGSD Kebumen', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(242, 'S-2 Magister Akuntansi', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(248, 'S-2 Ekonomi Pembangunan', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(256, 'S-2 Magister Manajemen', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(260, 'S-3 Ilmu Ekonomi', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(266, 'S-3 Pendidikan IPA', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(275, 'D-3 Teknik Mesin Produksi', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(283, 'D-3 Teknik Mesin', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(284, 'S-1 Teknik Mesin (Transfer)', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(285, 'D-3 Agribisnis', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(286, 'D-3 Agribisnis Minat Hortikultura', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(290, 'S2 Ilmu Hukum', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(291, 'S-3 Hukum', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(321, 'S-1 Teknik Elektro', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(325, 'D-3 Teknik Sipil Bangunan Gedung', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(326, 'D-3 Teknik Sipil Transportasi', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(328, 'D-3 Teknik Sipil Infra Struktur Perkotaan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(329, 'S-2 Pendidikan Bahasa dan Sastra Daerah', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(330, 'S-2 Pendidikan Seni', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(331, 'S-2 Pendidikan Luar Biasa', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(332, 'S-2 PGSD', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(348, 'S-2 Teknik Industri', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(354, 'S-1 Statistika', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(382, 'S-2 Kimia', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(388, 'S-2 Teknik Kimia', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(397, 'S-1 Pendidikan Ilmu Pengetahuan Alam', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(398, 'S-1 Hukum Minat Hukum Administrasi Negara', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(399, 'D-3 Teknik Mesin Industri', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(400, 'S-1 Agronomi (Transfer)', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(401, 'S-1 Agribisnis (Transfer)', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(402, 'S-1 Pendidikan Bahasa Indonesia (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(403, 'S-1 Pendidikan Bahasa Inggris (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(404, 'S-1 Pendidikan Jasmani Kesehatan (Transfer)', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(405, 'PPDS Kulit dan Kelamin', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(406, 'S-1 Hukum Minat Hukum Internasional', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(407, 'S-1 Hukum Minat Hukum dan Masyarakat', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(408, 'S-1 Hukum Minat Hukum Tata Negara', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(409, 'S-2 Ilmu Hukum Minat Bisnis', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(410, 'S-1 Ilmu Dan Teknologi Pangan (Transfer)', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(411, 'PPDS Radiologi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(412, 'S-2 Teknik Mesin (Asing)', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(413, 'PPDS Anestesiologi dan Reanimasi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(414, 'PPDS Ilmu Kesehatan THT - KL', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(415, 'S-1 Pendidikan Matematika (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(416, 'PPDS Pulomonologi dan Ilmu Kedokteran Respirasi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(417, 'PPDS Ilmu Kesehatan Anak', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(418, 'PPDS Obstetri dan Ginekologi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(419, 'PPDS Ilmu Pendidikan Jiwa (Psikiatri)', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(420, 'PPDS Ilmu Bedah', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(421, 'PPDS Ilmu Penyakit Saraf (Neurologi)', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(423, 'PPDS Ilmu Penyakit Jantung (Kardiologi dan Kedokteran Vaskuler)', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(424, 'S-1 PGSD Solo (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(425, 'S-1 PGSD Kebumen (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(426, 'PPDS Patologi Klinik', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(427, 'PPDS Orthopaedi dan Traumatologi', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(429, 'S-2 Pendidikan Sains', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(433, 'S-2 Ilmu Hukum Minat Ekonomi Islam', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(434, 'S-2 Ilmu Hukum Minat Kesehatan', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(435, 'S-1 Pendidikan Kepelatihan dan Olahraga (Transfer)', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(436, 'S-1 Hukum Minat Hukum Acara', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(437, 'S-1 Hukum Minat Hukum Pidana', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(438, 'S-2 Pendidikan Biologi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(439, 'D-2 Teknologi Hasil Pertanian K. Kab. Madiun', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(440, 'D-2 Teknik Mesin K. Kab. Madiun', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(441, 'D-2 Teknik Informatika K. Kab. Madiun', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(442, 'S-2 Pendidikan Fisika', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(443, 'S-2 Pendidikan IPA', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(444, 'PPDS Penyakit Dalam', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(445, 'S-3 Teknik Sipil', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(446, 'S-1 Pendidikan OR & Rekreasi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(447, 'S-1 Hukum Minat Hukum Perdata', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(448, 'S-2 Magister Manajemen (Asing)', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(449, 'S-1 Pendidikan Ekonomi (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(450, 'S-3 Ilmu Keolahragaan', '18', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(451, 'S-2 Magister Akuntansi (Asing)', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(453, 'S-3 Ilmu Komunikasi', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(454, 'S-2 Pendidikan Kimia', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(455, 'S-3 Teknik Mesin', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(457, 'S-2 Ilmu Hukum Minat Keb. Publik', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(462, 'Pendidikan Profesi Guru SD', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(463, 'Pendidikan Profesi Guru SMK', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(464, 'S-2 Pendidikan PPKN', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(465, 'S-2 Teknik Arsitektur', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(471, 'S1 PENDIDIKAN DOKTER (Kurikulum Lama)', '5', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(474, 'S-2 Ilmu Tanah', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(475, 'D-4 Studi Demografi dan Pencatatan Sipil', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(476, 'S-1 Ilmu Lingkungan', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(477, 'Profesi Insinyur', '7', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(478, 'S-2 Pendidikan Guru Vokasi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(479, 'S-3 Biologi', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(480, 'S-3 Fisika', '9', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(481, 'S-3 Ilmu Ekonomi (Asing)', '4', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(482, 'S-3 Pendidikan Sejarah', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(483, 'S-2 Peternakan', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(484, 'S-1 Pendidikan Sosiologi - Antropologi (Transfer)', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(485, 'S-1 Pengelolaan Hutan', '6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(486, 'D-3 Budidaya Ternak', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(487, 'S-3 Pendidikan Ekonomi', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(488, 'S-2 Hukum', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(489, 'S-2 Ilmu Hukum', '3', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(490, 'Pendidikan Profesi Guru', '8', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(491, 'D-3 Akuntansi (PSDKU)', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(492, 'D-3 Komunikasi Terapan', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(493, 'D-3 Teknik Informatika (PSDKU)', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(494, 'D-3 Teknik Sipil', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(495, 'D-3 Teknologi Hasil Pertanian (PSDKU)', '19', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(500, 'S-2 Linguistik', '16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(501, 'S-2 Ilmu Komunikasi', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL,
   `ip_address` varchar(45) NOT NULL,
   `username` varchar(100) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
@@ -208,71 +489,163 @@ CREATE TABLE `users` (
   `activation_code` varchar(255) DEFAULT NULL,
   `forgotten_password_selector` varchar(255) DEFAULT NULL,
   `forgotten_password_code` varchar(255) DEFAULT NULL,
-  `forgotten_password_time` int(11) unsigned DEFAULT NULL,
+  `forgotten_password_time` int(11) UNSIGNED DEFAULT NULL,
   `remember_selector` varchar(255) DEFAULT NULL,
   `remember_code` varchar(255) DEFAULT NULL,
-  `created_on` int(11) unsigned NOT NULL,
-  `last_login` int(11) unsigned DEFAULT NULL,
-  `active` tinyint(1) unsigned DEFAULT NULL,
+  `created_on` int(11) UNSIGNED NOT NULL,
+  `last_login` int(11) UNSIGNED DEFAULT NULL,
+  `active` tinyint(1) UNSIGNED DEFAULT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `company` varchar(100) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_email` (`email`),
-  UNIQUE KEY `uc_activation_selector` (`activation_selector`),
-  UNIQUE KEY `uc_forgotten_password_selector` (`forgotten_password_selector`),
-  UNIQUE KEY `uc_remember_selector` (`remember_selector`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `phone` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'127.0.0.1','administrator','$2y$10$j1F3WRHYq3c9tjNH1phsd.4Je2GO2qbN1Lxu4VPYk2JuZN6Y6j0E6','admin@admin.com',NULL,'',NULL,NULL,NULL,NULL,NULL,1268889823,1627210291,1,'Admin','istrator','ADMIN','0'),(2,'172.31.0.1','operator','$2y$10$JbSTw29EIs5mnXbdDj.E/Oimc/2BxoAEQkVpaGpHlb5XWRVDxWh8K','operator@email.com',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1626873123,NULL,1,'operator','operator','operator','081234567890');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`) VALUES
+(1, '127.0.0.1', 'administrator', '$argon2i$v=19$m=65536,t=4,p=1$QUhRbVNJMHNuMEFzUHZQQw$9wDPxZi21UAl0/fFmLhSuz/Eo9K0KKax1yMmimNP/Ck', 'admin@admin.com', NULL, '', NULL, NULL, NULL, NULL, NULL, 1268889823, 1629941383, 1, 'Admin', 'istrator', 'ADMIN', '0'),
+(2, '172.31.0.1', 'operator', '$2y$10$JbSTw29EIs5mnXbdDj.E/Oimc/2BxoAEQkVpaGpHlb5XWRVDxWh8K', 'operator@email.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1626873123, NULL, 1, 'operator', 'operator', 'operator', '081234567890');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users_groups`
 --
 
-DROP TABLE IF EXISTS `users_groups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users_groups` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `group_id` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
-  KEY `fk_users_groups_users1_idx` (`user_id`),
-  KEY `fk_users_groups_groups1_idx` (`group_id`),
-  CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `group_id` mediumint(8) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users_groups`
 --
 
-LOCK TABLES `users_groups` WRITE;
-/*!40000 ALTER TABLE `users_groups` DISABLE KEYS */;
-INSERT INTO `users_groups` VALUES (1,1,1),(2,1,2),(4,2,2);
-/*!40000 ALTER TABLE `users_groups` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
+(7, 1, 1),
+(4, 2, 2);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `ci_sessions`
+--
+ALTER TABLE `ci_sessions`
+  ADD KEY `ci_sessions_timestamp` (`timestamp`);
+
+--
+-- Indexes for table `fakultas`
+--
+ALTER TABLE `fakultas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groups`
+--
+ALTER TABLE `groups`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `login_attempts`
+--
+ALTER TABLE `login_attempts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mahasiswa`
+--
+ALTER TABLE `mahasiswa`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `prodi`
+--
+ALTER TABLE `prodi`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uc_email` (`email`),
+  ADD UNIQUE KEY `uc_activation_selector` (`activation_selector`),
+  ADD UNIQUE KEY `uc_forgotten_password_selector` (`forgotten_password_selector`),
+  ADD UNIQUE KEY `uc_remember_selector` (`remember_selector`);
+
+--
+-- Indexes for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
+  ADD KEY `fk_users_groups_users1_idx` (`user_id`),
+  ADD KEY `fk_users_groups_groups1_idx` (`group_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `fakultas`
+--
+ALTER TABLE `fakultas`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `groups`
+--
+ALTER TABLE `groups`
+  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `login_attempts`
+--
+ALTER TABLE `login_attempts`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mahasiswa`
+--
+ALTER TABLE `mahasiswa`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `prodi`
+--
+ALTER TABLE `prodi`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=502;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `users_groups`
+--
+ALTER TABLE `users_groups`
+  ADD CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2021-07-25 15:36:06
