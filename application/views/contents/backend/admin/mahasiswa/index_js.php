@@ -108,7 +108,7 @@
             columns: [{ // 0
                     title: '#',
                     name: '#',
-                    data: 'DT_Row_Index',
+                    data: 'DT_RowIndex',
                 },
                 { // 1
                     title: 'Foto',

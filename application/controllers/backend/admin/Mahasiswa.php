@@ -41,11 +41,11 @@ class Mahasiswa extends MY_Controller
             'title' => 'Mahasiswa',
             'type' => 'backend', // auth, frontend, backend
             'uri_segment' => $this->_path,
-            'page' => $this->_path . 'index',
-            'script' => $this->_path . 'index_js',
+            'page' => 'contents/' . $this->_path . 'index',
+            'script' => 'contents/' . $this->_path . 'index_js',
             'modals' => [
-                $this->_path . 'modal/modal_tambah',
-                $this->_path . 'modal/modal_ubah',
+                'contents/' . $this->_path . 'modal/modal_tambah',
+                'contents/' . $this->_path . 'modal/modal_ubah',
             ],
         ]);
     }
@@ -69,7 +69,7 @@ class Mahasiswa extends MY_Controller
         );
 
         // Add row index
-        $datatables->add('DT_Row_Index', function () {
+        $datatables->add('DT_RowIndex', function () {
             return 0;
         });
 

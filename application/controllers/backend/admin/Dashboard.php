@@ -18,8 +18,8 @@ class Dashboard extends MY_Controller
 			'title' => 'Dashboard',
 			'type' => 'backend',
 			'uri_segment' => $this->_path,
-			'page' => $this->_path . 'index',
-			'script' => $this->_path . 'index_js',
+			'page' => 'contents/' . $this->_path . 'index',
+			'script' => 'contents/' . $this->_path . 'index_js',
 			'modals' => []
 		]);
 	}

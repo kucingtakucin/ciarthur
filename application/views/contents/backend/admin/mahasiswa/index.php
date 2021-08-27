@@ -23,7 +23,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="form-group row">
+                <div class="form-group">
                     <label for="filter_prodi">Prodi</label>
                     <select id="filter_prodi" name="filter_prodi" class="js-select2 form-control" disabled>
                         <option></option>
