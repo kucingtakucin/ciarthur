@@ -1,6 +1,6 @@
 
 <?php
-use League\Flysystem\Local\LocalFilesytemAdapter as Local;
+use League\Flysystem\Local\LocalFilesystemAdapter as Local;
 use League\Flysystem\Filesystem;
 use League\Glide\ServerFactory;
 
