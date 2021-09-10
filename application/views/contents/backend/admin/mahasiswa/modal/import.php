@@ -23,13 +23,13 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="nim">Upload File</label>
-                                <div class="input-group mb-3" style="position: relative;">
+                                <div class="input-group mb-3">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" name="import_file_excel"
                                             id="import_file_excel" required aria-describedby="inputGroupFileAddon01">
                                         <label class="custom-file-label" for="foto">Choose file</label>
+                                        <?= validation_tooltip('dokumen', 'wajib diupload') ?>
                                     </div>
-                                    <?= validation_tooltip('dokumen', 'wajib diupload') ?>
                                 </div>
                             </div>
                         </div>

@@ -445,7 +445,6 @@
                 }
             ],
             initComplete: function(event) {
-                Swal.hideLoading()
                 Swal.close()
 
                 $(this).on('click', '.btn_edit', function(event) {
@@ -453,7 +452,9 @@
                     $get(this);
                 });
 
-                $(this).on('click', '.btn_delete', function(event) {
+                $(this).on('click', '.btn_de                    Swal.hideLoading()
+                    Swal.close()
+lete', function(event) {
                     event.preventDefault()
                     $delete(this);
                 });
