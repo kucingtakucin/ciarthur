@@ -28,8 +28,8 @@
                                         <input type="file" class="custom-file-input" name="import_file_excel"
                                             id="import_file_excel" required aria-describedby="inputGroupFileAddon01">
                                         <label class="custom-file-label" for="foto">Choose file</label>
-                                        <?= validation_tooltip('dokumen', 'wajib diupload') ?>
                                     </div>
+                                    <?= validation_tooltip('dokumen', 'wajib diupload') ?>
                                 </div>
                             </div>
                         </div>
