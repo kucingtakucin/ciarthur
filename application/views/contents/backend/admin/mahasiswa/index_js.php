@@ -230,7 +230,7 @@
             let formData = new FormData()
             formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
 
-            let res = await axios.post('<?= base_url('csrf/generate') ?>', formData)
+            let res = await axios.post("<?= base_url('csrf/generate') ?>", formData)
             return {
                 token_name: res.data.csrf_token_name,
                 hash: res.data.csrf_hash
@@ -689,6 +689,7 @@
         }
 
         $insert = async (form) => {
+            status_crud = true
             loading() 
             let formData = new FormData(form);
             formData.append(
@@ -696,12 +697,11 @@
                 await csrf().then(csrf => csrf.hash)
             )
 
-            axios.post(BASE_URL + 'insert')
+            axios.post(BASE_URL + 'insert', formData)
                 .then(res => {
                     initMap()
                     $('#form_tambah button[type=submit]').hide();
                     $('#form_tambah button.loader').show();
-                    status_crud = true
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -738,7 +738,7 @@
                 await csrf().then(csrf => csrf.hash)
             )
 
-            axios.post(BASE_URL + 'update')
+            axios.post(BASE_URL + 'update', formData)
                 .then(res => {
                     $('#form_ubah button[type=submit]').hide();
                     $('#form_ubah button.loader').show();
