@@ -15,6 +15,6 @@ class Image extends CI_Controller {
         $image_path = implode('/', $path);
 
         // But, a better approach is to use information from the request
-        $server->outputImage($image_path, $this->input->get());
+        return $server->getImageResponse($image_path, $this->input->get());
     }
 }
