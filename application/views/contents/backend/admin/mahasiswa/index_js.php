@@ -727,7 +727,7 @@
                     $('#modal_tambah').modal('hide');
                     datatable.ajax.reload();
                 })
-        }
+        }       
 
         $update = async (form) => {
             loading()
@@ -760,7 +760,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
-                }).catch(() => {
+                }).then(() => {
                     $('#form_ubah button[type=submit]').show();
                     $('#form_ubah button.loader').hide();
                     $('#form_ubah').trigger('reset');
