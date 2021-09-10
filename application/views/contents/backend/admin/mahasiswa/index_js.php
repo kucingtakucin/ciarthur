@@ -452,9 +452,7 @@
                     $get(this);
                 });
 
-                $(this).on('click', '.btn_de                    Swal.hideLoading()
-                    Swal.close()
-lete', function(event) {
+                $(this).on('click', '.btn_delete', function(event) {
                     event.preventDefault()
                     $delete(this);
                 });
