@@ -142,8 +142,8 @@
                             L.marker([item.latitude, item.longitude], {
                                     icon: L.icon({
                                         iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-                                        iconSize: [40,
-                                            40
+                                        iconSize: [
+                                            40, 40
                                         ], // size of the icon
                                         iconAnchor: [
                                             20, 40
@@ -160,8 +160,8 @@
                                         closeOnClick: false
                                     })
                                     .setContent(`<b>${item.nama}</b>`)
-                                    .setLatLng([item.latitude, item
-                                        .longitude
+                                    .setLatLng([
+                                        item.latitude, item.longitude
                                     ])
                                 ).openPopup();
                         }

@@ -62,21 +62,6 @@
 
     <!-- Custom Stylesheets -->
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
-
-    <style>
-        .legend {
-            line-height: 18px;
-            color: #555;
-        }
-
-        .legend i {
-            width: 18px;
-            height: 18px;
-            float: left;
-            margin-right: 8px;
-            opacity: 0.7;
-        }
-    </style>
 </head>
 
 <body>
