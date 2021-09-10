@@ -5,40 +5,63 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><?= sistem()->nama ?> | <?= $title ?></title>
+
+    <!-- Meta description, keywords, author, icon -->
     <meta name="description" content="Cuba admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Cuba admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="https://appt.demoo.id/tema/cuba/html/assets/images/favicon.png" type="image/x-icon">
     <link rel="shortcut icon" href="https://appt.demoo.id/tema/cuba/html/assets/images/favicon.png" type="image/x-icon">
-    <title><?= sistem()->nama ?> | <?= $title ?></title>
+
     <!-- Google font-->
     <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/fontawesome.css">
+
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/icofont.css">
+
     <!-- Themify icon-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/themify.css">
+
     <!-- Flag icon-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/flag-icon.css">
+
     <!-- Feather icon-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/feather-icon.css">
-    <!-- Plugins css Ends-->
+
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/bootstrap.css">
+
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/style.css">
     <link id="color" rel="stylesheet" href="https://appt.demoo.id/tema/cuba/html/assets/css/color-1.css" media="screen">
+
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/responsive.css">
-    <!-- Plugins -->
+
+    <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+
+    <!-- Animate.css -->
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/animate.css">
+
+    <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
+
+    <!-- Bootstrap Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 
+    <!-- Custom Stylesheets -->
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
+
     <style>
         .legend {
             line-height: 18px;
@@ -161,33 +184,61 @@
     <!-- latest jquery-->
     <!-- <script src="https://appt.demoo.id/tema/cuba/html/assets/js/jquery-3.5.1.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
     <!-- Bootstrap js-->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/bootstrap/popper.min.js"></script>
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/bootstrap/bootstrap.js"></script>
+
     <!-- feather icon js-->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/icons/feather-icon/feather.min.js"></script>
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/icons/feather-icon/feather-icon.js"></script>
+
     <!-- Sidebar jquery-->
     <script src="<?= base_url() ?>assets/cuba/js/sidebar-menu.js"></script>
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/config.js"></script>
-    <!-- Plugins JS start-->
+
+    <!-- Clipboard .js-->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/clipboard/clipboard.min.js"></script>
+
+    <!-- Custom Card -->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/custom-card/custom-card.js"></script>
+
+    <!-- Tooltip init -->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/tooltip-init.js"></script>
+
+    <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- JQuery Validation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+
+    <!-- Bootstrap Datepicker -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- SweetAlert2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Leaflet.js -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+    <!-- Form Validation Custom -->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
+
+    <!-- Bootstrap Custom File Input -->
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- Apex Charts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <!-- Theme js-->
+
+    <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
-    <!-- login js-->
-    <!-- Plugin used-->
     <script>
         $(document).ready(function() {
             $('.preloader-container').fadeOut(500)

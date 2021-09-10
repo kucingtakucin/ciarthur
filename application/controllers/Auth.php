@@ -54,7 +54,7 @@ class Auth extends MY_Controller
 				// if the login was un-successful
 				// redirect them back to the login page
 				return $this->output->set_content_type('application/json')
-					->set_status_header(404)
+					->set_status_header(422)
 					->set_output(json_encode([
 						'status' => false,
 						'message' => $this->ion_auth->errors()

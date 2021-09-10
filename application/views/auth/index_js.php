@@ -1,6 +1,34 @@
 <script>
-    let csrf, login;
+    let csrf, login, loading;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
+    /**
+     * Keperluan disable inspect element
+     */
+    // ================================================== //
+    // Disable right click
+    $(document).contextmenu(function(event) {
+        event.preventDefault()
+    })
+
+    $(document).keydown(function(event) {
+        // Disable F12
+        if (event.keyCode == 123) return false;
+
+        // Disable Ctrl + Shift + I
+        if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+            return false;
+        }
+
+        // Disable Ctrl + Shift + J
+        if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+            return false;
+        }
+
+        // Disable Ctrl + U
+        if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+            return false;
+        }
+    })
 
     // Document ready
     $(() => {
@@ -12,48 +40,28 @@
             let formData = new FormData()
             formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
 
-            let response = await fetch('<?= base_url('csrf/generate') ?>', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) return response.json()
-                throw new Error(response.statusText)
-            })
-
+            let res = await axios.post('<?= base_url('csrf/generate') ?>', formData)
             return {
-                token_name: response.csrf_token_name,
-                hash: response.csrf_hash
+                token_name: res.data.csrf_token_name,
+                hash: res.data.csrf_hash
             }
         }
 
         /**
-         * Keperluan disable inspect element
+         * Keperluan show loading
          */
         // ================================================== //
-        // Disable right click
-        $(document).contextmenu(function(event) {
-            event.preventDefault()
-        })
-
-        $(document).keydown(function(event) {
-            // Disable F12
-            if (event.keyCode == 123) return false;
-
-            // Disable Ctrl + Shift + I
-            if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-                return false;
-            }
-
-            // Disable Ctrl + Shift + J
-            if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-                return false;
-            }
-
-            // Disable Ctrl + U
-            if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-                return false;
-            }
-        })
+        loading = () => {
+            Swal.fire({
+                title: 'Loading...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            })
+        }
 
         /**
          * Keperluan login
@@ -70,15 +78,7 @@
                 return;
             }
 
-            Swal.fire({
-                title: 'Loading...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            })
+            loading();
 
             let formData = new FormData(form);
             formData.append(
@@ -86,35 +86,28 @@
                 await csrf().then(csrf => csrf.hash)
             )
 
-            fetch(BASE_URL + 'login', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) return response.json()
-                throw new Error(response.statusText)
-            }).then(response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1500
+            axios.post(BASE_URL + 'login', formData)
+                .then(res => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    setTimeout(() => {
+                        location.replace(res.data.redirect)
+                    }, 1000);
+                }).catch(err => {
+                    console.log(err)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: 'Something went wrong!',
+                    })
+                }).then(res => {
+                    $('#form-login').removeClass('was-validated')
                 })
-                setTimeout(() => {
-                    location.replace(response.redirect)
-                }, 1000);
-            }).catch(error => {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: "Ada masalah saat login!",
-                    showConfirmButton: false,
-                    timer: 2000
-                })
-            }).finally(() => {
-                $('#form-login').removeClass('was-validated')
-            })
         }
 
         $('#form-login').submit(function(event) {

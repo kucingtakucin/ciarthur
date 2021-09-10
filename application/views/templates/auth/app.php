@@ -55,6 +55,9 @@
                 <?php $this->load->view($page) ?>
             </div>
         </div>
+        <!-- Axios -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
         <!-- latest jquery-->
         <script src="<?= base_url() ?>/assets/cuba/js/jquery-3.5.1.min.js"></script>
         <!-- Bootstrap js-->
