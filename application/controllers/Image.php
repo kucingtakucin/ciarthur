@@ -1,4 +1,3 @@
-
 <?php
 use League\Flysystem\Local\LocalFilesystemAdapter as Local;
 use League\Flysystem\Filesystem;
@@ -20,6 +19,6 @@ class Image extends CI_Controller {
         $image_path = implode('/', $path);
 
         // But, a better approach is to use information from the request
-        return $server->outputImage($image_path, $this->input->get());
+        $server->outputImage($image_path, $this->input->get());
     }
 }
