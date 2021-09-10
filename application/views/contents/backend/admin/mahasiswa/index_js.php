@@ -441,7 +441,7 @@
                         return $('<div>', {
                             role: 'group',
                             class: 'btn-group btn-group-sm',
-                            html: [tombol_ubah, tombol_hapus]
+                            html: [btn_edit, btn_delete]
                         }).prop('outerHTML')
                     }
                 },
