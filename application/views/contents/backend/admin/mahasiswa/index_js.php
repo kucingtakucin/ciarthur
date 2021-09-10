@@ -738,7 +738,7 @@
                 await csrf().then(csrf => csrf.hash)
             )
 
-            axios.post(BASE_URL + 'update', formData)
+            axios.post(BASE_URL + 'update')
                 .then(res => {
                     $('#form_ubah button[type=submit]').hide();
                     $('#form_ubah button.loader').show();
