@@ -90,21 +90,15 @@
                         onEachFeature: (feature, layer) => {
                             layer.on({
                                 mouseover: (event) => {
-                                    let layer = event
-                                        .target;
+                                    let layer = event.target;
                                     layer.setStyle({
                                         weight: 5,
                                         dashArray: '',
                                         fillOpacity: 0.7
                                     });
-                                    if (!L.Browser.ie &&
-                                        !L
-                                        .Browser
-                                        .opera &&
-                                        !L.Browser
-                                        .edge) {
-                                        layer
-                                            .bringToFront();
+                                    if (!L.Browser.ie && !L.Browser.opera 
+                                        &&!L.Browser.edge) {
+                                        layer.bringToFront();
                                     }
                                 },
                                 mouseout: (event) => {
@@ -134,9 +128,7 @@
                                         closeOnClick: false
                                     })
                                     .setContent(`<b>${item.nama}</b>`)
-                                    .setLatLng([item.latitude, item
-                                        .longitude
-                                    ])
+                                    .setLatLng([item.latitude, item.longitude])
                                 ).openPopup();
                         }
                     })
@@ -574,7 +566,7 @@
                     }
                 }).on('select2:select', function(event) {
                     $(`#filter_prodi`).prop('disabled', false)
-                    datatable.column('fakultas.nama:name')
+                    datatable.column('nama_fakultas:name')
                         .search(event.params.data.text)
                         .draw()
 
@@ -610,7 +602,7 @@
                             }
                         }
                     }).on('select2:select', function(event) {
-                        datatable.column('prodi.nama:name')
+                        datatable.column('nama_prodi:name')
                             .search(event.params.data.text)
                             .draw()
                     })
