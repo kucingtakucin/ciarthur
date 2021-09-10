@@ -13,8 +13,8 @@ class Image extends CI_Controller {
     {
         // Setup Glide server
         $server = ServerFactory::create([
-            'source' => new Filesystem(new Adapter\Local(APPPATH . '../uploads')),
-            'cache' => new Filesystem(new Adapter\Local(APPPATH .'../uploads/.cache')),        
+            'source' => new Filesystem(new Local(APPPATH . '../uploads')),
+            'cache' => new Filesystem(new Local(APPPATH .'../uploads/.cache')),        
         ]);
 
         $image_path = implode('/', $path);
