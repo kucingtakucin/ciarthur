@@ -7,12 +7,12 @@
 			$(".menu-to-be-close").removeClass("d-block");
 			$('.menu-to-be-close').css('display', 'none');
 		}
-	})
+	});
 
 	$('.prooduct-details-box .close').on('click', function (e) {
 		var tets = $(this).parent().parent().parent().parent().addClass('d-none');
 		console.log(tets);
-	})
+	});
 
 	/*----------------------------------------
 	 passward show hide
@@ -68,7 +68,7 @@
 	});
 	$(".bookmark-search").click(function () {
 		$(".form-control-search").toggleClass("open");
-	})
+	});
 	$(".filter-toggle").click(function () {
 		$(".product-sidebar").toggleClass("open");
 	});
@@ -102,22 +102,29 @@
 		}
 	});
 
+	// Dark Mode
 	if (eval(localStorage.getItem('darkMode'))) {
-		$('.mode i').addClass('fa-lightbulb-o').removeClass('fa-moon-o')
-		$('body').addClass('dark-only')
+		$('.mode i').addClass('fa-lightbulb-o').removeClass('fa-moon-o');
+		$('body').addClass('dark-only');
+		$('div.login-card').addClass('bg-dark');
+		$('div.login-main').addClass('bg-dark');
 	} else {
-		$('.mode i').addClass('fa-moon-o').removeClass('fa-lightbulb-o')
-		$('body').removeClass('dark-only')
+		$('.mode i').addClass('fa-moon-o').removeClass('fa-lightbulb-o');
+		$('body').removeClass('dark-only');
+		$('div.login-card').removeClass('bg-dark');
+		$('div.login-main').removeClass('bg-dark');
 	}
 
 	$(".mode").on("click", function () {
 		$('.mode i').toggleClass("fa-moon-o").toggleClass("fa-lightbulb-o");
 		$('body').toggleClass("dark-only");
-		
+		$('div.login-card').toggleClass('bg-dark');
+		$('div.login-main').toggleClass('bg-dark');
+
 		if ($('body').hasClass('dark-only')) {
-			localStorage.setItem('darkMode', true)
+			localStorage.setItem('darkMode', true);
 		} else {
-			localStorage.setItem('darkMode', false)
+			localStorage.setItem('darkMode', false);
 		}
 	});
 
@@ -255,78 +262,78 @@ function translate(tnum) {
 }
 
 var trans = [{
-		en: 'General',
-		pt: 'Geral',
-		es: 'Generalo',
-		fr: 'GÃ©nÃ©rale',
-		de: 'Generel',
-		cn: 'ä¸€èˆ¬',
-		ae: 'Ø­Ø¬Ù†Ø±Ø§Ù„ Ù„ÙˆØ§Ø¡'
-	}, {
-		en: 'Dashboards,widgets & layout.',
-		pt: 'PainÃ©is, widgets e layout.',
-		es: 'Paneloj, fenestraÄµoj kaj aranÄo.',
-		fr: "Tableaux de bord, widgets et mise en page.",
-		de: 'Dashboards, widgets en lay-out.',
-		cn: 'ä»ªè¡¨æ¿ï¼Œå°å·¥å…·å’Œå¸ƒå±€ã€‚',
-		ae: 'Ù„ÙˆØ­Ø§Øª Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª ÙˆØ§Ù„Ø£Ø¯ÙˆØ§Øª ÙˆØ§Ù„ØªØ®Ø·ÙŠØ·.'
-	}, {
-		en: 'Dashboards',
-		pt: 'PainÃ©is',
-		es: 'Paneloj',
-		fr: 'Tableaux',
-		de: 'Dashboards',
-		cn: ' ä»ªè¡¨æ¿ ',
-		ae: 'ÙˆØ­Ø§Øª Ø§Ù„Ù‚ÙŠØ§Ø¯Ø© '
-	}, {
-		en: 'Default',
-		pt: 'PadrÃ£o',
-		es: 'Vaikimisi',
-		fr: 'DÃ©faut',
-		de: 'Standaard',
-		cn: 'é›»å­å•†å‹™',
-		ae: 'ÙˆØ¥ÙØªØ±Ø§Ø¶ÙŠ'
-	}, {
-		en: 'Ecommerce',
-		pt: 'ComÃ©rcio eletrÃ´nico',
-		es: 'Komerco',
-		fr: 'Commerce Ã©lectronique',
-		de: 'E-commerce',
-		cn: 'é›»å­å•†å‹™',
-		ae: 'ÙˆØ§Ù„ØªØ¬Ø§Ø±Ø© Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠØ©'
-	}, {
-		en: 'Widgets',
-		pt: 'Ferramenta',
-		es: 'Vidin',
-		fr: 'Widgets',
-		de: 'Widgets',
-		cn: 'å°éƒ¨ä»¶',
-		ae: 'ÙˆØ§Ù„Ø­Ø§Ø¬ÙŠØ§Øª'
-	}, {
-		en: 'Page layout',
-		pt: 'Layout da pÃ¡gina',
-		es: 'PaÄa aranÄo',
-		fr: 'Tableaux',
-		de: 'Mise en page',
-		cn: 'é é¢ä½ˆå±€',
-		ae: 'ÙˆØªØ®Ø·ÙŠØ· Ø§Ù„ØµÙØ­Ø©'
-	}, {
-		en: 'Applications',
-		pt: 'FormulÃ¡rios',
-		es: 'Aplikoj',
-		fr: 'Applications',
-		de: 'Toepassingen',
-		cn: 'æ‡‰ç”¨é ˜åŸŸ',
-		ae: 'ÙˆØ§Ù„ØªØ·Ø¨ÙŠÙ‚Ø§Øª'
-	}, {
-		en: 'Ready to use Apps',
-		pt: 'Pronto para usar aplicativos',
-		es: 'Preta uzi Apps',
-		fr: ' Applications prÃªtes Ã  lemploi ',
-		de: 'Klaar om apps te gebruiken',
-		cn: 'ä»ªè¡¨æ¿',
-		ae: 'Ø¬Ø§Ù‡Ø² Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ØªØ·Ø¨ÙŠÙ‚Ø§Øª'
-	},
+	en: 'General',
+	pt: 'Geral',
+	es: 'Generalo',
+	fr: 'GÃ©nÃ©rale',
+	de: 'Generel',
+	cn: 'ä¸€èˆ¬',
+	ae: 'Ø­Ø¬Ù†Ø±Ø§Ù„ Ù„ÙˆØ§Ø¡'
+}, {
+	en: 'Dashboards,widgets & layout.',
+	pt: 'PainÃ©is, widgets e layout.',
+	es: 'Paneloj, fenestraÄµoj kaj aranÄo.',
+	fr: "Tableaux de bord, widgets et mise en page.",
+	de: 'Dashboards, widgets en lay-out.',
+	cn: 'ä»ªè¡¨æ¿ï¼Œå°å·¥å…·å’Œå¸ƒå±€ã€‚',
+	ae: 'Ù„ÙˆØ­Ø§Øª Ø§Ù„Ù…Ø¹Ù„ÙˆÙ…Ø§Øª ÙˆØ§Ù„Ø£Ø¯ÙˆØ§Øª ÙˆØ§Ù„ØªØ®Ø·ÙŠØ·.'
+}, {
+	en: 'Dashboards',
+	pt: 'PainÃ©is',
+	es: 'Paneloj',
+	fr: 'Tableaux',
+	de: 'Dashboards',
+	cn: ' ä»ªè¡¨æ¿ ',
+	ae: 'ÙˆØ­Ø§Øª Ø§Ù„Ù‚ÙŠØ§Ø¯Ø© '
+}, {
+	en: 'Default',
+	pt: 'PadrÃ£o',
+	es: 'Vaikimisi',
+	fr: 'DÃ©faut',
+	de: 'Standaard',
+	cn: 'é›»å­å•†å‹™',
+	ae: 'ÙˆØ¥ÙØªØ±Ø§Ø¶ÙŠ'
+}, {
+	en: 'Ecommerce',
+	pt: 'ComÃ©rcio eletrÃ´nico',
+	es: 'Komerco',
+	fr: 'Commerce Ã©lectronique',
+	de: 'E-commerce',
+	cn: 'é›»å­å•†å‹™',
+	ae: 'ÙˆØ§Ù„ØªØ¬Ø§Ø±Ø© Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠØ©'
+}, {
+	en: 'Widgets',
+	pt: 'Ferramenta',
+	es: 'Vidin',
+	fr: 'Widgets',
+	de: 'Widgets',
+	cn: 'å°éƒ¨ä»¶',
+	ae: 'ÙˆØ§Ù„Ø­Ø§Ø¬ÙŠØ§Øª'
+}, {
+	en: 'Page layout',
+	pt: 'Layout da pÃ¡gina',
+	es: 'PaÄa aranÄo',
+	fr: 'Tableaux',
+	de: 'Mise en page',
+	cn: 'é é¢ä½ˆå±€',
+	ae: 'ÙˆØªØ®Ø·ÙŠØ· Ø§Ù„ØµÙØ­Ø©'
+}, {
+	en: 'Applications',
+	pt: 'FormulÃ¡rios',
+	es: 'Aplikoj',
+	fr: 'Applications',
+	de: 'Toepassingen',
+	cn: 'æ‡‰ç”¨é ˜åŸŸ',
+	ae: 'ÙˆØ§Ù„ØªØ·Ø¨ÙŠÙ‚Ø§Øª'
+}, {
+	en: 'Ready to use Apps',
+	pt: 'Pronto para usar aplicativos',
+	es: 'Preta uzi Apps',
+	fr: ' Applications prÃªtes Ã  lemploi ',
+	de: 'Klaar om apps te gebruiken',
+	cn: 'ä»ªè¡¨æ¿',
+	ae: 'Ø¬Ø§Ù‡Ø² Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„ØªØ·Ø¨ÙŠÙ‚Ø§Øª'
+},
 
 ];
 
@@ -361,9 +368,9 @@ if ($(window).width() < 991) {
 }
 
 $("#flip-btn").click(function () {
-	$(".flip-card-inner").addClass("flipped")
+	$(".flip-card-inner").addClass("flipped");
 });
 
 $("#flip-back").click(function () {
-	$(".flip-card-inner").removeClass("flipped")
-})
+	$(".flip-card-inner").removeClass("flipped");
+});
