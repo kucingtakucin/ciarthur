@@ -29,14 +29,31 @@
     })
 
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, csrf, status_crud = false,
+    let datatable, csrf, status_crud = false, loading,
         $insert, $update, $delete, $import,
         map, map_modal, marker_modal, legend;
 
     // Document ready
     $(() => {
         /**
+         * Keperluan show loading
+         */
+        // ================================================== //
+        loading = () => {
+            Swal.fire({
+                title: 'Loading...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            })
+        }
+
+        /**
          * Keperluan WebGIS dengan Leaflet
+         * 
          */
         // ================================================== //
 
@@ -313,15 +330,7 @@
                 data: {},
                 beforeSend: () => {
                     if (!status_crud) {
-                        Swal.fire({
-                            title: 'Loading...',
-                            allowEscapeKey: false,
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        })
+                        loading()
                     }
                 },
                 complete: () => {
@@ -640,15 +649,7 @@
          */
         // ================================================== //
         $get = async (form) => {
-            Swal.fire({
-                title: 'Loading...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            })
+            loading()
 
             let formData = new FormData();
             formData.append('id', $(form).data('id'));
@@ -722,16 +723,7 @@
         }
 
         $insert = async (form) => {
-            Swal.fire({
-                title: 'Loading...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            })
-
+            loading() 
             let formData = new FormData(form);
             formData.append(
                 await csrf().then(csrf => csrf.token_name),
@@ -771,15 +763,7 @@
         }
 
         $update = async (form) => {
-            Swal.fire({
-                title: 'Loading...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            })
+            loading()
 
             let formData = new FormData(form);
             formData.append('id', id_data);
@@ -832,14 +816,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Loading...',
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    })
+                    loading()
 
                     let formData = new FormData();
                     formData.append('id', $(form).data('id'));
