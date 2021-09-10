@@ -59,7 +59,7 @@ class Mahasiswa extends MY_Controller
     {
         $datatables = new Datatables(new CodeigniterAdapter());
         $datatables->query(
-            "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto_thumb,
+            "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto,
             b.nama AS nama_prodi, c.nama AS nama_fakultas, a.created_at,
             a.prodi_id, a.fakultas_id, a.latitude, a.longitude
             FROM mahasiswa AS a
