@@ -53,6 +53,7 @@ $route['default_controller'] = 'frontend/home';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
 $route['email'] = 'email/email';
+$route['img/([\w/])'] = 'image/show/$1';
 
 $route['logs'] = "logViewerController/index";
 $route['404_override'] = '';
