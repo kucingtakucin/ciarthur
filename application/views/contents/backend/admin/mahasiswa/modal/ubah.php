@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <input type="hidden" name="old_foto" id="ubah_old_foto">
-                    <input type="hidden" name="old_foto_thumb" id="ubah_old_foto_thumb">
+                    <input type="hidden" name="id" id="id">
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal" data-original-title="" title="">Close</button>

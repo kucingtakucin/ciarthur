@@ -1,5 +1,5 @@
 <?php
-use League\Flysystem\Local\LocalFilesystemAdapter as Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\Filesystem;
 use League\Glide\ServerFactory;
 
@@ -12,13 +12,11 @@ class Image extends CI_Controller {
     {
         // Setup Glide server
         $server = ServerFactory::create([
-            'source' => new Filesystem(new Local(APPPATH . '../uploads')),
-            'cache' => new Filesystem(new Local(APPPATH .'../uploads/.cache')),        
+            'source' => new Filesystem(new LocalFilesystemAdapter(FCPATH . 'uploads')),
+            'cache' => new Filesystem(new LocalFilesystemAdapter(FCPATH .'uploads/.cache')),        
         ]);
 
         $image_path = implode('/', $path);
-
-        // But, a better approach is to use information from the request
         $server->outputImage($image_path, $this->input->get());
     }
 }

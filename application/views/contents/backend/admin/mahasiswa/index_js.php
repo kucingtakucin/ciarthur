@@ -222,7 +222,7 @@
 
         initMap() // Init leaflet map
 
-        /**
+       /**
          * Keperluan generate csrf
          */
         // ================================================== //
@@ -230,17 +230,10 @@
             let formData = new FormData()
             formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
 
-            let response = await fetch('<?= base_url('csrf/generate') ?>', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) return response.json()
-                throw new Error(response.statusText)
-            })
-
+            let res = await axios.post('<?= base_url('csrf/generate') ?>', formData)
             return {
-                token_name: response.csrf_token_name,
-                hash: response.csrf_hash
+                token_name: res.data.csrf_token_name,
+                hash: res.data.csrf_hash
             }
         }
 
@@ -452,6 +445,9 @@
                 }
             ],
             initComplete: function(event) {
+                Swal.hideLoading()
+                Swal.close()
+
                 $(this).on('click', '.btn_edit', function(event) {
                     event.preventDefault()
                     $get(this);
@@ -639,84 +635,58 @@
         bsCustomFileInput.init()
         // ================================================== //
 
-        // ================================================== //
-
         /**
          * Keperluan CRUD
          */
         // ================================================== //
-        $get = async (form) => {
-            loading()
+        $get = (element) => {
+            let row = datatable.row($(element).closest('tr')).data();
+            $('#modal_ubah').modal('show');
+            $('#form_ubah input#id[name=id]').val(row.id)
+            $('#form_ubah input#ubah_nim[name=nim]').val(row.nim);
+            $('#form_ubah input#ubah_nama[name=nama]').val(row.nama);
+            $('#form_ubah input#ubah_angkatan[name=angkatan]').val(row.angkatan);
+            $('#form_ubah input#ubah_latitude[name=latitude]').val(row.latitude);
+            $('#form_ubah input#ubah_longitude[name=longitude]').val(row.longitude);
 
-            let formData = new FormData();
-            formData.append('id', $(form).data('id'));
-            formData.append(
-                await csrf().then(csrf => csrf.token_name),
-                await csrf().then(csrf => csrf.hash)
-            )
-
-            axios.post(BASE_URL + 'get_where', formData)
-                .then(res => {
-                    let row = res.data;
-                    id_data = row.id;
-                    $('#modal_ubah').modal('show');
-                    $('#form_ubah input#ubah_nim[name=nim]').val(row.nim);
-                    $('#form_ubah input#ubah_nama[name=nama]').val(row.nama);
-                    $('#form_ubah input#ubah_angkatan[name=angkatan]').val(row.angkatan);
-                    $('#form_ubah input#ubah_latitude[name=latitude]').val(row.latitude);
-                    $('#form_ubah input#ubah_longitude[name=longitude]').val(row.longitude);
-
-                    $('#form_ubah select#ubah_select_fakultas.select_fakultas')
-                        .append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
-                        .trigger('change')
-                        .trigger({
-                            type: 'select2:select',
-                            params: {
-                                data: {
-                                    id: row.fakultas_id,
-                                    fakultas_id: row.fakultas_id,
-                                    prodi_id: row.prodi_id
-                                }
-                            }
-                        })
-
-                    $('#form_ubah select#ubah_select_prodi.select_prodi')
-                        .append(new Option(row.nama_prodi, row.prodi_id, true, true))
-                        .trigger('change')
-                        .trigger({
-                            type: 'select2:select',
-                            params: {
-                                data: {
-                                    fakultas_id: row.fakultas_id,
-                                    prodi_id: row.prodi_id
-                                }
-                            }
-                        })
-
-                    $('#form_ubah input#ubah_old_foto[name=old_foto]').val(row.foto)
-                    $('#form_ubah input#ubah_old_foto_thumb[name=old_foto_thumb]').val(row.foto_thumb)
-                    if (row.foto) {
-                        $('#form_ubah #lihat').removeClass('text-danger')
-                        $('#form_ubah #lihat').addClass('text-success')
-                        $('#form_ubah #lihat').html(`<a href="<?= BASE_URL() ?>uploads/mahasiswa/${row.foto}" target="_blank">Lihat file</a>`)
-                    } else {
-                        $('#form_ubah #lihat').addClass('text-danger')
-                        $('#form_ubah #lihat').removeClass('text-success')
-                        $('#form_ubah #lihat').html('File belum ada')
+            $('#form_ubah select#ubah_select_fakultas.select_fakultas')
+                .append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
+                .trigger('change')
+                .trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: {
+                            id: row.fakultas_id,
+                            fakultas_id: row.fakultas_id,
+                            prodi_id: row.prodi_id
+                        }
                     }
-                }).catch(err => {
-                    console.error(err)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }).then(() => {
-                    Swal.close()
                 })
 
+            $('#form_ubah select#ubah_select_prodi.select_prodi')
+                .append(new Option(row.nama_prodi, row.prodi_id, true, true))
+                .trigger('change')
+                .trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: {
+                            fakultas_id: row.fakultas_id,
+                            prodi_id: row.prodi_id
+                        }
+                    }
+                })
+
+            $('#form_ubah input#ubah_old_foto[name=old_foto]').val(row.foto)
+            $('#form_ubah input#ubah_old_foto_thumb[name=old_foto_thumb]').val(row.foto_thumb)
+            if (row.foto) {
+                $('#form_ubah #lihat').removeClass('text-danger')
+                $('#form_ubah #lihat').addClass('text-success')
+                $('#form_ubah #lihat').html(`<a href="<?= BASE_URL() ?>uploads/mahasiswa/${row.foto}" target="_blank">Lihat file</a>`)
+            } else {
+                $('#form_ubah #lihat').addClass('text-danger')
+                $('#form_ubah #lihat').removeClass('text-success')
+                $('#form_ubah #lihat').html('File belum ada')
+            }
         }
 
         $insert = async (form) => {
@@ -729,17 +699,17 @@
 
             axios.post(BASE_URL + 'insert')
                 .then(res => {
+                    initMap()
                     $('#form_tambah button[type=submit]').hide();
                     $('#form_tambah button.loader').show();
                     status_crud = true
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: res.message,
+                        text: res.data.message,
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    datatable.ajax.reload();
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -756,6 +726,7 @@
                     $('#form_tambah select').val(null).trigger('change')
                     $('#form_tambah').removeClass('was-validated')
                     $('#modal_tambah').modal('hide');
+                    datatable.ajax.reload();
                 })
         }
 
@@ -763,7 +734,6 @@
             loading()
 
             let formData = new FormData(form);
-            formData.append('id', id_data);
             formData.append(
                 await csrf().then(csrf => csrf.token_name),
                 await csrf().then(csrf => csrf.hash)
@@ -778,13 +748,12 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: res.message,
+                        text: res.data.message,
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    datatable.ajax.reload();
-                }).catch(error => {
-                    console.error(error);
+                }).catch(err => {
+                    console.error(err);
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -799,10 +768,11 @@
                     $('#form_ubah select').val(null).trigger('change')
                     $('#form_ubah').removeClass('was-validated')
                     $('#modal_ubah').modal('hide');
+                    datatable.ajax.reload();
                 })
         }
 
-        $import = async (form) => {
+        $delete = async (element) => {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -816,7 +786,7 @@
                     loading()
 
                     let formData = new FormData();
-                    formData.append('id', $(form).data('id'));
+                    formData.append('id', $(element).data('id'));
                     formData.append(
                         await csrf().then(csrf => csrf.token_name),
                         await csrf().then(csrf => csrf.hash)
@@ -830,14 +800,14 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
-                                text: res.message,
+                                text: res.data.message,
                                 showConfirmButton: false,
                                 timer: 1500
                             })
 
                             datatable.ajax.reload()
-                        }).catch(error => {
-                            console.error(error);
+                        }).catch(err => {
+                            console.error(err);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
@@ -849,6 +819,58 @@
                 }
             })
         }
+
+        $import = (element) => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Document will be imported!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, import it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    })
+
+                    let formData = new FormData(form);
+                    axios.post(BASE_URL + "import_excel", formData)
+                        .then(res => {
+                            status_crud = true
+                            initMap()
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: res.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }).catch(err => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: err.response.data.message,
+                            })
+                        }).then(() => {
+                            $('#form_import button[type=submit]').show();
+                            $('#form_import button.loader').hide();
+                            $('#form_import').trigger('reset');
+                            $('#form_import').removeClass('was-validated')
+                            $('#modal_import').modal('hide');
+                            datatable.ajax.reload();
+                        })
+                }
+            })
+        }
+
         // ================================================== //
 
         /**
@@ -877,7 +899,7 @@
         })
 
         $('#form_import #downloadTemplateExcel').click(() => {
-            location.replace("{{ route('backend.admin.mahasiswa.download_template_excel') }}")
+            location.replace(BASE_URL + "download_template_excel")
         })
 
         $('#modal_tambah').on('hide.bs.modal', () => {

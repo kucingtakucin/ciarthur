@@ -32,6 +32,7 @@
 
     // Document ready
     $(() => {
+        
         /**
          * Keperluan generate csrf
          */
@@ -103,7 +104,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        html: 'Something went wrong!',
+                        html: err.response.data.message,
                     })
                 }).then(res => {
                     $('#form-login').removeClass('was-validated')

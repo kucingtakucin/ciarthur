@@ -44,8 +44,9 @@ class Mahasiswa extends MY_Controller
             'page' => 'contents/' . $this->_path . 'index',
             'script' => 'contents/' . $this->_path . 'index_js',
             'modals' => [
-                'contents/' . $this->_path . 'modal/modal_tambah',
-                'contents/' . $this->_path . 'modal/modal_ubah',
+                'contents/' . $this->_path . 'modal/tambah',
+                'contents/' . $this->_path . 'modal/ubah',
+                'contents/' . $this->_path . 'modal/import',
             ],
         ]);
     }
@@ -408,6 +409,75 @@ class Mahasiswa extends MY_Controller
         header('Cache-Control: max-age=0');
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
+    }
+
+    /**
+     * Keperluan import xlsx
+     * 
+     * @return void
+     */
+    public function import_excel()
+    {
+        if ($request->hasFile('import_file_excel')) {
+            $spreadsheet = IOFactory::load($request->file('import_file_excel')->getRealPath());
+            $data = $spreadsheet->getActiveSheet()->toArray();
+
+            if (
+                !($data[3][1] === 'NO' && $data[3][2] === 'NIM' && $data[3][3] === 'NAMA LENGKAP' && $data[3][4] === 'ANGKATAN'
+                    && $data[3][5] === 'PROGRAM STUDI' && $data[3][6] === 'FAKULTAS' && $data[3][7] === 'LATITUDE' && $data[3][8] === 'LONGITUDE')
+            ) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Format tidak sesuai, mohon gunakan format dari template!'
+                ], 404);
+            }
+
+            for ($i = 4; $i < count($data); $i++) {
+                if (
+                    $data[$i][1] && $data[$i][1] !== 'NO' && $data[$i][2] && $data[$i][2] !== 'NIM'
+                    && $data[$i][3] !== 'NAMA LENGKAP' && $data[$i][4] !== 'ANGKATAN' && $data[$i][5] !== 'PROGRAM STUDI'
+                    && $data[$i][6] !== 'FAKULTAS' && $data[$i][7] !== 'LATITUDE' && $data[$i][8] !== 'LONGITUDE'
+                ) {
+                    $this->M_Mahasiswa->insert(
+                        [
+                            'nim' => $data[$i][2] ?? null,
+                            'nama' => $data[$i][3] ?? null,
+                            'prodi_id' => $this->db->get_where('prodi', ['nama' => strtoupper($data[$i][5])])->row()->id ?? null,
+                            'fakultas_id' => $this->db->get_where('fakultas', ['nama' => strtoupper($data[$i][6])])->row()->id ?? null,
+                            'angkatan' => $data[$i][4] ?? null,
+                            'latitude' => $data[$i][7] ?? null,
+                            'longitude' =>  $data[$i][8] ?? null,
+                            'foto' => null,
+                            'is_active' => '1',
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => get_user_id(),
+                        ]
+                    );
+                }
+            }
+
+            return $this->output->set_content_type('application/json')
+                ->set_output([
+                    'status' => true,
+                    'message' => 'Berhasil melakukan import'
+                ]);
+        }
+    }
+
+    /**
+     * Keperluan download template excel
+     * 
+     * @return void
+     */
+    public function download_template_excel()
+    {
+        $spreadsheet = IOFactory::load(FCPATH . 'assets/templates/excel/template_daftar_mahasiswa.xlsx');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="template_daftar_mahasiswa.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
     }
 
     /**
