@@ -1,9 +1,10 @@
 
 <?php
-defined('BASEPATH') or exit('No direct script access allowed');
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Glide\ServerFactory;
+
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Image extends CI_Controller {
 
