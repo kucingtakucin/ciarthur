@@ -1,19 +1,15 @@
 
 <?php
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use League\Glide\ServerFactory;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Image extends CI_Controller {
 
-    public function index($path = null)
+    public function show($path = null)
     {
         // Setup Glide server
         $server = League\Glide\ServerFactory::create([
-            'source' => new Filesystem(new Local(realpath(APPPATH . '../uploads'))),
-            'cache' => new Filesystem(new Local(realpath(APPPATH .'../uploads/.cache'))),        
+            'source' => APPPATH . '../uploads',
+            'cache' => APPPATH .'../uploads/.cache',        
         ]);
 
         // But, a better approach is to use information from the request
