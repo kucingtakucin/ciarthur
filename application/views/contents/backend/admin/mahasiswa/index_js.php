@@ -418,9 +418,9 @@
                     name: 'id',
                     data: 'id',
                     render: (id) => {
-                        let tombol_ubah = $('<button>', {
+                        let btn_edit = $('<button>', {
                             type: 'button',
-                            class: 'btn btn-success tombol_ubah',
+                            class: 'btn btn-success btn_edit',
                             'data-id': id,
                             html: $('<i>', {
                                 class: 'fa fa-edit'
@@ -428,9 +428,9 @@
                             title: 'Ubah Data'
                         })
 
-                        let tombol_hapus = $('<button>', {
+                        let btn_delete = $('<button>', {
                             type: 'button',
-                            class: 'btn btn-danger tombol_hapus',
+                            class: 'btn btn-danger btn_delete',
                             'data-id': id,
                             html: $('<i>', {
                                 class: 'fa fa-trash'
