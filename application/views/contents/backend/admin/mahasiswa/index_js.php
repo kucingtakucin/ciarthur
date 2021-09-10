@@ -341,7 +341,8 @@
                     Swal.close()
                 }
             },
-            columnDefs: [{
+            columnDefs: [
+                {
                     targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Sesuaikan dengan jumlah kolom
                     className: 'text-center'
                 },
@@ -349,6 +350,11 @@
                     targets: [0, 1, 7, 8],
                     searchable: false,
                     orderable: false,
+                },
+                {
+                    targets: [9],
+                    visible: false,
+                    searchable: false,
                 }
             ],
             order: [
