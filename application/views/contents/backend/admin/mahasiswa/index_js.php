@@ -248,7 +248,7 @@
          * Keperluan DataTable, Datepicker, Summernote dan BsCustomFileInput
          */
         // ================================================== //
-        datatable = $('#table_data').DataTable({
+        datatable = $('#datatable').DataTable({
             serverSide: true,
             processing: true,
             destroy: true,
