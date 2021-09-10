@@ -53,7 +53,7 @@ $route['default_controller'] = 'frontend/home';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
 $route['email'] = 'email/email';
-$route['img/(.+)'] = 'image/show/$1';
+$route['img/(.+)'] = 'image/show/$1';   // League Glide
 
 $route['logs'] = "logViewerController/index";
 $route['404_override'] = '';

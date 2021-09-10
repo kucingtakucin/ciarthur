@@ -165,23 +165,6 @@ class Mahasiswa extends MY_Controller
                 ]));
         }
 
-        $config['image_library'] = 'gd2';
-        $config['source_image'] = $this->upload->data('full_path');
-        $config['create_thumb'] = TRUE;
-        $config['maintain_ratio'] = TRUE;
-        $config['width'] = 200;
-        $config['height'] = 150;
-
-        $this->image_lib->initialize($config);
-        if (!$this->image_lib->resize()) {
-            return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
-                ->set_output(json_encode([
-                    'status' => false,
-                    'message' => $this->image_lib->display_errors()
-                ]));
-        }
-
         $this->M_Mahasiswa->insert(
             [
                 'nim' => $this->input->post('nim', true),
@@ -192,7 +175,6 @@ class Mahasiswa extends MY_Controller
                 'latitude' => $this->input->post('latitude', true),
                 'longitude' => $this->input->post('longitude', true),
                 'foto' => $this->upload->data('file_name'),
-                'foto_thumb' => $this->upload->data('raw_name') . '_thumb' . $this->upload->data('file_ext'),
                 'is_active' => '1',
                 'created_at' => date('Y-m-d H:i:s'),
                 'created_by' => get_user_id(),
@@ -257,23 +239,6 @@ class Mahasiswa extends MY_Controller
                         'message' => $this->upload->display_errors()
                     ]));
             }
-
-            $config['image_library'] = 'gd2';
-            $config['source_image'] = $this->upload->data('full_path');
-            $config['create_thumb'] = true;
-            $config['maintain_ratio'] = true;
-            $config['width'] = 200;
-            $config['height'] = 150;
-
-            $this->image_lib->initialize($config);
-            if (!$this->image_lib->resize()) {
-                return $this->output->set_content_type('application/json')
-                    ->set_status_header(404)
-                    ->set_output(json_encode([
-                        'status' => false,
-                        'message' => $this->image_lib->display_errors()
-                    ]));
-            }
         }
 
         $this->M_Mahasiswa->update(
@@ -287,8 +252,6 @@ class Mahasiswa extends MY_Controller
                 'longitude' => $this->input->post('longitude', true),
                 'foto' => $_FILES['foto']['error'] === 4
                     ? $this->input->post('old_foto') : $this->upload->data('file_name'),
-                'foto_thumb' => $_FILES['foto']['error'] === 4
-                    ? $this->input->post('old_foto_thumb') : $this->upload->data('raw_name') . '_thumb' . $this->upload->data('file_ext'),
                 'is_active' => '1',
                 'updated_at' => date('Y-m-d H:i:s'),
                 'updated_by' => get_user_id(),
@@ -317,9 +280,7 @@ class Mahasiswa extends MY_Controller
         ]);
         if (file_exists("./uploads/mahasiswa/{$data->foto}")) {
             chmod("./uploads/mahasiswa/{$data->foto}", 0777);
-            chmod("./uploads/mahasiswa/{$data->foto_thumb}", 0777);
             unlink("./uploads/mahasiswa/{$data->foto}");
-            unlink("./uploads/mahasiswa/{$data->foto_thumb}");
         }
 
         $this->M_Mahasiswa->update(

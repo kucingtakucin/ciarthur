@@ -359,12 +359,11 @@
                 },
                 { // 1
                     title: 'Foto',
-                    name: 'foto_thumb',
-                    data: 'foto_thumb',
-                    render: (foto_thumb) => {
+                    name: 'foto',
+                    data: 'foto',
+                    render: (foto) => {
                         return $('<img>', {
-                            src: `<?= base_url() ?>uploads/mahasiswa/${foto_thumb}`,
-                            class: "img-thumnail",
+                            src: `<?= base_url() ?>img/mahasiswa/${foto}?w=100&h=200&fit=crop`,
                             alt: 'Foto'
                         }).prop('outerHTML')
                     }
