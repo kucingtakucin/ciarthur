@@ -1,5 +1,9 @@
 
 <?php
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Image extends CI_Controller {
@@ -8,8 +12,8 @@ class Image extends CI_Controller {
     {
         // Setup Glide server
         $server = League\Glide\ServerFactory::create([
-            'source' => APPPATH . '../uploads',
-            'cache' => APPPATH .'../uploads/.cache',        
+            'source' => new League\Flysystem\Filesystem(new League\Flysystem\Adapter\Local(APPPATH . '../uploads')),
+            'cache' => new League\Flysystem\Filesystem(new League\Flysystem\Adapter\Local(APPPATH .'../uploads/.cache')),        
         ]);
 
         $image_path = implode('/', $path);
