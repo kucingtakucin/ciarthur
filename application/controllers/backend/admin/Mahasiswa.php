@@ -94,11 +94,8 @@ class Mahasiswa extends MY_Controller
             WHERE a.is_active = '1'"
         );
 
-        return $this->output->set_content_type('application/json')
-            ->set_output([
-                'columns' => $datatables->getColumns(),
-                'query' => $datatables->getQuery()
-            ]);
+        var_dump($datatables->getColumns());
+        var_dump($datatables->getQuery());    
     }
 
     /**
