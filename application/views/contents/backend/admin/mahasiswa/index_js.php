@@ -741,6 +741,7 @@
 
             axios.post(BASE_URL + 'update', formData)
                 .then(res => {
+                    console.log(res)
                     $('#form_ubah button[type=submit]').hide();
                     $('#form_ubah button.loader').show();
 
