@@ -716,9 +716,7 @@
                         icon: 'error',
                         title: 'Oops...',
                         // html: err.response.data.message,
-                        html: 'Something went wrong!',
-                        showConfirmButton: false,
-                        timer: 1500
+                        text: err.response.statusText,
                     })
                 }).then(() => {
                     $('#form_tambah button[type=submit]').show();
@@ -759,9 +757,7 @@
                         icon: 'error',
                         title: 'Oops...',
                         // html: err.response.data.message,
-                        html: 'Something went wrong!',
-                        showConfirmButton: false,
-                        timer: 1500
+                        text: err.response.statusText
                     })
                 }).then(() => {
                     $('#form_ubah button[type=submit]').show();
@@ -814,9 +810,7 @@
                                 icon: 'error',
                                 title: 'Oops...',
                                 // html: err.response.data.message,
-                                html: 'Something went wrong!'
-                                showConfirmButton: false,
-                                timer: 1500
+                                text: err.response.statusText
                             })
                         })
                 }
@@ -861,6 +855,7 @@
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: err.response.data.message,
+                                // text: err.response.statusText,
                             })
                         }).then(() => {
                             $('#form_import button[type=submit]').show();
