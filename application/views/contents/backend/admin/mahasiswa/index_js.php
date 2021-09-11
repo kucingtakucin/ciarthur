@@ -245,7 +245,7 @@
             serverSide: true,
             processing: true,
             destroy: true,
-            responsive: true,
+            // responsive: true,
             dom: `<"dt-custom-filter mb-3 d-block">
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
                 <"d-flex flex-row justify-content-between"lf>
@@ -691,6 +691,7 @@
         $insert = async (form) => {
             status_crud = true
             loading() 
+
             let formData = new FormData(form);
             formData.append(
                 await csrf().then(csrf => csrf.token_name),
@@ -714,7 +715,8 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Something went wrong!',
+                        // html: err.response.data.message,
+                        html: 'Something went wrong!',
                         showConfirmButton: false,
                         timer: 1500
                     })
@@ -727,9 +729,10 @@
                     $('#modal_tambah').modal('hide');
                     datatable.ajax.reload();
                 })
-        }       
+        }  
 
         $update = async (form) => {
+            status_crud = true
             loading()
 
             let formData = new FormData(form);
@@ -743,7 +746,6 @@
                     $('#form_ubah button[type=submit]').hide();
                     $('#form_ubah button.loader').show();
 
-                    status_crud = true
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -756,7 +758,8 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Something went wrong!',
+                        // html: err.response.data.message,
+                        html: 'Something went wrong!',
                         showConfirmButton: false,
                         timer: 1500
                     })
@@ -772,6 +775,7 @@
         }
 
         $delete = async (element) => {
+            status_crud = true
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -793,7 +797,6 @@
 
                     axios.post(BASE_URL + 'delete', formData)
                         .then(res => {
-                            status_crud = true
                             initMap()
 
                             Swal.fire({
@@ -810,7 +813,8 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: 'Something went wrong!',
+                                // html: err.response.data.message,
+                                html: 'Something went wrong!'
                                 showConfirmButton: false,
                                 timer: 1500
                             })

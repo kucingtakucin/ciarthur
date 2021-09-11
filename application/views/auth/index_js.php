@@ -104,7 +104,8 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        html: err.response.data.message,
+                        // html: err.response.data.message,
+                        html: 'Something went wrong!'
                     })
                 }).then(res => {
                     $('#form-login').removeClass('was-validated')
