@@ -1,4 +1,5 @@
 <script>
+
     /**
      * Keperluan disable inspect element
      */
