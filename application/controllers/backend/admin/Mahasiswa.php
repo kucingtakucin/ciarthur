@@ -94,7 +94,6 @@ class Mahasiswa extends MY_Controller
             WHERE a.is_active = '1'"
         );
 
-        var_dump($datatables->getColumns());
         var_dump($datatables->getQuery());    
     }
 
