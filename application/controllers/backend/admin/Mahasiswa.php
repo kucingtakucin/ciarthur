@@ -227,9 +227,7 @@ class Mahasiswa extends MY_Controller
         if ($_FILES['foto']['error'] !== 4) {
             if (file_exists("./uploads/mahasiswa/{$this->input->post('old_foto')}")) {
                 chmod("./uploads/mahasiswa/{$this->input->post('old_foto')}", 0777);
-                chmod("./uploads/mahasiswa/{$this->input->post('old_foto_thumb')}", 0777);
                 unlink("./uploads/mahasiswa/{$this->input->post('old_foto')}");
-                unlink("./uploads/mahasiswa/{$this->input->post('old_foto_thumb')}");
             }
 
             if (!$this->upload->do_upload("foto")) {
