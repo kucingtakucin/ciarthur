@@ -14,10 +14,10 @@
 | pusher_debug       bool    Turn debug on/off. Debug is logged to CodeIgniters log.
 |
 */
-$config['pusher_app_id']     = '';
-$config['pusher_app_key']    = '';
-$config['pusher_app_secret'] = '';
-$config['pusher_debug']      = FALSE;
+$config['pusher_app_id']      = '1265181';
+$config['pusher_app_key']     = '21a14c9bc94b57c3db03';
+$config['pusher_app_secret']  = '84188f49f188619fa082';
+$config['pusher_debug']       = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +34,8 @@ $config['pusher_debug']      = FALSE;
 | pusher_encrypted  bool    Quick option to use scheme of https and port 443.
 |
 */
+$config['pusher_cluster'] = 'ap1';
+$config['pusher_use_tls'] = true;
 // $config['pusher_scheme']    = 'http';
 // $config['pusher_host']      = '';
 // $config['pusher_port']      = 80;

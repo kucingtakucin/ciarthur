@@ -8,7 +8,7 @@
 
     <li class="sidebar-main-title">
         <div>
-            <h6>Menu Data</h6>
+            <h6>Menu</h6>
         </div>
     </li>
     <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(3, 'mahasiswa') ?>" href="<?= base_admin('mahasiswa') ?>"><i data-feather="book-open"></i><span>Mahasiswa</span></a></li>

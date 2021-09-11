@@ -74,6 +74,8 @@ Class Pusher
         $options['pusher_port']      = ($this->config->item('pusher_port')) ?: NULL;
         $options['pusher_timeout']   = ($this->config->item('pusher_timeout')) ?: NULL;
         $options['pusher_encrypted'] = ($this->config->item('pusher_encrypted')) ?: NULL;
+        $options['pusher_cluster'] = ($this->config->item('pusher_cluster')) ?: NULL;
+        $options['pusher_use_tls'] = ($this->config->item('pusher_use_tls')) ?: NULL;
 
         $options = array_filter($options);
 
