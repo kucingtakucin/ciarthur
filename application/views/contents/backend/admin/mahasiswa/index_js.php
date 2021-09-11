@@ -739,7 +739,7 @@
                 await csrf().then(csrf => csrf.hash)
             )
 
-            axios.post(BASE_URL + 'update')
+            axios.post(BASE_URL + 'update', formData)
                 .then(res => {
                     $('#form_ubah button[type=submit]').hide();
                     $('#form_ubah button.loader').show();
@@ -771,7 +771,6 @@
         }
 
         $delete = async (element) => {
-            status_crud = true
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -782,8 +781,9 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
+                    status_crud = true
                     loading()
-
+                    
                     let formData = new FormData();
                     formData.append('id', $(element).data('id'));
                     formData.append(
