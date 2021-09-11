@@ -96,7 +96,6 @@ class Mahasiswa extends MY_Controller
 
         return $this->output->set_content_type('application/json')
             ->set_output([
-                'results' => $datatables->generate(),
                 'columns' => $datatables->getColumns(),
                 'query' => $datatables->getQuery()
             ]);
