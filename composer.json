@@ -22,7 +22,8 @@
 		"seunmatt/codeigniter-log-viewer": "^1.1",
 		"ozdemir/datatables": "^2.3",
 		"guzzlehttp/guzzle": "^7.0",
-		"league/flysystem": "^2.2"
+		"league/flysystem": "^2.2",
+		"pusher/pusher-php-server": "^6.1"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
