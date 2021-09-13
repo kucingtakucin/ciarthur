@@ -189,8 +189,8 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="col-md-12" for="password">Password</label>
-                                            <input type="password" id="ubah_password" class="form-control" name="password" required autocomplete="off" placeholder="Masukkan Password">
-                                            <?= validation_feedback("password", "wajib diisi dan wajib angka") ?>
+                                            <input type="password" id="ubah_password" class="form-control" name="password" minlength="8" required autocomplete="off" placeholder="Masukkan Password">
+                                            <?= validation_feedback("password", "wajib diisi dan minimal 8 karakter") ?>
                                         </div>
                                     </div>
                                 </div>
@@ -373,6 +373,11 @@
                     $edit_account(this);
                 }
             });
+
+             $('#modal_account').on('hide.bs.modal', () => {
+                $('#form_account').removeClass('was-validated')
+                $('#form_account').trigger('reset')
+            })
 
             $edit_account = async (form) => {
                 let formData = new FormData(form)
