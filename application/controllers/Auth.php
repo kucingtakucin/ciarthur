@@ -36,7 +36,7 @@ class Auth extends MY_Controller
 		$response = $recaptcha->setExpectedHostname('appt.demoo.id')
 			->verify($this->input->post('g-recaptcha-response'));
 
-		if ($this->input->method() == 'post' && $response->isSuccess()) {
+		if ($this->input->method() == 'get') {
 			// check to see if the user is logging in
 			// check for "remember me"
 			$remember = (bool) $this->input->post('remember');
@@ -60,7 +60,7 @@ class Auth extends MY_Controller
 						'message' => $this->ion_auth->errors()
 					]));
 			}
-		} elseif ($this->input->method() == 'get') {
+		} elseif ($this->input->method() == 'post' && $response->isSuccess()) {
 			// the user is not logging in so display the login page
 			// set the flash data error message if there is one
 
