@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
 	'use strict';
 	/*-----------------------------------------------------------------------------------*/
 	/*	STICKY HEADER
@@ -12,10 +12,10 @@ $(document).ready(function() {
 				stick: 'banner--stick',
 				unstick: 'banner--unstick'
 			},
-			onStick: function() {
+			onStick: function () {
 				$($.SmartMenus.Bootstrap.init);
 			},
-			onUnstick: function() {
+			onUnstick: function () {
 				$('.search-dropdown .dropdown-menu').collapse('hide');
 			}
 		};
@@ -35,52 +35,52 @@ $(document).ready(function() {
 	var $info_offcanvas = $('.offcanvas-info');
 	var $info_offcanvas_close = $('.offcanvas-info-close');
 	var $info_offcanvas_toggle = $('[data-toggle="offcanvas-info"]');
-	$header_hamburger.on("click", function() {
+	$header_hamburger.on("click", function () {
 		$header_hamburger.toggleClass("active");
 		$header_search.collapse('hide');
 	});
-	$header_search.on('click', function(e) {
+	$header_search.on('click', function (e) {
 		e.stopPropagation();
 	});
-	$navbar_search_close.click(function() {
+	$navbar_search_close.click(function () {
 		$header_search.collapse('hide');
 	});
-	$navbar_search_toggle.on('click', function(e) {
+	$navbar_search_toggle.on('click', function (e) {
 		$navbar_offcanvas.removeClass('open');
 		$header_hamburger.removeClass('active');
 	});
-	$navbar_offcanvas_toggle.on("click", function(e) {
+	$navbar_offcanvas_toggle.on("click", function (e) {
 		e.stopPropagation();
 		$navbar_offcanvas.toggleClass('open');
 	});
-	$navbar_offcanvas.on("click", function(e) {
+	$navbar_offcanvas.on("click", function (e) {
 		e.stopPropagation();
 	});
-	$header_cart.on('click', function(e) {
+	$header_cart.on('click', function (e) {
 		e.stopPropagation();
 	});
-	$navbar_offcanvas_close.on("click", function(e) {
+	$navbar_offcanvas_close.on("click", function (e) {
 		$navbar_offcanvas.removeClass('open');
 		$header_hamburger.removeClass('active');
 	});
-	$info_offcanvas_toggle.on("click", function(e) {
+	$info_offcanvas_toggle.on("click", function (e) {
 		e.stopPropagation();
 		$info_offcanvas.toggleClass('open');
 		$header_search.collapse('hide');
 	});
-	$info_offcanvas.on("click", function(e) {
+	$info_offcanvas.on("click", function (e) {
 		e.stopPropagation();
 	});
-	$(document).on('click', function() {
+	$(document).on('click', function () {
 		$header_search.collapse('hide');
 		$navbar_offcanvas.removeClass('open');
 		$info_offcanvas.removeClass('open');
 		$header_hamburger.removeClass('active');
 	});
-	$info_offcanvas_close.on("click", function(e) {
+	$info_offcanvas_close.on("click", function (e) {
 		$info_offcanvas.removeClass('open');
 	});
-	$('.onepage .navbar li a').on('click', function() {
+	$('.onepage .navbar li a').on('click', function () {
 		$navbar_offcanvas.removeClass('open');
 		$header_hamburger.removeClass('active');
 	});
@@ -88,21 +88,21 @@ $(document).ready(function() {
 	/*	ONEPAGE NAV LINKS
 	/*-----------------------------------------------------------------------------------*/
 	var empty_a = $('.onepage .navbar ul.navbar-nav a[href="#"]');
-	empty_a.on('click', function(e) {
+	empty_a.on('click', function (e) {
 		e.preventDefault();
 	});
 	/*-----------------------------------------------------------------------------------*/
 	/*	ONEPAGE SMOOTH SCROLL
 	/*-----------------------------------------------------------------------------------*/
-	$(function() {
-		setTimeout(function() {
+	$(function () {
+		setTimeout(function () {
 			if (location.hash) {
 				window.scrollTo(0, 0);
 				var target = location.hash.split('#');
 				smoothScrollTo($('#' + target[1]));
 			}
 		}, 1);
-		$('a.scroll[href*="#"]:not([href="#"])').on('click', function() {
+		$('a.scroll[href*="#"]:not([href="#"])').on('click', function () {
 			if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
 				smoothScrollTo($(this.hash));
 				return false;
@@ -120,7 +120,7 @@ $(document).ready(function() {
 	/*-----------------------------------------------------------------------------------*/
 	/*	BACKGROUND IMAGE
 	/*-----------------------------------------------------------------------------------*/
-	$(".bg-image").css('background-image', function() {
+	$(".bg-image").css('background-image', function () {
 		var bg = ('url(' + $(this).data("image-src") + ')');
 		return bg;
 	});
@@ -132,56 +132,56 @@ $(document).ready(function() {
 	/*	ISOTOPE GRID
 	/*-----------------------------------------------------------------------------------*/
 	function enableIsotope() {
-	  // for each container
-	  $('.grid').each( function( i, gridContainer ) {
-	    var $gridContainer = $( gridContainer );
-	    // init isotope for container
-	    var $grid = $gridContainer.find('.isotope').imagesLoaded( function() {
-	      $grid.isotope({
-	        itemSelector: '.item',
-	        layoutMode: 'masonry',
-	        percentPosition: true,
-	        masonry: {
-	            columnWidth: $grid.width() / 12
-	        },
-			transitionDuration: '0.7s'
-	      })
-	    });
-			$(window).resize(function() {
+		// for each container
+		$('.grid').each(function (i, gridContainer) {
+			var $gridContainer = $(gridContainer);
+			// init isotope for container
+			var $grid = $gridContainer.find('.isotope').imagesLoaded(function () {
+				$grid.isotope({
+					itemSelector: '.item',
+					layoutMode: 'masonry',
+					percentPosition: true,
+					masonry: {
+						columnWidth: $grid.width() / 12
+					},
+					transitionDuration: '0.7s'
+				});
+			});
+			$(window).resize(function () {
 				$grid.isotope({
 					masonry: {
 						columnWidth: $grid.width() / 12
 					}
 				});
 			});
-			$(window).on("load", function() {
+			$(window).on("load", function () {
 				$grid.isotope({
 					masonry: {
 						columnWidth: $grid.width() / 12
 					}
 				});
 			});
-	    // initi filters for container
-	    $gridContainer.find('.isotope-filter').on( 'click', '.button', function() {
-	      var filterValue = $( this ).attr('data-filter');
-	      $grid.isotope({ filter: filterValue });
-	    });
-	  });
-	    
-	  $('.isotope-filter').each( function( i, buttonGroup ) {
-	    var $buttonGroup = $( buttonGroup );
-	    $buttonGroup.on( 'click', '.button', function() {
-	      $buttonGroup.find('.active').removeClass('active');
-	      $( this ).addClass('active');
-	    });
-	  });
-	
+			// initi filters for container
+			$gridContainer.find('.isotope-filter').on('click', '.button', function () {
+				var filterValue = $(this).attr('data-filter');
+				$grid.isotope({ filter: filterValue });
+			});
+		});
+
+		$('.isotope-filter').each(function (i, buttonGroup) {
+			var $buttonGroup = $(buttonGroup);
+			$buttonGroup.on('click', '.button', function () {
+				$buttonGroup.find('.active').removeClass('active');
+				$(this).addClass('active');
+			});
+		});
+
 	};
 	enableIsotope();
 	/*-----------------------------------------------------------------------------------*/
 	/*	OWL CAROUSEL
 	/*-----------------------------------------------------------------------------------*/
-	$('.basic-slider').each(function() {
+	$('.basic-slider').each(function () {
 		var $bslider = $(this);
 		$bslider.owlCarousel({
 			items: 1,
@@ -193,7 +193,7 @@ $(document).ready(function() {
 			margin: $bslider.data("margin")
 		});
 	});
-	$('.carousel').each(function() {
+	$('.carousel').each(function () {
 		var $carousel = $(this);
 		$carousel.owlCarousel({
 			autoHeight: false,
@@ -226,7 +226,7 @@ $(document).ready(function() {
 		})
 		.on("changed.owl.carousel", syncPosition);
 	$owlnav
-		.on("initialized.owl.carousel", function() {
+		.on("initialized.owl.carousel", function () {
 			$owlnav
 				.find(".owl-item")
 				.eq(0)
@@ -283,7 +283,7 @@ $(document).ready(function() {
 			$owlmain.data("owl.carousel").to(number, 100, true);
 		}
 	}
-	$owlnav.on("click", ".owl-item", function(e) {
+	$owlnav.on("click", ".owl-item", function (e) {
 		e.preventDefault();
 		var number = $(this).index();
 		$owlmain.data("owl.carousel").to(number, 300, true);
@@ -521,7 +521,7 @@ $(document).ready(function() {
 		delay: 9000,
 		shadow: 0,
 		responsiveLevels: [1240, 1024, 778, 480],
-		gridwidth:[1240, 1024, 778, 480],
+		gridwidth: [1240, 1024, 778, 480],
 		gridheight: [750, 750, 750, 600],
 		navigation: {
 			keyboardNavigation: 'on',
@@ -902,7 +902,7 @@ $(document).ready(function() {
 	/*-----------------------------------------------------------------------------------*/
 	var $pline = $('.progressbar.line');
 	var $pcircle = $('.progressbar.circle');
-	$pline.each(function(i) {
+	$pline.each(function (i) {
 		var line = new ProgressBar.Line(this, {
 			strokeWidth: 3,
 			trailWidth: 3,
@@ -920,33 +920,33 @@ $(document).ready(function() {
 				},
 				autoStyleContainer: false
 			},
-			step: function(state, line, attachment) {
+			step: function (state, line, attachment) {
 				line.setText(Math.round(line.value() * 100) + ' %');
 			}
 		});
 		var value = ($(this).attr('data-value') / 100);
-		$pline.waypoint(function() {
+		$pline.waypoint(function () {
 			line.animate(value);
 		}, {
 			offset: "100%"
-		})
+		});
 	});
-	$pcircle.each(function(i) {
+	$pcircle.each(function (i) {
 		var circle = new ProgressBar.SemiCircle(this, {
 			strokeWidth: 5,
 			trailWidth: 5,
 			duration: 2000,
 			easing: 'easeInOut',
-			step: function(state, circle, attachment) {
+			step: function (state, circle, attachment) {
 				circle.setText(Math.round(circle.value() * 100));
 			}
 		});
 		var value = ($(this).attr('data-value') / 100);
-		$pcircle.waypoint(function() {
+		$pcircle.waypoint(function () {
 			circle.animate(value);
 		}, {
 			offset: "100%"
-		})
+		});
 	});
 	/*-----------------------------------------------------------------------------------*/
 	/*	COUNTER UP
@@ -963,10 +963,10 @@ $(document).ready(function() {
 	/*	AOS
 	/*-----------------------------------------------------------------------------------*/
 	AOS.init({
-        easing: 'ease-in-out-sine',
-        duration: 800,
-        once: true
-    });
+		easing: 'ease-in-out-sine',
+		duration: 800,
+		once: true
+	});
 	/*-----------------------------------------------------------------------------------*/
 	/*	TOOLTIP & POPOVER
 	/*-----------------------------------------------------------------------------------*/
@@ -999,45 +999,45 @@ $(document).ready(function() {
 			focus: false
 		});
 		// when the form is submitted
-		$('#contact-form').on('submit', function(e) {
+		$('#contact-form').on('submit', function (e) {
 			// if the validator does not prevent form submit
-			if (!e.isDefaultPrevented()) {
-				var url = "contact/contact.php";
-				// POST values in the background the the script URL
-				$.ajax({
-					type: "POST",
-					url: url,
-					data: $(this).serialize(),
-					success: function(data) {
-						// data = JSON object that contact.php returns
-						// we recieve the type of the message: success x danger and apply it to the
-						var messageAlert = 'alert-' + data.type;
-						var messageText = data.message;
-						// let's compose Bootstrap alert box HTML
-						var alertBox = '<div class="alert ' + messageAlert + ' alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + messageText + '</div>';
-						// If we have messageAlert and messageText
-						if (messageAlert && messageText) {
-							// inject the alert to .messages div in our form
-							$('#contact-form').find('.messages').html(alertBox);
-							// empty the form
-							$('#contact-form')[0].reset();
-						}
-					}
-				});
-				return false;
-			}
-		})
+			// if (!e.isDefaultPrevented()) {
+			// 	var url = "contact/contact.php";
+			// 	// POST values in the background the the script URL
+			// 	$.ajax({
+			// 		type: "POST",
+			// 		url: url,
+			// 		data: $(this).serialize(),
+			// 		success: function (data) {
+			// 			// data = JSON object that contact.php returns
+			// 			// we recieve the type of the message: success x danger and apply it to the
+			// 			var messageAlert = 'alert-' + data.type;
+			// 			var messageText = data.message;
+			// 			// let's compose Bootstrap alert box HTML
+			// 			var alertBox = '<div class="alert ' + messageAlert + ' alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + messageText + '</div>';
+			// 			// If we have messageAlert and messageText
+			// 			if (messageAlert && messageText) {
+			// 				// inject the alert to .messages div in our form
+			// 				$('#contact-form').find('.messages').html(alertBox);
+			// 				// empty the form
+			// 				$('#contact-form')[0].reset();
+			// 			}
+			// 		}
+			// 	});
+			// 	return false;
+			// }
+		});
 	}
 	enableContactForm();
 	/*-----------------------------------------------------------------------------------*/
 	/*	MODAL
 	/*-----------------------------------------------------------------------------------*/
-	setTimeout(function() {
-		$(".modal-popup").modal("show")
+	setTimeout(function () {
+		$(".modal-popup").modal("show");
 	}, 200);
-	$('#modal-03').on('shown.bs.modal', function() {
+	$('#modal-03').on('shown.bs.modal', function () {
 		enableContactForm();
-	})
+	});
 	/*-----------------------------------------------------------------------------------*/
 	/*	PAGE LOADING
 	/*-----------------------------------------------------------------------------------*/
@@ -1052,9 +1052,9 @@ $(document).ready(function() {
 	/*-----------------------------------------------------------------------------------*/
 	/*	PRICING
 	/*-----------------------------------------------------------------------------------*/
-	$('.pricing-wrapper').each(function(i, container) {
+	$('.pricing-wrapper').each(function (i, container) {
 		var $container = $(container);
-		$container.find(".pricing-switcher").on('click', function() {
+		$container.find(".pricing-switcher").on('click', function () {
 			$container.find(".pricing-switcher").toggleClass('pricing-switcher-active');
 			$container.find(".price").removeClass('price-hidden');
 			$container.find(".price").toggleClass('price-show price-hide');
