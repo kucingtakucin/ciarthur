@@ -106,7 +106,7 @@
         </div>
 
         <!-- Header -->
-        <?= $this->load->view('templates/frontend/header', '', true) ?>
+        <?= $this->load->view($header, '', true) ?>
         <!--  /.Header -->
 
         <!-- Main Page -->

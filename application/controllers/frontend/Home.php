@@ -17,6 +17,7 @@ class Home extends MY_Controller
             'title' => 'Home',
             'type' => 'frontend',
             'uri_segment' => $this->_path,
+            'header' => 'contents/' . $this->_path . 'header',
             'page' => 'contents/' . $this->_path . 'index',
             'script' => 'contents/' . $this->_path . 'js/script_js',
             'style' => 'contents/' . $this->_path . 'css/style_css',
