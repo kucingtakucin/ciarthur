@@ -771,7 +771,7 @@
             })
         }
 
-        $import = (element) => {
+        $import = async (element) => {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Document will be imported!",
@@ -780,7 +780,7 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, import it!'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
                         title: 'Loading...',
@@ -792,6 +792,10 @@
                     })
 
                     let formData = new FormData();
+                    formData.append(
+                        await csrf().then(csrf => csrf.token_name),
+                        await csrf().then(csrf => csrf.hash)
+                    )
                     axios.post(BASE_URL + "import_excel", formData)
                         .then(res => {
                             status_crud = true
