@@ -755,7 +755,7 @@
             })
         }
 
-        $import = async (element) => {
+        $import = async (form) => {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Document will be imported!",
@@ -775,7 +775,7 @@
                         }
                     })
 
-                    let formData = new FormData();
+                    let formData = new FormData(form);
                     formData.append(
                         await csrf().then(csrf => csrf.token_name),
                         await csrf().then(csrf => csrf.hash)
