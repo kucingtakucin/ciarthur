@@ -31,7 +31,7 @@ class Pengaduan extends MY_Controller
 	{
         $pusher = $this->pusher->get_pusher();            
         $pusher->trigger('kirim-pengaduan-channel', 'kirim-pengaduan-event', [
-            'title' => 'Pemberitahuan'
+            'title' => 'Pemberitahuan',
             'message' => 'Ada pengaduan baru yang masuk!'
         ]);
 
