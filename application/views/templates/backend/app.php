@@ -167,7 +167,7 @@
             <?php endforeach ?>
 
             <div class="modal fade" id="modal_account" role="dialog" aria-labelledby="modal-popin" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <form class="needs-validation" id="form_account" method="post" enctype="multipart/form-data" novalidate>
                             <div class="modal-header">
@@ -176,7 +176,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="col-md-12" for="username">Username</label>
                                             <input type="text" id="ubah_username" class="form-control" name="username" value="<?= user()->username ?>" readonly required autocomplete="off" placeholder="Masukkan Username">
@@ -186,7 +186,7 @@
                                    
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="col-md-12" for="password">Password</label>
                                             <input type="password" id="ubah_password" class="form-control" name="password" required autocomplete="off" placeholder="Masukkan Password">
