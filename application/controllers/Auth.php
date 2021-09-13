@@ -21,8 +21,7 @@ class Auth extends MY_Controller
 		$this->load->library(['form_validation']);
 		$this->load->helper(['url', 'language']);
 
-		// $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
-		$this->form_validation->set_error_delimiters('<span>', '<span>');
+		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
 		$this->lang->load('auth');
 	}
@@ -55,7 +54,7 @@ class Auth extends MY_Controller
 				// if the login was un-successful
 				// redirect them back to the login page
 				return $this->output->set_content_type('application/json')
-					->set_status_header(422)
+					->set_status_header(404)
 					->set_output(json_encode([
 						'status' => false,
 						'message' => $this->ion_auth->errors()
@@ -76,6 +75,7 @@ class Auth extends MY_Controller
 			]);
 		} else {
 			return $this->output->set_content_type('application/json')
+				->set_status_header(404)
 				->set_output([
 					'status' => false,
 					'message' => 'Ada kesalahan Recaptcha. Silakan coba lagi',
