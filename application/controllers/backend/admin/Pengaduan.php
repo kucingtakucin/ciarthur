@@ -1,4 +1,8 @@
 <?php
+
+use Ozdemir\Datatables\Datatables;
+use Ozdemir\Datatables\DB\CodeigniterAdapter;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pengaduan extends MY_Controller
@@ -26,13 +30,21 @@ class Pengaduan extends MY_Controller
 		]);
 	}
 
-	public function coba()
+	public function data()
 	{
-		if ($this->input->method() == 'post') {
-			$pusher = $this->pusher->get_pusher();
-			$pusher->trigger('ciarthur-pengaduan-channel', 'ciarthur-pengaduan-event', [
-				'message' => 'Ini adalah uji coba'
-			]);
-		}
+		$datatables = new Datatables(new CodeigniterAdapter());
+        $datatables->query(
+            "SELECT a.id, a.name, a.email, a.phone, a.message, a.created_at
+            FROM pengaduan AS a
+            WHERE a.is_active = '1'"
+        );
+
+        // Add row index
+        $datatables->add('DT_RowIndex', function () {
+            return 0;
+        });
+
+        return $this->output->set_content_type('application/json')
+            ->set_output($datatables->generate());
 	}
 }

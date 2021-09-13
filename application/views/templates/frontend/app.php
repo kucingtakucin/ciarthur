@@ -140,7 +140,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/scripts.js"></script>
+    <script src="<?= base_url() ?>assets/snowlake/js/scripts.js"></script>
     <script>
         let csrf, loading, $edit_account;
 

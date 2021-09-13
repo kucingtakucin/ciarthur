@@ -285,15 +285,16 @@
             * Keperluan pusher pengaduan
             */
             // ================================================== //
-            var pusher = new Pusher('21a14c9bc94b57c3db03', {
+            Pusher.logToConsole = true;
+            
+            let pusher = new Pusher('21a14c9bc94b57c3db03', {
                 cluster: 'ap1'
             });
 
-            var channel = pusher.subscribe('ciarthur-pengaduan-channel');
-                channel.bind('ciarthur-pengaduan-event', function(data) {
-                console.log(JSON.stringify(data));
+            let channel = pusher.subscribe('kirim-pengaduan-channel');
+            channel.bind('kirim-pengaduan-event', function(data) {
                 Swal.fire({
-                    title: 'Informasi', 
+                    title: data.title, 
                     icon: 'info', 
                     text: data.message
                 })

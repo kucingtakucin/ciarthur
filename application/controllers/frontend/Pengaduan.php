@@ -10,6 +10,7 @@ class Pengaduan extends MY_Controller
     {
         parent::__construct();
         $this->load->library('pusher');
+        $this->load->model($this->_path . 'M_Pengaduan');
     }
 
     public function index()
@@ -26,13 +27,28 @@ class Pengaduan extends MY_Controller
         ]);
     }
 
-    public function coba()
+    public function insert()
 	{
-		if ($this->input->method() == 'post') {
-			$pusher = $this->pusher->get_pusher();            
-			$pusher->trigger('ciarthur-pengaduan-channel', 'ciarthur-pengaduan-event', [
-				'message' => 'Ini adalah uji coba'
-			]);
-		}
+        $pusher = $this->pusher->get_pusher();            
+        $pusher->trigger('kirim-pengaduan-channel', 'kirim-pengaduan-event', [
+            'title' => 'Pemberitahuan'
+            'message' => 'Ada pengaduan baru yang masuk!'
+        ]);
+
+        $M_Pengaduan->insert([
+            [
+                'name' => $this->input->post('name'),
+                'email' => $this->input->post('email'),
+                'phone' => $this->input->post('phone'),
+                'message' => $this->input->post('message'),
+                'created_at' => date('Y-m-d H:i:s')
+            ]
+        ]);
+
+        return $this->output->set_content_type('application/json')
+            ->set_output(json_encode([
+                'status' => true,
+                'message' => 'Berhasil mengirimkan pengaduan!'
+            ]));
 	}
 }

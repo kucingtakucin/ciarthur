@@ -1,13 +1,15 @@
 <script>
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let $store_pengaduan
+    let $insert
 
     $(() => {
         /**
-        * Keperluan kirim pengaduan
+        * Keperluan store pengaduan
         */
         // ================================================== //
-        $store_pengaduan = async (form) => {
+        $insert = async (form) => {
+            loading()
+            
             let formData = new FormData(form)
             formData.append(
                 await csrf().then(csrf => csrf.token_name),
@@ -16,14 +18,36 @@
 
             axios.post(BASE_URL + 'coba', formData)
                 .then(res => {
-                    console.log(res)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        // html: err.response.data.message,
+                        text: err.response.statusText
+                    })
+                }).then(() => {
+                    $('#pengaduan-form').trigger('reset');
+                    $('#modal_ubah').modal('hide');
                 })
         }
 
-        $('#contact-form').submit(function (event) {
+        $('#pengaduan-form').validator({
+			disable: false,
+			focus: false
+		});
+
+        $('#pengaduan-form').submit(function (event) {
             event.preventDefault()
             if (this.checkValidity()) {
-                $store_pengaduan(this)
+                $insert(this)
             }
         })
     })
