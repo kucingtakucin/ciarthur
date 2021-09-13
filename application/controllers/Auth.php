@@ -38,7 +38,7 @@ class Auth extends MY_Controller
 
 		if ($this->input->method() == 'get') {
 			if (logged_in()) {
-				redirect(redirect_to())
+				redirect(redirect_to());
 			}
 
 			// the user is not logging in so display the login page
