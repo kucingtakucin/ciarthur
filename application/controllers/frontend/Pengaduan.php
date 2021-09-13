@@ -29,19 +29,7 @@ class Pengaduan extends MY_Controller
     public function coba()
 	{
 		if ($this->input->method() == 'post') {
-			// $pusher = $this->pusher->get_pusher();
-            $options = array(
-                'cluster' => 'ap1',
-                'useTLS' => true
-            );
-            
-            $pusher = new Pusher\Pusher(
-            '21a14c9bc94b57c3db03',
-            '84188f49f188619fa082',
-            '1265181',
-            $options
-            );
-            
+			$pusher = $this->pusher->get_pusher();            
 			$pusher->trigger('ciarthur-pengaduan-channel', 'ciarthur-pengaduan-event', [
 				'message' => 'Ini adalah uji coba'
 			]);
