@@ -60,7 +60,7 @@ class Auth extends MY_Controller
 						'message' => $this->ion_auth->errors()
 					]));
 			}
-		} elseif ($this->input->method('get') ) {
+		} elseif ($this->input->method() == 'get' ) {
 			// the user is not logging in so display the login page
 			// set the flash data error message if there is one
 
