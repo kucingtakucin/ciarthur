@@ -136,6 +136,9 @@
     <!-- Pusher -->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script> 
 
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/scripts.js"></script>
     <script>
