@@ -6,36 +6,36 @@
         
         <div class="row">
             <div class="col-lg-7">
-                <form id="pengaduan-form" class="fields-white">
+                <form id="form-pengaduan" class="fields-white needs-validation" novalidate>
                     <div class="messages"></div>
                     <div class="controls">
                         <div class="form-row">
                             <div class="col-lg-12 col-xl-12">
                                 <div class="form-group">
-                                    <input id="form_name" type="text" name="name" class="form-control" placeholder="Nama Lengkap *" autocomplete="off" required data-error="Nama lengkap wajib diisi">
-                                    <div class="help-block with-errors"></div>
+                                    <input id="form_name" type="text" name="name" class="form-control" placeholder="Nama Lengkap *" autocomplete="off" required>
+                                    <?= validation_feedback('Nama lengkap','wajib diisi') ?>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-lg-12 col-xl-6">
                                 <div class="form-group">
-                                    <input id="form_email" type="email" name="email" class="form-control" placeholder="Email *" autocomplete="off" required data-error="Email wajib diisi dan harus valid">
-                                    <div class="help-block with-errors"></div>
+                                    <input id="form_email" type="email" name="email" class="form-control" placeholder="Email *" autocomplete="off" required>
+                                    <?= validation_feedback('Email','wajib diisi dan harus valid') ?>
                                </div>
                             </div>
                             <div class="col-lg-12 col-xl-6">
                                 <div class="form-group">
                                     <input id="form_phone" type="tel" name="phone" class="form-control" autocomplete="off" placeholder="Phone">
-                                    <div class="help-block with-errors"></div>                                
+                                    <?= validation_feedback('Nomor telepon','wajib diisi dan harus valid') ?>                                
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <textarea id="form_message" name="message" class="form-control" autocomplete="off" placeholder="Message *" rows="4" required data-error="Pesan wajib diisi"></textarea> 
-                                    <div class="help-block with-errors"></div>                              
+                                    <textarea id="form_message" name="message" class="form-control" autocomplete="off" placeholder="Message *" rows="4" required></textarea> 
+                                    <?= validation_feedback('Pesan pengaduan','wajib diisi') ?>                              
                                 </div>
                             </div>
                             <div class="col-md-12">

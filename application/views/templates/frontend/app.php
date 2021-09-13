@@ -142,6 +142,9 @@
     <!-- SweetAlert2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Form Validation Custom -->
+    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
+
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="<?= base_url() ?>assets/snowlake/js/scripts.js"></script>
     <script>
