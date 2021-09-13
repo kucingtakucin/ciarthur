@@ -451,8 +451,9 @@ class Mahasiswa extends MY_Controller
                 return $this->output->set_content_type('application/json')
                     ->set_status_header(404)
                     ->set_output(json_encode([
-                        'status' => true,
-                        'message' => 'Berhasil melakukan import'
+                        'status' => false,
+                        'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
+                        'mimetype' => $_FILES['import_file_excel']['type']
                     ]));
             }
     
