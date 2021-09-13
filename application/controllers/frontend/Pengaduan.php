@@ -35,7 +35,7 @@ class Pengaduan extends MY_Controller
             'message' => 'Ada pengaduan baru yang masuk!'
         ]);
 
-        $this->M_Pengaduan->insert([
+        $this->M_Pengaduan->insert(
             [
                 'name' => $this->input->post('name'),
                 'email' => $this->input->post('email'),
@@ -43,7 +43,7 @@ class Pengaduan extends MY_Controller
                 'message' => $this->input->post('message'),
                 'created_at' => date('Y-m-d H:i:s')
             ]
-        ]);
+        );
 
         return $this->output->set_content_type('application/json')
             ->set_output(json_encode([
