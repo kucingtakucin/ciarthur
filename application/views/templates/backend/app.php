@@ -240,6 +240,35 @@
                 $('.g-recaptcha').css('transform-origin', '0 0');
                 $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
             }
+
+            /**
+            * Keperluan disable inspect element
+            */
+            // ================================================== //
+            // Disable right click
+            $(document).contextmenu(function(event) {
+                event.preventDefault()
+            })
+
+            $(document).keydown(function(event) {
+                // Disable F12
+                if (event.keyCode == 123) return false;
+
+                // Disable Ctrl + Shift + I
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
+                }
+
+                // Disable Ctrl + Shift + J
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
+
+                // Disable Ctrl + U
+                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
+                }
+            })
         })
     </script>
     <?php $this->load->view($script) ?>
