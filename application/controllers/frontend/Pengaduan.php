@@ -35,7 +35,7 @@ class Pengaduan extends MY_Controller
             'message' => 'Ada pengaduan baru yang masuk!'
         ]);
 
-        $M_Pengaduan->insert([
+        $this->M_Pengaduan->insert([
             [
                 'name' => $this->input->post('name'),
                 'email' => $this->input->post('email'),
