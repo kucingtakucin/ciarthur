@@ -16,7 +16,7 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya, kirim!'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     loading()
         
