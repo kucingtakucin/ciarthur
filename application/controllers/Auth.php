@@ -37,6 +37,20 @@ class Auth extends MY_Controller
 			->verify($this->input->post('g-recaptcha-response'));
 
 		if ($this->input->method() == 'get') {
+			// the user is not logging in so display the login page
+			// set the flash data error message if there is one
+
+			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
+			$this->templates->render([
+				'title' => 'Login',
+				'type' => 'auth',
+				'uri_segment' => $this->_path,
+				'page' => $this->_path . 'login',
+				'script' => $this->_path . 'js/script_js',
+				'style' => $this->_path . 'css/style_css',
+				'modal' => [],
+			]);
+		} elseif ($this->input->method() == 'post' && $response->isSuccess()) {
 			// check to see if the user is logging in
 			// check for "remember me"
 			$remember = (bool) $this->input->post('remember');
@@ -60,20 +74,6 @@ class Auth extends MY_Controller
 						'message' => $this->ion_auth->errors()
 					]));
 			}
-		} elseif ($this->input->method() == 'post' && $response->isSuccess()) {
-			// the user is not logging in so display the login page
-			// set the flash data error message if there is one
-
-			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
-			$this->templates->render([
-				'title' => 'Login',
-				'type' => 'auth',
-				'uri_segment' => $this->_path,
-				'page' => $this->_path . 'login',
-				'script' => $this->_path . 'js/script_js',
-				'style' => $this->_path . 'css/style_css',
-				'modal' => [],
-			]);
 		}
 		return $this->output->set_content_type('application/json')
 			->set_status_header(404)
