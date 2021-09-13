@@ -12,6 +12,7 @@
         </div>
     </li>
     <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(3, 'mahasiswa') ?>" href="<?= base_admin('mahasiswa') ?>"><i data-feather="book-open"></i><span>Mahasiswa</span></a></li>
+    <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(3, 'pengaduan') ?>" href="<?= base_admin('pengaduan') ?>"><i data-feather="message-square"></i><span>Pengaduan</span></a></li>
 
     <li class="sidebar-main-title">
         <div>
