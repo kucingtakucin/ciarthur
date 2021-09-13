@@ -60,7 +60,7 @@ class Auth extends MY_Controller
 						'message' => $this->ion_auth->errors()
 					]));
 			}
-		} elseif ($this->input->method() == 'get' ) {
+		} elseif ($this->input->method() == 'get') {
 			// the user is not logging in so display the login page
 			// set the flash data error message if there is one
 
@@ -74,15 +74,15 @@ class Auth extends MY_Controller
 				'style' => $this->_path . 'css/style_css',
 				'modal' => [],
 			]);
-		} else {
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Ada kesalahan. Silakan coba lagi',
-					'errors' => $response->getErrorCodes()
-				]));
 		}
+		return $this->output->set_content_type('application/json')
+			->set_status_header(404)
+			->set_output(json_encode([
+				'status' => false,
+				'message' => 'Ada kesalahan. Silakan coba lagi',
+				'errors' => $response->getErrorCodes()
+			]));
+	
 	}
 
 	/**
