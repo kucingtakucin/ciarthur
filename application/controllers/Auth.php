@@ -39,7 +39,7 @@ class Auth extends MY_Controller
 		if ($this->input->method() == 'post' && $response->isSuccess()) {
 			// check to see if the user is logging in
 			// check for "remember me"
-			$remember = (bool)$this->input->post('remember');
+			$remember = (bool) $this->input->post('remember');
 
 			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
 				//if the login is successful
@@ -73,15 +73,14 @@ class Auth extends MY_Controller
 				'script' => $this->_path . 'index_js',
 				'modal' => [],
 			]);
-		} else {
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output([
-					'status' => false,
-					'message' => 'Ada kesalahan Recaptcha. Silakan coba lagi',
-					'errors' => $response->getErrorCodes()
-				]);
-		}
+		} 
+		return $this->output->set_content_type('application/json')
+			->set_status_header(404)
+			->set_output([
+				'status' => false,
+				'message' => 'Ada kesalahan Recaptcha. Silakan coba lagi',
+				'errors' => $response->getErrorCodes()
+			]);
 	}
 
 	/**

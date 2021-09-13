@@ -1,52 +1,9 @@
 <script>
     let csrf, login, loading;
-    const BASE_URL = "<?= base_url($uri_segment) ?>"
-    /**
-     * Keperluan disable inspect element
-     */
-    // ================================================== //
-    // Disable right click
-    $(document).contextmenu(function(event) {
-        event.preventDefault()
-    })
-
-    $(document).keydown(function(event) {
-        // Disable F12
-        if (event.keyCode == 123) return false;
-
-        // Disable Ctrl + Shift + I
-        if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-            return false;
-        }
-
-        // Disable Ctrl + Shift + J
-        if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-            return false;
-        }
-
-        // Disable Ctrl + U
-        if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-            return false;
-        }
-    })
+    const BASE_URL = "<?= base_url($uri_segment) ?>"\
 
     // Document ready
     $(() => {
-        
-        /**
-         * Keperluan generate csrf
-         */
-        // ================================================== //
-        csrf = async () => {
-            let formData = new FormData()
-            formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
-
-            let res = await axios.post('<?= base_url('csrf/generate') ?>', formData)
-            return {
-                token_name: res.data.csrf_token_name,
-                hash: res.data.csrf_hash
-            }
-        }
 
         /**
          * Keperluan show loading
