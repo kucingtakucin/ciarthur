@@ -442,7 +442,7 @@ class Mahasiswa extends MY_Controller
     {
         if (is_uploaded_file($_FILES['import_file_excel']['tmp_name'])) {
             if (!in_array(mime_content_type($_FILE['import_file_excel']['tmp_name']), ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return $this->output->set_content_type('application/json')
+                return $this->output->set_content_type('application/json')                                         
                     ->set_status_header(404)
                     ->set_output(json_encode([
                         'status' => false,
@@ -463,7 +463,6 @@ class Mahasiswa extends MY_Controller
                     ->set_output(json_encode([
                         'status' => false,
                         'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
-                        'mimetype' => mime_content_type($_FILES['import_file_excel']['tmp_name'])
                     ]));
             }
     
