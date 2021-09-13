@@ -76,11 +76,11 @@ class Auth extends MY_Controller
 		} 
 		return $this->output->set_content_type('application/json')
 			->set_status_header(404)
-			->set_output([
+			->set_output(json_encode([
 				'status' => false,
-				'message' => 'Ada kesalahan Recaptcha. Silakan coba lagi',
+				'message' => 'Ada kesalahan. Silakan coba lagi',
 				'errors' => $response->getErrorCodes()
-			]);
+			]));
 	}
 
 	/**
