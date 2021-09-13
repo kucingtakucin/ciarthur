@@ -791,7 +791,7 @@
                         }
                     })
 
-                    let formData = new FormData(form);
+                    let formData = new FormData();
                     axios.post(BASE_URL + "import_excel", formData)
                         .then(res => {
                             status_crud = true
