@@ -6,7 +6,7 @@
         
         <div class="row">
             <div class="col-lg-7">
-                <form id="pengaduan-form" class="fields-white" method="post">
+                <form id="contact-form" class="fields-white" method="post">
                     <div class="messages"></div>
                     <div class="controls">
                         <div class="form-row">

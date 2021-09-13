@@ -20,7 +20,7 @@
                 })
         }
 
-        $('#pengaduan-form').submit(function (event) {
+        $('#contact-form').submit(function (event) {
             event.preventDefault()
             if (this.checkValidity()) {
                 $store_pengaduan(this)
