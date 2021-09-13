@@ -1,4 +1,8 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php 
+
+use Pusher;
+
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Pusher for CodeIgniter

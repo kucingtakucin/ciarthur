@@ -9,7 +9,7 @@ class Pengaduan extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        // $this->load->library('pusher');
+        $this->load->library('pusher');
     }
 
     public function index()
