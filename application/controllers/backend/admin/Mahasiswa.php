@@ -441,9 +441,15 @@ class Mahasiswa extends MY_Controller
     public function import_excel()
     {
         if (is_uploaded_file($_FILES['import_file_excel']['tmp_name'])) {
-            // if (!in_array(mime_content_type($_FILE['import_file_excel']['tmp_name']), ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-            //     # code...
-            // }
+            if (!in_array(mime_content_type($_FILE['import_file_excel']['tmp_name']), ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+                return $this->output->set_content_type('application/json')
+                    ->set_status_header(404)
+                    ->set_output(json_encode([
+                        'status' => false,
+                        'message' => 'Ekstensi file tidak sesuai! Wajib <b>.xlsx</b>',
+                        'mimetype' => mime_content_type($_FILES['import_file_excel']['tmp_name'])
+                    ]));
+            }
 
             $spreadsheet = IOFactory::load($_FILES['import_file_excel']['tmp_name']);
             $data = $spreadsheet->getActiveSheet()->toArray();

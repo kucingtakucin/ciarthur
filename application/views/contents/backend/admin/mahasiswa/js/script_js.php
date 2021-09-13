@@ -766,6 +766,7 @@
                 confirmButtonText: 'Yes, import it!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
+                    status_crud = true
                     Swal.fire({
                         title: 'Loading...',
                         allowEscapeKey: false,
@@ -782,7 +783,6 @@
                     )
                     axios.post(BASE_URL + "import_excel", formData)
                         .then(res => {
-                            status_crud = true
                             initMap()
 
                             Swal.fire({
@@ -796,7 +796,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: err.response.data.message,
+                                html: err.response.data.message,
                                 // text: err.response.statusText,
                             })
                         }).then(() => {
