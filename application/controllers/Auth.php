@@ -37,10 +37,11 @@ class Auth extends MY_Controller
 			->verify($this->input->post('g-recaptcha-response'));
 
 		if ($this->input->method() == 'get') {
-			// the user is not logging in so display the login page
-			// set the flash data error message if there is one
+			if (logged_in()) {
+				redirect(redirect_to())
+			}
 
-			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'login', $this->data);
+			// the user is not logging in so display the login page
 			$this->templates->render([
 				'title' => 'Login',
 				'type' => 'auth',
