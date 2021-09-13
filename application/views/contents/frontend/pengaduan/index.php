@@ -12,7 +12,7 @@
                         <div class="form-row">
                             <div class="col-lg-12 col-xl-12">
                                 <div class="form-group">
-                                    <input id="form_name" type="text" name="name" class="form-control" placeholder="Nama Lengkap *" required="required" data-error="Nama lengkap wajib diisi">
+                                    <input id="form_name" type="text" name="name" class="form-control" placeholder="Nama Lengkap *" required data-error="Nama lengkap wajib diisi">
                                     <?= validation_feedback("nama lengkap", "wajib diisi") ?>
                                 </div>
                             </div>
@@ -20,7 +20,7 @@
                         <div class="form-row">
                             <div class="col-lg-12 col-xl-6">
                                 <div class="form-group">
-                                    <input id="form_email" type="email" name="email" class="form-control" placeholder="Email *" required="required" data-error="Email wajib diisi dan harus valid">
+                                    <input id="form_email" type="email" name="email" class="form-control" placeholder="Email *" required data-error="Email wajib diisi dan harus valid">
                                     <?= validation_feedback("email", "wajib diisi dan harus valid") ?> 
                                </div>
                             </div>
@@ -34,12 +34,12 @@
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <textarea id="form_message" name="message" class="form-control" placeholder="Message *" rows="4" required="required" data-error="Pesan wajib diisi"></textarea>
+                                    <textarea id="form_message" name="message" class="form-control" placeholder="Message *" rows="4" required data-error="Pesan wajib diisi"></textarea>
                                     <?= validation_feedback("pesan", "wajib diisi") ?>                                
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <input type="submit" class="btn btn-send" value="Send message">
+                                <button type="submit" class="btn btn-send">Send message</button>
                             </div>
                         </div>
                         <div class="form-row">
