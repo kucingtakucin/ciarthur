@@ -1,5 +1,5 @@
 <script>
-    let csrf, login, loading;
+    let login;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
 
     // Document ready

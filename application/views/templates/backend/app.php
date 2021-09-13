@@ -229,6 +229,7 @@
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
+        let csrf, loading;
         $(document).ready(function() {
 
             /**

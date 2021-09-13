@@ -1,7 +1,6 @@
 <script>
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, csrf, status_crud = false,
-        loading,
+    let datatable, status_crud = false,
         $insert, $update, $delete, $import,
         map, map_modal, marker_modal, legend;
 
