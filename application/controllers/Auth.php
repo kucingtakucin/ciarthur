@@ -22,7 +22,7 @@ class Auth extends MY_Controller
 		$this->load->helper(['url', 'language']);
 
 		// $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
-		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_error_delimiters('<span>', '<span>');
 
 		$this->lang->load('auth');
 	}
