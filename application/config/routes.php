@@ -55,6 +55,8 @@ $route['logout'] = 'auth/logout';
 $route['email'] = 'email/email';
 $route['img/(.+)'] = 'image/show/$1';   // League Glide
 
+$route['pengaduan'] = 'frontend/pengaduan/index';
+
 $route['logs'] = "logViewerController/index";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
