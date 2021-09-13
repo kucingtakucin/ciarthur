@@ -104,7 +104,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: err.response.data.message,
+                        html: err.response.data.message,
                         // html: 'Something went wrong!'
                     })
                 }).then(res => {
