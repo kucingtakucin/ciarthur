@@ -440,7 +440,11 @@ class Mahasiswa extends MY_Controller
      */
     public function import_excel()
     {
-        if ($_FILES['import_file_excel']['name']) {
+        if (is_uploaded_file($_FILES['import_file_excel']['tmp_name'])) {
+            // if (!in_array(mime_content_type($_FILE['import_file_excel']['tmp_name']), ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+            //     # code...
+            // }
+
             $spreadsheet = IOFactory::load($_FILES['import_file_excel']['tmp_name']);
             $data = $spreadsheet->getActiveSheet()->toArray();
     
@@ -453,7 +457,7 @@ class Mahasiswa extends MY_Controller
                     ->set_output(json_encode([
                         'status' => false,
                         'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
-                        'mimetype' => $_FILES['import_file_excel']['type']
+                        'mimetype' => mime_content_type($_FILES['import_file_excel']['tmp_name'])
                     ]));
             }
     
