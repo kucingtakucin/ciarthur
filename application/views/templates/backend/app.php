@@ -62,6 +62,7 @@
 
     <!-- Custom Stylesheets -->
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
+    <?= $this->load->view($style) ?>
 </head>
 
 <body>

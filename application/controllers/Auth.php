@@ -70,7 +70,8 @@ class Auth extends MY_Controller
 				'type' => 'auth',
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'login',
-				'script' => $this->_path . 'index_js',
+				'script' => $this->_path . 'js/script_js',
+				'style' => $this->_path . 'css/style_css',
 				'modal' => [],
 			]);
 		} else {
@@ -122,13 +123,15 @@ class Auth extends MY_Controller
 				'users' => $this->data['users'],
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'index',
-				'script' => $this->_path . 'index_js',
+				'script' => $this->_path . 'js/script_js',
+				'style' => $this->_path . 'css/style_css',
 				'modals' => []
 			]);
 		}
 	}
 
 	/**
+	 * 
 	 * Log the user out
 	 */
 	public function logout()
@@ -409,13 +412,14 @@ class Auth extends MY_Controller
 				'identity' => $this->data['identity'],
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'deactivate_user',
-				'script' => $this->_path . 'index_js',
+				'script' => $this->_path . 'js/script_js',
+				'style' => $this->_path . 'css/style_css',
 				'modals' => []
 			]);
 		} else {
 			// do we really want to deactivate?
 			if ($this->input->post('confirm') == 'yes') {
-				// do we have a valid request?
+				// do we have a valid request?				
 				if ($this->_valid_csrf_nonce() === FALSE || $id != $this->input->post('id')) {
 					show_error($this->lang->line('error_csrf'));
 				}
@@ -547,7 +551,8 @@ class Auth extends MY_Controller
 				'message' => $this->data['message'],
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'create_user',
-				'script' => $this->_path . 'index_js',
+				'script' => $this->_path . 'js/script_js',
+				'style' => $this->_path . 'css/style_css',
 				'modals' => []
 			]);
 		}
@@ -704,7 +709,8 @@ class Auth extends MY_Controller
 			'message' => $this->data['message'],
 			'uri_segment' => $this->_path,
 			'page' => $this->_path . 'edit_user',
-			'script' => $this->_path . 'index_js',
+			'script' => $this->_path . 'js/script_js',
+			'style' => $this->_path . 'css/style_css',
 			'modals' => []
 		]);
 	}
@@ -761,7 +767,8 @@ class Auth extends MY_Controller
 			'description' => $this->data['description'],
 			'uri_segment' => $this->_path,
 			'page' => $this->_path . 'create_group',
-			'script' => $this->_path . 'index_js',
+			'script' => $this->_path . 'js/script_js',
+			'style' => $this->_path . 'css/style_css',
 			'modals' => []
 		]);
 	}
@@ -837,7 +844,8 @@ class Auth extends MY_Controller
 			'group_description' => $this->data['group_description'],
 			'uri_segment' => $this->_path,
 			'page' => $this->_path . 'edit_group',
-			'script' => $this->_path . 'index_js',
+			'script' => $this->_path . 'js/script_js',
+			'style' => $this->_path . 'css/style_css',
 			'modals' => []
 		]);
 	}

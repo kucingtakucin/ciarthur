@@ -42,7 +42,8 @@ class Mahasiswa extends MY_Controller
             'type' => 'backend', // auth, frontend, backend
             'uri_segment' => $this->_path,
             'page' => 'contents/' . $this->_path . 'index',
-            'script' => 'contents/' . $this->_path . 'index_js',
+            'script' => 'contents/' . $this->_path . 'js/script_js',
+            'style' => 'contents/' . $this->_path . 'css/style_css',
             'modals' => [
                 'contents/' . $this->_path . 'modal/tambah',
                 'contents/' . $this->_path . 'modal/ubah',
