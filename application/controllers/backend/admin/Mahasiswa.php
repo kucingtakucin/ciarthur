@@ -450,10 +450,10 @@ class Mahasiswa extends MY_Controller
             ) {
                 return $this->output->set_content_type('application/json')
                     ->set_status_header(404)
-                    ->set_output([
+                    ->set_output(json_encode([
                         'status' => true,
                         'message' => 'Berhasil melakukan import'
-                    ]);
+                    ]));
             }
     
             for ($i = 4; $i < count($data); $i++) {
@@ -481,17 +481,17 @@ class Mahasiswa extends MY_Controller
             }
     
             return $this->output->set_content_type('application/json')
-                ->set_output([
+                ->set_output(json_encode([
                     'status' => true,
                     'message' => 'Berhasil melakukan import'
-                ]);
+                ]));
         }
         return $this->output->set_content_type('application/json')
             ->set_status_header(404)
-            ->set_output([
+            ->set_output(json_encode([
                 'status' => false,
                 'message' => 'Gagal melakukan import! Ada kesalahan'
-            ]);
+            ]));
     }
 
     /**
