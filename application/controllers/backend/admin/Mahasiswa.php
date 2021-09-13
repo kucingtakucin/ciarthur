@@ -61,11 +61,10 @@ class Mahasiswa extends MY_Controller
         $datatables = new Datatables(new CodeigniterAdapter());
         $datatables->query(
             "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto,
-            b.nama AS nama_prodi, c.nama AS nama_fakultas, a.created_at,
-            a.prodi_id, a.fakultas_id, a.latitude, a.longitude
+            (SELECT b.nama FROM prodi AS b WHERE b.id = a.prodi_id) AS nama_prodi,
+            (SELECT c.nama FROM fakultas AS c WHERE c.id = a.fakultas_id) AS nama_fakultas,
+            a.created_at, a.prodi_id, a.fakultas_id, a.latitude, a.longitude
             FROM mahasiswa AS a
-            JOIN prodi AS b ON b.id = a.prodi_id
-            JOIN fakultas AS c ON c.id = a.fakultas_id
             WHERE a.is_active = '1'"
         );
 
@@ -81,20 +80,19 @@ class Mahasiswa extends MY_Controller
     /**
      * Returns the sql query string that is created by the library (for dev purpose)
      */
-    public function get_query()
+    public function get_dt_query()
     {
         $datatables = new Datatables(new CodeigniterAdapter());
         $datatables->query(
             "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto,
-            b.nama AS nama_prodi, c.nama AS nama_fakultas, a.created_at,
-            a.prodi_id, a.fakultas_id, a.latitude, a.longitude
+            (SELECT b.nama FROM prodi AS b WHERE b.id = a.prodi_id) AS nama_prodi,
+            (SELECT c.nama FROM fakultas AS c WHERE c.id = a.fakultas_id) AS nama_fakultas,
+            a.created_at, a.prodi_id, a.fakultas_id, a.latitude, a.longitude
             FROM mahasiswa AS a
-            JOIN prodi AS b ON b.id = a.prodi_id
-            JOIN fakultas AS c ON c.id = a.fakultas_id
             WHERE a.is_active = '1'"
         );
-
-        var_dump($datatables->getQuery());    
+        $datatables->generate();
+        echo $datatables->getQuery();
     }
 
     /**
@@ -102,7 +100,7 @@ class Mahasiswa extends MY_Controller
      */
     public function last_query()
     {
-        var_dump($this->db->last_query());
+        echo $this->db->last_query();
     }
 
     /**
@@ -441,50 +439,50 @@ class Mahasiswa extends MY_Controller
      */
     public function import_excel()
     {
-        if ($request->hasFile('import_file_excel')) {
-            $spreadsheet = IOFactory::load($request->file('import_file_excel')->getRealPath());
-            $data = $spreadsheet->getActiveSheet()->toArray();
+        $spreadsheet = IOFactory::load($request->file('import_file_excel')->getRealPath());
+        $data = $spreadsheet->getActiveSheet()->toArray();
 
-            if (
-                !($data[3][1] === 'NO' && $data[3][2] === 'NIM' && $data[3][3] === 'NAMA LENGKAP' && $data[3][4] === 'ANGKATAN'
-                    && $data[3][5] === 'PROGRAM STUDI' && $data[3][6] === 'FAKULTAS' && $data[3][7] === 'LATITUDE' && $data[3][8] === 'LONGITUDE')
-            ) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Format tidak sesuai, mohon gunakan format dari template!'
-                ], 404);
-            }
-
-            for ($i = 4; $i < count($data); $i++) {
-                if (
-                    $data[$i][1] && $data[$i][1] !== 'NO' && $data[$i][2] && $data[$i][2] !== 'NIM'
-                    && $data[$i][3] !== 'NAMA LENGKAP' && $data[$i][4] !== 'ANGKATAN' && $data[$i][5] !== 'PROGRAM STUDI'
-                    && $data[$i][6] !== 'FAKULTAS' && $data[$i][7] !== 'LATITUDE' && $data[$i][8] !== 'LONGITUDE'
-                ) {
-                    $this->M_Mahasiswa->insert(
-                        [
-                            'nim' => $data[$i][2] ?? null,
-                            'nama' => $data[$i][3] ?? null,
-                            'prodi_id' => $this->db->get_where('prodi', ['nama' => strtoupper($data[$i][5])])->row()->id ?? null,
-                            'fakultas_id' => $this->db->get_where('fakultas', ['nama' => strtoupper($data[$i][6])])->row()->id ?? null,
-                            'angkatan' => $data[$i][4] ?? null,
-                            'latitude' => $data[$i][7] ?? null,
-                            'longitude' =>  $data[$i][8] ?? null,
-                            'foto' => null,
-                            'is_active' => '1',
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => get_user_id(),
-                        ]
-                    );
-                }
-            }
-
+        if (
+            !($data[3][1] === 'NO' && $data[3][2] === 'NIM' && $data[3][3] === 'NAMA LENGKAP' && $data[3][4] === 'ANGKATAN'
+                && $data[3][5] === 'PROGRAM STUDI' && $data[3][6] === 'FAKULTAS' && $data[3][7] === 'LATITUDE' && $data[3][8] === 'LONGITUDE')
+        ) {
             return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
                 ->set_output([
                     'status' => true,
                     'message' => 'Berhasil melakukan import'
                 ]);
         }
+
+        for ($i = 4; $i < count($data); $i++) {
+            if (
+                $data[$i][1] && $data[$i][1] !== 'NO' && $data[$i][2] && $data[$i][2] !== 'NIM'
+                && $data[$i][3] !== 'NAMA LENGKAP' && $data[$i][4] !== 'ANGKATAN' && $data[$i][5] !== 'PROGRAM STUDI'
+                && $data[$i][6] !== 'FAKULTAS' && $data[$i][7] !== 'LATITUDE' && $data[$i][8] !== 'LONGITUDE'
+            ) {
+                $this->M_Mahasiswa->insert(
+                    [
+                        'nim' => $data[$i][2] ?? null,
+                        'nama' => $data[$i][3] ?? null,
+                        'prodi_id' => $this->db->get_where('prodi', ['nama' => strtoupper($data[$i][5])])->row()->id ?? null,
+                        'fakultas_id' => $this->db->get_where('fakultas', ['nama' => strtoupper($data[$i][6])])->row()->id ?? null,
+                        'angkatan' => $data[$i][4] ?? null,
+                        'latitude' => $data[$i][7] ?? null,
+                        'longitude' =>  $data[$i][8] ?? null,
+                        'foto' => null,
+                        'is_active' => '1',
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => get_user_id(),
+                    ]
+                );
+            }
+        }
+
+        return $this->output->set_content_type('application/json')
+            ->set_output([
+                'status' => true,
+                'message' => 'Berhasil melakukan import'
+            ]);
     }
 
     /**

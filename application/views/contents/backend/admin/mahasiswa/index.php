@@ -34,7 +34,6 @@
     .map-modal-container {
         height: 50vh;
     }
-
 </style>
 
 <div class="card">
@@ -54,7 +53,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12 table-responsive">
-                <table id="datatable" class="table table-striped table-hover"></table>
+                <table id="datatable" class="table table-striped table-bordered table-hover"></table>
             </div>
         </div>
     </div>

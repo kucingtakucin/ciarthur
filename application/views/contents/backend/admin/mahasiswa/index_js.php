@@ -1,5 +1,4 @@
 <script>
-
     /**
      * Keperluan disable inspect element
      */
@@ -30,7 +29,8 @@
     })
 
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, csrf, status_crud = false, loading,
+    let datatable, csrf, status_crud = false,
+        loading,
         $insert, $update, $delete, $import,
         map, map_modal, marker_modal, legend;
 
@@ -97,8 +97,8 @@
                                         dashArray: '',
                                         fillOpacity: 0.7
                                     });
-                                    if (!L.Browser.ie && !L.Browser.opera 
-                                        &&!L.Browser.edge) {
+                                    if (!L.Browser.ie && !L.Browser.opera &&
+                                        !L.Browser.edge) {
                                         layer.bringToFront();
                                     }
                                 },
@@ -223,7 +223,7 @@
 
         initMap() // Init leaflet map
 
-       /**
+        /**
          * Keperluan generate csrf
          */
         // ================================================== //
@@ -327,8 +327,7 @@
                     Swal.close()
                 }
             },
-            columnDefs: [
-                {
+            columnDefs: [{
                     targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Sesuaikan dengan jumlah kolom
                     className: 'text-center'
                 },
@@ -602,7 +601,6 @@
                             .draw()
                     })
                 })
-
                 // ================================================== //
 
                 $('.datepicker').datepicker({
@@ -691,7 +689,7 @@
 
         $insert = async (form) => {
             status_crud = true
-            loading() 
+            loading()
 
             let formData = new FormData(form);
             formData.append(
@@ -728,7 +726,7 @@
                     $('#modal_tambah').modal('hide');
                     datatable.ajax.reload();
                 })
-        }  
+        }
 
         $update = async (form) => {
             status_crud = true
@@ -784,7 +782,7 @@
                 if (result.isConfirmed) {
                     status_crud = true
                     loading()
-                    
+
                     let formData = new FormData();
                     formData.append('id', $(element).data('id'));
                     formData.append(
@@ -869,7 +867,6 @@
                 }
             })
         }
-
         // ================================================== //
 
         /**
@@ -910,7 +907,6 @@
             $('#form_ubah').removeClass('was-validated')
             $('#form_ubah').trigger('reset')
         })
-
         // ================================================== //
 
         /**
