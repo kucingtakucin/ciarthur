@@ -26,7 +26,7 @@
                         await csrf().then(csrf => csrf.hash)
                     )
 
-                    axios.post(BASE_URL + 'coba', formData)
+                    axios.post(BASE_URL + 'insert', formData)
                         .then(res => {
                             Swal.fire({
                                 icon: 'success',
