@@ -52,7 +52,7 @@
             <div class="col-xl-7"><img class="bg-img-cover bg-center" src="<?= base_url() ?>/assets/cuba/images/login/2.jpg" alt="looginpage">
             </div>
             <div class="col-xl-5 p-0">
-                <?php $this->load->view($page) ?>
+                <?= $this->load->view($page, '', true) ?>
             </div>
         </div>
         <!-- Axios -->
@@ -77,21 +77,93 @@
         <script src="<?= base_url() ?>/assets/cuba/js/script.js"></script>
         <!-- login js-->
         <script>
-            $(document).ready(function() {
-                $('.preloader-container').fadeOut(500)
+        let csrf, loading;
+        $(document).ready(function() {
 
-                let width = $('.g-recaptcha').parent().width();
-                if (width < 302) {
-                    let scale = width / 302;
-                    $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
-                    $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
-                    $('.g-recaptcha').css('transform-origin', '0 0');
-                    $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
+            /**
+            * Keperluan show preloader
+            */
+            // ================================================== //
+            $('.preloader-container').fadeOut(500)
+
+            /**
+            * Keperluan resize Google Recaptchaa
+            */
+            // ================================================== //
+            
+            let width = $('.g-recaptcha').parent().width();
+            if (width < 302) {
+                let scale = width / 302;
+                $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('transform-origin', '0 0');
+                $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
+            }
+
+            /**
+            * Keperluan disable inspect element
+            */
+            // ================================================== //
+            
+            // Disable right click
+            $(document).contextmenu(function(event) {
+                event.preventDefault()
+            })
+
+            $(document).keydown(function(event) {
+                // Disable F12
+                if (event.keyCode == 123) return false;
+
+                // Disable Ctrl + Shift + I
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
+                }
+
+                // Disable Ctrl + Shift + J
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
+
+                // Disable Ctrl + U
+                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
                 }
             })
-        </script>
+
+            /**
+            * Keperluan show loading
+            */
+            // ================================================== //
+            loading = () => {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                })
+            }
+
+            /**
+            * Keperluan generate csrf
+            */
+            // ================================================== //
+            csrf = async () => {
+                let formData = new FormData()
+                formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
+
+                let res = await axios.post("<?= base_url('csrf/generate') ?>", formData)
+                return {
+                    token_name: res.data.csrf_token_name,
+                    hash: res.data.csrf_hash
+                }
+            }
+        })
+    </script>
         <!-- Plugin used-->
-        <?php $this->load->view($script) ?>
+        <?= $this->load->view($script, '', true) ?>
     </div>
 </body>
 
