@@ -648,6 +648,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
+                    datatable.ajax.reload();
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -663,7 +664,6 @@
                     $('#form_tambah select').val(null).trigger('change')
                     $('#form_tambah').removeClass('was-validated')
                     $('#modal_tambah').modal('hide');
-                    datatable.ajax.reload();
                 })
         }
 
@@ -689,6 +689,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
+                    datatable.ajax.reload();
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -704,7 +705,6 @@
                     $('#form_ubah select').val(null).trigger('change')
                     $('#form_ubah').removeClass('was-validated')
                     $('#modal_ubah').modal('hide');
-                    datatable.ajax.reload();
                 })
         }
 
@@ -792,6 +792,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
+                            datatable.ajax.reload();
                         }).catch(err => {
                             Swal.fire({
                                 icon: 'error',
@@ -805,7 +806,6 @@
                             $('#form_import').trigger('reset');
                             $('#form_import').removeClass('was-validated')
                             $('#modal_import').modal('hide');
-                            datatable.ajax.reload();
                         })
                 }
             })
