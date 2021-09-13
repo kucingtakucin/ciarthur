@@ -104,8 +104,8 @@
                                 </div>
                             </div>
                             <ul class="profile-dropdown onhover-show-div">
-                                <li><i data-feather="user"></i><span>Account </span></li>
-                                <li><a href="<?= base_url('logout') ?>"><i data-feather="log-out"></i><span>Log out</span></a></li>
+                                <li id="edit-account"><i data-feather="user"></i><span>Account </span></li>
+                                <li id="logout"><i data-feather="log-out"></i><span>Log out</span></li>
                             </ul>
                         </li>
                     </ul>
@@ -161,9 +161,54 @@
                 <!-- Container-fluid Ends-->
             </div>
 
+            <!-- Modals -->
             <?php foreach ($modals as $modal) : ?>
                 <?= $this->load->view($modal, '', true) ?>
             <?php endforeach ?>
+
+            <div class="modal fade" id="modal_account" role="dialog" aria-labelledby="modal-popin" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <form class="needs-validation" id="form_account" method="post" enctype="multipart/form-data" novalidate>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Account</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close" data-original-title="" title=""><span aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="col-md-12" for="username">Username</label>
+                                            <input type="text" id="ubah_username" class="form-control" name="username" value="<?= user()->username ?>" readonly required autocomplete="off" placeholder="Masukkan Username">
+                                            <?= validation_feedback("username", "wajib diisi") ?>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="col-md-12" for="password">Password</label>
+                                            <input type="password" id="ubah_password" class="form-control" name="password" required autocomplete="off" placeholder="Masukkan Password">
+                                            <?= validation_feedback("password", "wajib diisi dan wajib angka") ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="id" id="id" value="<?= user()->id ?>">
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal" data-original-title="" title="">Close</button>
+                                <button class="btn btn-primary" type="submit" data-original-title="" title="">Submit Data</button>
+                                <button class="btn btn-primary loader" type="button" disabled style="display: none;">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Loading...
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END Pop In Modal -->
 
             <?= $this->load->view('templates/backend/footer', '', true) ?>
         </div>
@@ -230,7 +275,7 @@
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
-        let csrf, loading;
+        let csrf, loading, $edit_account;
         $(document).ready(function() {
 
             /**
@@ -313,6 +358,57 @@
                     hash: res.data.csrf_hash
                 }
             }
+
+            /**
+            * Keperluan edit account
+            */
+            // ================================================== //
+            $('#edit-account').click(function () {
+                $('#modal_account').modal('show')
+            })
+
+            $('#form_account').submit(function(event) {
+                event.preventDefault();
+                if (this.checkValidity()) {
+                    $edit_account(this);
+                }
+            });
+
+            $edit_account = async (form) => {
+                let formData = new FormData(form)
+                formData.append(
+                        await csrf().then(csrf => csrf.token_name),
+                        await csrf().then(csrf => csrf.hash)
+                )
+                axios.post("<?= base_url('auth/edit_account') ?>", formData)
+                    .then(res => {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: res.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }).catch(err => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            html: err.response.data.message,
+                            // text: err.response.statusText,
+                        })
+                    }).then(() => {
+                        $('#form_account button[type=submit]').show();
+                        $('#form_account button.loader').hide();
+                        $('#form_account').trigger('reset');
+                        $('#form_account').removeClass('was-validated')
+                        $('#modal_account').modal('hide');
+                    })
+            }
+
+            $('#logout').click(function () {
+                location.replace("<?= base_url('logout') ?>")
+            })
         })
     </script>
     <?= $this->load->view($script, '', true) ?>

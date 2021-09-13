@@ -147,6 +147,20 @@ class Auth extends MY_Controller
 		redirect('auth/login', 'refresh');
 	}
 
+	public function edit_account()
+	{
+		$this->db->update('users', [
+			'username' => $this->input->post('username'),
+			'password' => $this->ion_auth->hash_password($this->input->post('password'))
+		], ['id' => $this->input->post('id')]);
+
+		return $this->output->set_content_type('application/json')
+			->set_output(json_encode([
+				'status' => true,
+				'message' => 'Berhasil mengupdate account'
+			]));
+	}
+
 	/**
 	 * Change password
 	 */
@@ -576,7 +590,7 @@ class Auth extends MY_Controller
 	 * @param int|string $id
 	 */
 	public function edit_user($id)
-	{
+	{	
 		$this->data['title'] = $this->lang->line('edit_user_heading');
 
 		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id))) {

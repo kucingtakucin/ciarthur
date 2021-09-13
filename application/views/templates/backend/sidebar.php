@@ -31,7 +31,7 @@
 
 <!-- Sidebar Member -->
 <?php if (in_group('member')) : ?>
-    <!-- Admin -->
+    <!-- Member -->
     <li class="back-btn">
         <div class="mobile-back text-right"><span>Back</span><i class="fa fa-angle-right pl-2" aria-hidden="true"></i></div>
     </li>
