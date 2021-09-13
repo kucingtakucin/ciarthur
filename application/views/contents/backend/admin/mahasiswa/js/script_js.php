@@ -262,8 +262,10 @@
                     if (status_crud) {
                         status_crud = false
                     }
-                    Swal.hideLoading()
-                    Swal.close()
+                    setTimeout(() => {
+                        Swal.hideLoading()
+                        Swal.close()
+                    }, 2000);
                 }
             },
             columnDefs: [{
@@ -384,8 +386,6 @@
                 }
             ],
             initComplete: function(event) {
-                Swal.close()
-
                 $(this).on('click', '.btn_edit', function(event) {
                     event.preventDefault()
                     $get(this);
