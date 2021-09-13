@@ -1,5 +1,5 @@
 <!-- Sidebar Admin -->
-<?php if ($this->ion_auth_model->user()->row()->id == 1) : ?>
+<?php if (check_group('admin')) : ?>
     <!-- Admin -->
     <li class="back-btn">
         <div class="mobile-back text-right"><span>Back</span><i class="fa fa-angle-right pl-2" aria-hidden="true"></i></div>
@@ -30,7 +30,7 @@
 <?php endif ?>
 
 <!-- Sidebar ... -->
-<?php if ($this->ion_auth_model->user()->row()->id == 2) : ?>
+<?php if (check_group('member')) : ?>
 
 <?php endif ?>
 <!-- CONTOH SIDEBAR -->

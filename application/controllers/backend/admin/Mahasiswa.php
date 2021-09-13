@@ -79,32 +79,6 @@ class Mahasiswa extends MY_Controller
     }
 
     /**
-     * Returns the sql query string that is created by the library (for dev purpose)
-     */
-    public function get_dt_query()
-    {
-        $datatables = new Datatables(new CodeigniterAdapter());
-        $datatables->query(
-            "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto,
-            (SELECT b.nama FROM prodi AS b WHERE b.id = a.prodi_id) AS nama_prodi,
-            (SELECT c.nama FROM fakultas AS c WHERE c.id = a.fakultas_id) AS nama_fakultas,
-            a.created_at, a.prodi_id, a.fakultas_id, a.latitude, a.longitude
-            FROM mahasiswa AS a
-            WHERE a.is_active = '1'"
-        );
-        $datatables->generate();
-        echo $datatables->getQuery();
-    }
-
-    /**
-     * Print database last query
-     */
-    public function last_query()
-    {
-        echo $this->db->last_query();
-    }
-
-    /**
      * Keperluan AJAX Select2
      *
      * @return CI_Output
