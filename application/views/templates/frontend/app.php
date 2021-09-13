@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/font/font2.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
+    <?= $this->load->view($style, '', true) ?>
 </head>
 
 <body>
@@ -60,7 +61,7 @@
                         <a href="<?= base_url() ?>"><img src="#" srcset="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light.png 1x, https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light@2x.png 2x" alt="" /></a>
                         <button class="plain offcanvas-close offcanvas-nav-close"><i class="jam jam-close"></i></button>
                     </div>
-                    <?php $this->load->view('templates/frontend/navbar') ?>
+                    <?= $this->load->view('templates/frontend/navbar', '', true) ?>
                     <!-- /.navbar-nav -->
                 </div>
                 <!-- /.navbar-collapse -->
@@ -105,15 +106,15 @@
         </div>
 
         <!-- Header -->
-        <?php $this->load->view('templates/frontend/header') ?>
+        <?= $this->load->view('templates/frontend/header', '', true) ?>
         <!--  /.Header -->
 
         <!-- Main Page -->
-        <?php $this->load->view($page) ?>
+        <?= $this->load->view($page, '', true) ?>
         <!-- /.Main Page -->
 
         <!-- Footer -->
-        <?php $this->load->view('templates/frontend/footer') ?>
+        <?= $this->load->view('templates/frontend/footer', '', true) ?>
         <!-- /.Footer -->
     </div>
     <!-- /.content-wrapper -->
@@ -137,6 +138,8 @@
         $(document).ready(function() {
             $('.preloader-container').fadeOut(500)
         })
+
+        <?= $this->load->view($script,'', true) ?>
     </script>
 </body>
 

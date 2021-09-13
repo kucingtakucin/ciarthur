@@ -62,7 +62,7 @@
 
     <!-- Custom Stylesheets -->
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
-    <?= $this->load->view($style) ?>
+    <?= $this->load->view($style, '', true) ?>
 </head>
 
 <body>
@@ -128,7 +128,7 @@
                     <div class="sidebar-main">
                         <div id="sidebar-menu">
                             <ul class="sidebar-links custom-scrollbar">
-                                <?php $this->load->view('templates/backend/sidebar') ?>
+                                <?= $this->load->view('templates/backend/sidebar', '', true) ?>
                             </ul>
                         </div>
                     </div>
@@ -154,18 +154,18 @@
                 <div class="container-fluid">
                     <div class="row starter-main">
                         <div class="col-sm-12">
-                            <?php $this->load->view($page) ?>
+                            <?= $this->load->view($page, '', true) ?>
                         </div>
                     </div>
                 </div>
                 <!-- Container-fluid Ends-->
             </div>
 
-            <?php foreach ($modals as $modal) :
-                $this->load->view($modal);
-            endforeach ?>
+            <?php foreach ($modals as $modal) : ?>
+                <?= $this->load->view($modal, '', true) ?>
+            <?php endforeach ?>
 
-            <?php $this->load->view('templates/backend/footer') ?>
+            <?= $this->load->view('templates/backend/footer', '', true) ?>
         </div>
     </div>
     <!-- latest jquery-->
@@ -315,7 +315,7 @@
             }
         })
     </script>
-    <?php $this->load->view($script) ?>
+    <?= $this->load->view($script, '', true) ?>
 </body>
 
 </html>

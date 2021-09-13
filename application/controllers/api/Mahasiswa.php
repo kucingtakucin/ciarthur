@@ -63,21 +63,6 @@ class Mahasiswa extends RestController
             ], 404);
         }
 
-        $config['image_library'] = 'gd2';
-        $config['source_image'] = $this->upload->data('full_path');
-        $config['create_thumb'] = TRUE;
-        $config['maintain_ratio'] = TRUE;
-        $config['width'] = 200;
-        $config['height'] = 150;
-
-        $this->image_lib->initialize($config);
-        if (!$this->image_lib->resize()) {
-            return $this->response([
-                'status' => false,
-                'message' => $this->image_lib->display_errors()
-            ], 404);
-        }
-
         $this->M_Mahasiswa->insert(
             [
                 'nim' => $this->post('nim', true),
@@ -86,7 +71,6 @@ class Mahasiswa extends RestController
                 'fakultas_id' => $this->post('fakultas_id', true),
                 'angkatan' => $this->post('angkatan', true),
                 'foto' => $this->upload->data('file_name'),
-                'foto_thumb' => $this->upload->data('raw_name') . '_thumb' . $this->upload->data('file_ext'),
                 'is_active' => '1',
                 'created_at' => date('Y-m-d H:i:s'),
                 'created_by' => get_user_id(),
@@ -109,31 +93,13 @@ class Mahasiswa extends RestController
         $this->upload->initialize($config);
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] !== 4) {
             if (file_exists("./uploads/mahasiswa/{$this->put('old_foto')}")) {
-                chmod("./uploads/mahasiswa/{$this->put('old_foto')}", 0777);
-                chmod("./uploads/mahasiswa/{$this->put('old_foto_thumb')}", 0777);
                 unlink("./uploads/mahasiswa/{$this->put('old_foto')}");
-                unlink("./uploads/mahasiswa/{$this->put('old_foto_thumb')}");
             }
 
             if (!$this->upload->do_upload("foto")) {
                 return $this->response([
                     'status' => false,
                     'message' => $this->upload->display_errors()
-                ], 404);
-            }
-
-            $config['image_library'] = 'gd2';
-            $config['source_image'] = $this->upload->data('full_path');
-            $config['create_thumb'] = true;
-            $config['maintain_ratio'] = true;
-            $config['width'] = 200;
-            $config['height'] = 150;
-
-            $this->image_lib->initialize($config);
-            if (!$this->image_lib->resize()) {
-                return $this->response([
-                    'status' => false,
-                    'message' => $this->image_lib->display_errors()
                 ], 404);
             }
         }
@@ -147,9 +113,6 @@ class Mahasiswa extends RestController
                 'angkatan' => $this->put('angkatan', true),
                 'foto' => isset($_FILES['foto']) && $_FILES['foto']['error'] === 4
                     ? $this->put('old_foto') : $this->upload->data('file_name'),
-                'foto_thumb' => isset($_FILES['foto']) && $_FILES['foto']['error'] === 4
-                    ? $this->put('old_foto_thumb') : $this->upload->data('raw_name') . '_thumb' . $this->upload->data('file_ext'),
-                'is_active' => '1',
                 'updated_at' => date('Y-m-d H:i:s'),
                 'updated_by' => get_user_id(),
             ],
@@ -169,10 +132,7 @@ class Mahasiswa extends RestController
             'a.is_active' => '1'
         ]);
         if (file_exists("./uploads/mahasiswa/{$data->foto}")) {
-            chmod("./uploads/mahasiswa/{$data->foto}", 0777);
-            chmod("./uploads/mahasiswa/{$data->foto_thumb}", 0777);
             unlink("./uploads/mahasiswa/{$data->foto}");
-            unlink("./uploads/mahasiswa/{$data->foto_thumb}");
         }
 
         $this->M_Mahasiswa->update(
