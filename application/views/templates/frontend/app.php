@@ -132,15 +132,101 @@
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.video.min.js"></script>
+    
+    <!-- Pusher -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script> 
+
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/scripts.js"></script>
     <script>
-        $(document).ready(function() {
-            $('.preloader-container').fadeOut(500)
-        })
+        let csrf, loading, $edit_account;
 
-        <?= $this->load->view($script,'', true) ?>
+        // Document ready
+        $(() => {
+
+            /**
+            * Keperluan show preloader
+            */
+            // ================================================== //
+            $('.preloader-container').fadeOut(500)
+
+            /**
+            * Keperluan resize Google Recaptchaa
+            */
+            // ================================================== //
+            
+            let width = $('.g-recaptcha').parent().width();
+            if (width < 302) {
+                let scale = width / 302;
+                $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('transform-origin', '0 0');
+                $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
+            }
+
+            /**
+            * Keperluan disable inspect element
+            */
+            // ================================================== //
+            
+            // Disable right click
+            $(document).contextmenu(function(event) {
+                event.preventDefault()
+            })
+
+            $(document).keydown(function(event) {
+                // Disable F12
+                if (event.keyCode == 123) return false;
+
+                // Disable Ctrl + Shift + I
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
+                }
+
+                // Disable Ctrl + Shift + J
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
+
+                // Disable Ctrl + U
+                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
+                }
+            })
+
+            /**
+            * Keperluan show loading
+            */
+            // ================================================== //
+            loading = () => {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                })
+            }
+
+            /**
+            * Keperluan generate csrf
+            */
+            // ================================================== //
+            csrf = async () => {
+                let formData = new FormData()
+                formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
+
+                let res = await axios.post("<?= base_url('csrf/generate') ?>", formData)
+                return {
+                    token_name: res.data.csrf_token_name,
+                    hash: res.data.csrf_hash
+                }
+            }
+        })
     </script>
+    <?= $this->load->view($script,'', true) ?>
 </body>
 
 </html>

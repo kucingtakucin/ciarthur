@@ -272,6 +272,9 @@
     <!-- Apex Charts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+    <!-- Pusher -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>

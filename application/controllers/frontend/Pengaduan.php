@@ -9,6 +9,7 @@ class Pengaduan extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->library('pusher');
     }
 
     public function index()
@@ -24,4 +25,14 @@ class Pengaduan extends MY_Controller
             'modals' => []
         ]);
     }
+
+    public function coba()
+	{
+		if ($this->input->method() == 'post') {
+			$pusher = $this->pusher->get_pusher();
+			$pusher->trigger('ciarthur-pengaduan-channel', 'ciarthur-pengaduan-event', [
+				'message' => 'Ini adalah uji coba'
+			]);
+		}
+	}
 }
