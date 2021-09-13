@@ -33,10 +33,10 @@ class Auth extends MY_Controller
 	{
 		$this->data['title'] = $this->lang->line('login_heading');
 		$recaptcha = new ReCaptcha('6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o');
-		$recaptcha->setExpectedHostname('appt.demoo.id')
+		$response = $recaptcha->setExpectedHostname('appt.demoo.id')
 			->verify($this->input->post('g-recaptcha-response'));
 
-		if ($this->input->method() == 'post') {
+		if ($this->input->method() == 'post' && $response->isSuccess()) {
 			// check to see if the user is logging in
 			// check for "remember me"
 			$remember = (bool)$this->input->post('remember');
@@ -73,6 +73,13 @@ class Auth extends MY_Controller
 				'script' => $this->_path . 'index_js',
 				'modal' => [],
 			]);
+		} else {
+			return $this->output->set_content_type('application/json')
+				->set_output([
+					'status' => false,
+					'message' => 'Ada kesalahan Recaptcha. Silakan coba lagi',
+					'errors' => $response->getErrorCodes()
+				]);
 		}
 	}
 
