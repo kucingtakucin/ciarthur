@@ -230,8 +230,18 @@
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
         $(document).ready(function() {
+
+            /**
+            * Keperluan show preloader
+            */
+            // ================================================== //
             $('.preloader-container').fadeOut(500)
 
+            /**
+            * Keperluan resize Google Recaptchaa
+            */
+            // ================================================== //
+            
             let width = $('.g-recaptcha').parent().width();
             if (width < 302) {
                 let scale = width / 302;
@@ -245,6 +255,7 @@
             * Keperluan disable inspect element
             */
             // ================================================== //
+            
             // Disable right click
             $(document).contextmenu(function(event) {
                 event.preventDefault()
@@ -269,6 +280,23 @@
                     return false;
                 }
             })
+
+            /**
+            * Keperluan show loading
+            */
+            // ================================================== //
+            loading = () => {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                })
+            }
+
         })
     </script>
     <?php $this->load->view($script) ?>
