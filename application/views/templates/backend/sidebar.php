@@ -1,5 +1,5 @@
 <!-- Sidebar Admin -->
-<?php if (check_group('admin')) : ?>
+<?php if (in_group('admin')) : ?>
     <!-- Admin -->
     <li class="back-btn">
         <div class="mobile-back text-right"><span>Back</span><i class="fa fa-angle-right pl-2" aria-hidden="true"></i></div>
@@ -29,10 +29,18 @@
     <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(1, 'auth') ?>" href="<?= base_auth() ?>"><i data-feather="users"></i><span>User</span></a></li>
 <?php endif ?>
 
-<!-- Sidebar ... -->
-<?php if (check_group('member')) : ?>
-
+<!-- Sidebar Member -->
+<?php if (in_group('member')) : ?>
+    <!-- Admin -->
+    <li class="back-btn">
+        <div class="mobile-back text-right"><span>Back</span><i class="fa fa-angle-right pl-2" aria-hidden="true"></i></div>
+    </li>
+    <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(3, 'dashboard') ?>" href="<?= base_member('dashboard') ?>"><i data-feather="home"></i><span>Dashboard</span></a></li>
 <?php endif ?>
+
+<!-- Sidebar ... -->
+
+
 <!-- CONTOH SIDEBAR -->
 
 <!-- <li class="sidebar-main-title">
