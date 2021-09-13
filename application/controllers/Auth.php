@@ -74,14 +74,15 @@ class Auth extends MY_Controller
 						'message' => $this->ion_auth->errors()
 					]));
 			}
+		} else {
+			return $this->output->set_content_type('application/json')
+				->set_status_header(404)
+				->set_output(json_encode([
+					'status' => false,
+					'message' => 'Ada kesalahan. Silakan coba lagi',
+					'errors' => $response->getErrorCodes()
+				]));
 		}
-		return $this->output->set_content_type('application/json')
-			->set_status_header(404)
-			->set_output(json_encode([
-				'status' => false,
-				'message' => 'Ada kesalahan. Silakan coba lagi',
-				'errors' => $response->getErrorCodes()
-			]));
 	
 	}
 
