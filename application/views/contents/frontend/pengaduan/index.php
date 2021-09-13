@@ -26,7 +26,7 @@
                             </div>
                             <div class="col-lg-12 col-xl-6">
                                 <div class="form-group">
-                                    <input id="form_phone" type="tel" name="phone" class="form-control" autocomplete="off" placeholder="Phone">
+                                    <input id="form_phone" type="tel" name="phone" class="form-control" autocomplete="off" placeholder="Phone" required>
                                     <?= validation_feedback('Nomor telepon','wajib diisi dan harus valid') ?>                                
                                 </div>
                             </div>
