@@ -48,9 +48,10 @@ class Pengaduan extends MY_Controller
             ->set_output($datatables->generate());
 	}
 
-	public function reply($id)
+	public function reply(...$id)
 	{
-		$decrypted_id = $this->encryption->decrypt($id);
+		$encrypted_id = implode('/', $id);
+		$decrypted_id = $this->encryption->decrypt($encrypted_id);
 		echo $decrypted_id;
 	}
 }
