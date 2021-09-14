@@ -48,10 +48,16 @@ class Pengaduan extends MY_Controller
             ->set_output($datatables->generate());
 	}
 
-	public function reply(...$id)
+	public function chat($id)
 	{
-		$encrypted_id = implode('/', $id);
-		$decrypted_id = $this->encryption->decrypt($encrypted_id);
-		echo $decrypted_id;
+		$this->templates->render([
+			'title' => 'Pengaduan / Chat',
+			'type' => 'backend',
+			'uri_segment' => $this->_path,
+			'page' => 'contents/' . $this->_path . 'chat/index',
+			'script' => 'contents/' . $this->_path . 'chat/js/script_js',
+			'style' => 'contents/' . $this->_path . 'chat/css/style_css',
+			'modals' => []
+		]);
 	}
 }

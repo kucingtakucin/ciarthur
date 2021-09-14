@@ -1,6 +1,6 @@
 <script>
  const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, status_crud = false, $get, $reply
+    let datatable, status_crud = false, $get, $chat
 
     $(() => {
         /**
@@ -117,9 +117,9 @@
                             title: 'Detail Pengaduan'
                         })
 
-                        let btn_reply = $('<button>', {
+                        let btn_chat = $('<button>', {
                             type: 'button',
-                            class: 'btn btn-success btn_reply',
+                            class: 'btn btn-success btn_chat',
                             'data-id': id,
                             html: $('<i>', {
                                 class: 'fa fa-reply'
@@ -130,7 +130,7 @@
                         return $('<div>', {
                             role: 'group',
                             class: 'btn-group btn-group-sm',
-                            html: [btn_detail, btn_reply]
+                            html: [btn_detail, btn_chat]
                         }).prop('outerHTML')
                     }
                 },
@@ -146,9 +146,9 @@
                     $get(this);
                 });
 
-                $(this).on('click', '.btn_reply', function(event) {
+                $(this).on('click', '.btn_chat', function(event) {
                     event.preventDefault()
-                    $reply(this);
+                    $chat(this);
                 });
 
                 /** Elemen - elemen filter */
@@ -223,8 +223,8 @@
             $('#form_detail input#detail_message[name=message]').val(row.message);
         }
 
-        $reply = async (element) => {
-            location.replace(BASE_URL + 'reply/' + $(element).data('id'))
+        $chat = async (element) => {
+            location.replace(BASE_URL + 'chat/' + $(element).data('id'))
         }
     })
 </script>
