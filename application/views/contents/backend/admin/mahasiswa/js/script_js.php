@@ -258,12 +258,14 @@
                         loading()
                     }
                 },
-                complete: async () => {
+                complete: () => {
                     if (status_crud) {
                         status_crud = false
                     }
-                    await Swal.hideLoading()
-                    await Swal.close()
+                    setTimeout(async () => {
+                        await Swal.hideLoading()
+                        await Swal.close()
+                    },10);
                 }
             },
             columnDefs: [{
