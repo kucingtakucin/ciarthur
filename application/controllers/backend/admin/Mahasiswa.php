@@ -153,16 +153,6 @@ class Mahasiswa extends MY_Controller
         $this->form_validation->set_rules('latitude', 'Latitude', 'required|trim');
         $this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
         $this->form_validation->set_rules('foto', 'Foto', 'required');
-
-        if ($this->form_validation->run() == FALSE) {
-            return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
-                ->set_output(json_encode([
-                    'status' => false,
-                    'message' => 'Please check your input again!',
-                    'errors' => validation_errors()
-                ]));
-        } 
     }
 
     /**
@@ -173,6 +163,15 @@ class Mahasiswa extends MY_Controller
     public function insert(): CI_Output
     {
         $this->validator();
+        if (!$this->form_validation->run()) {
+            return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
+                ->set_output(json_encode([
+                    'status' => false,
+                    'message' => 'Please check your input again!',
+                    'errors' => validation_errors()
+                ]));
+        } 
 
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -243,6 +242,15 @@ class Mahasiswa extends MY_Controller
     public function update(): CI_Output
     {
         $this->validator();
+        if (!$this->form_validation->run()) {
+            return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
+                ->set_output(json_encode([
+                    'status' => false,
+                    'message' => 'Please check your input again!',
+                    'errors' => validation_errors()
+                ]));
+        }
 
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
