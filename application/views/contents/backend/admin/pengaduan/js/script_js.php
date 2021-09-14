@@ -211,7 +211,7 @@
         // ================================================== //
 
         /**
-         * Keperluan CRUD
+         * Keperluan CRUD\
          */
         // ================================================== //
         $get = (element) => {
@@ -224,8 +224,8 @@
         }
 
         $reply = async (element) => {
-            <?php $id = "$(element).data('id')" ?>
-            location.replace(BASE_URL + 'reply/<?= $this->encryption->encrypt($id) ?>')
+            Cookie.set('reply_id', $(element).data('id'), { expires: 7 })
+            location.replace(BASE_URL + 'reply/<?= $this->encryption->encrypt($_COOKIE['reply_id']) ?>')
         }
     })
 </script>
