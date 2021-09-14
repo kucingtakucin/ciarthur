@@ -1,4 +1,7 @@
 <?php
+
+use ReCaptcha\ReCaptcha;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pengaduan extends MY_Controller
@@ -29,27 +32,33 @@ class Pengaduan extends MY_Controller
 
     public function insert()
 	{
-        $pusher = $this->pusher->get_pusher();            
-        $pusher->trigger('kirim-pengaduan-channel', 'kirim-pengaduan-event', [
-            'title' => 'Pemberitahuan',
-            'message' => 'Ada pengaduan baru yang masuk!'
-        ]);
+        $recaptcha = new ReCaptcha('6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o');
+		$response = $recaptcha->setExpectedHostname('appt.demoo.id')
+			->verify($this->input->post('g-recaptcha-response'));
 
-        $this->M_Pengaduan->insert(
-            [
-                'name' => $this->input->post('name'),
-                'email' => $this->input->post('email'),
-                'phone' => $this->input->post('phone'),
-                'message' => $this->input->post('message'),
-                'created_at' => date('Y-m-d H:i:s'),
-                'is_active' => '1'
-            ]
-        );
-
-        return $this->output->set_content_type('application/json')
-            ->set_output(json_encode([
-                'status' => true,
-                'message' => 'Berhasil mengirimkan pengaduan!'
-            ]));
+        if ($this->input->method() == 'post' && $response->isSuccess()) {            
+            $pusher = $this->pusher->get_pusher();            
+            $pusher->trigger('kirim-pengaduan-channel', 'kirim-pengaduan-event', [
+                'title' => 'Pemberitahuan',
+                'message' => 'Ada pengaduan baru yang masuk!'
+            ]);
+    
+            $this->M_Pengaduan->insert(
+                [
+                    'name' => $this->input->post('name'),
+                    'email' => $this->input->post('email'),
+                    'phone' => $this->input->post('phone'),
+                    'message' => $this->input->post('message'),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'is_active' => '1'
+                ]
+            );
+    
+            return $this->output->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status' => true,
+                    'message' => 'Berhasil mengirimkan pengaduan!'
+                ]));
+        }
 	}
 }

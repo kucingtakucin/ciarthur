@@ -1,4 +1,7 @@
 <?php 
+
+use Pusher\Pusher;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -37,7 +40,7 @@ Class Pusher
         if (!isset($this->pusher))
         {
             // Create new Pusher object
-            $this->pusher = new Pusher\Pusher($app_key, $app_secret, $app_id, $options);
+            $this->pusher = new Pusher($app_key, $app_secret, $app_id, $options);
             log_message('debug', 'CI Pusher library loaded');
 
             // Set logger if debug is set to true

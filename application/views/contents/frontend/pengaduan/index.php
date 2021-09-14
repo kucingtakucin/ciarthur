@@ -34,17 +34,17 @@
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6LdJtNgbAAAAAJpRrKl8M71EQeoBJhjfpFSYRdnt"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="form-group">
                                     <textarea id="form_message" name="message" class="form-control" autocomplete="off" placeholder="Message *" rows="4" required></textarea> 
                                     <?= validation_feedback('Pesan pengaduan','wajib diisi') ?>                              
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="g-recaptcha" data-sitekey="6LdJtNgbAAAAAJpRrKl8M71EQeoBJhjfpFSYRdnt"></div>
+                                </div>
+                            </div>
+
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-send">Send message</button>
                             </div>
