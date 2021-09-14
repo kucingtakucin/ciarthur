@@ -152,7 +152,7 @@ class Mahasiswa extends MY_Controller
         $this->form_validation->set_rules('angkatan', 'Angkatan', 'required|trim');
         $this->form_validation->set_rules('latitude', 'Latitude', 'required|trim');
         $this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
-        $this->form_validation->set_rules('foto', 'Foto', 'required');
+        // $this->form_validation->set_rules('foto', 'Foto', 'required');
     }
 
     /**
