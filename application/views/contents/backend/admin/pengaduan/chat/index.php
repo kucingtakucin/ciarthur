@@ -19,7 +19,7 @@
                 <div class="card-body p-0">
                     <div class="row chat-box">
                         <!-- Chat right side start-->
-                        <div class="col pr-0">
+                        <div class="col pr-0 pl-0 chat-right-aside">
                         <!-- chat start-->
                             <div class="chat">
                                 <!-- chat-header start-->
@@ -62,13 +62,10 @@
                                 <div class="chat-message clearfix">
                                     <div class="row">
                                         <div class="col-xl-12 d-flex">
-                                            <div class="smiley-box bg-primary">
-                                                <div class="picker"><img src="../assets/images/smiley.png" alt=""></div>
-                                            </div>
                                             <div class="input-group text-box">
                                                 <input class="form-control input-txt-bx" id="message-to-send" type="text" name="message-to-send" placeholder="Type a message......">
                                                 <div class="input-group-append">
-                                                <button class="btn btn-primary" type="button">SEND</button>
+                                                    <button class="btn btn-primary" type="button">SEND</button>
                                                 </div>
                                             </div>
                                         </div>
