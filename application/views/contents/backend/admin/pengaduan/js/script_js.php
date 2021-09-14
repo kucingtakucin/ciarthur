@@ -130,7 +130,7 @@
                         return $('<div>', {
                             role: 'group',
                             class: 'btn-group btn-group-sm',
-                            html: [btn_edit, btn_delete]
+                            html: [btn_detail, btn_delete]
                         }).prop('outerHTML')
                     }
                 },

@@ -41,7 +41,8 @@ class Pengaduan extends MY_Controller
                 'email' => $this->input->post('email'),
                 'phone' => $this->input->post('phone'),
                 'message' => $this->input->post('message'),
-                'created_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s'),
+                'is_active' => '1'
             ]
         );
 

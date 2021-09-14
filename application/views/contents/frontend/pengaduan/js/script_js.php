@@ -8,6 +8,15 @@
         */
         // ================================================== //
         $insert = async (form) => {
+            if (!grecaptcha.getResponse()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    html: "Recaptcha wajib dicentang!",
+                })
+                return;
+            }
+
             Swal.fire({
                 title: 'Apakah anda yakin untuk mengirim pengaduan?',
                 text: "Pastikan data yang terisi sudah benar!",

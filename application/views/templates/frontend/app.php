@@ -17,6 +17,10 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/font/font2.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
+    
+    <!-- Google re-Captcha  -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <?= $this->load->view($style, '', true) ?>
 </head>
 
@@ -145,6 +149,9 @@
     <!-- Form Validation Custom -->
     <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
 
+    <!-- Bootstrap Custom File Input -->
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+    
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="<?= base_url() ?>assets/snowlake/js/scripts.js"></script>
     <script>
