@@ -47,4 +47,10 @@ class Pengaduan extends MY_Controller
         return $this->output->set_content_type('application/json')
             ->set_output($datatables->generate());
 	}
+
+	public function reply($id)
+	{
+		$decrypted_id = $this->encryption->decrypt($id);
+		echo $decrypted_id;
+	}
 }
