@@ -27,7 +27,7 @@ class Mahasiswa extends MY_Controller
         parent::__construct();
         check_group("admin");
         $this->load->model($this->_path . 'M_Mahasiswa');   // Load model M_Mahasisw
-        $this->load->library(['upload', 'image_lib']);  // Load library upload, image_lib
+        $this->load->library(['upload', 'image_lib', 'form_validation']);  // Load library upload, image_lib
     }
 
     /**
@@ -143,6 +143,28 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
+    public function validator()
+    {
+        $this->form_validation->set_rules('nim', 'NIM', 'required|trim');
+        $this->form_validation->set_rules('nama', 'Nama', 'required|trim');
+        $this->form_validation->set_rules('prodi_id', 'Prodi', 'required|trim');
+        $this->form_validation->set_rules('fakultas_id', 'Fakultas', 'required|trim');
+        $this->form_validation->set_rules('angkatan', 'Angkatan', 'required|trim');
+        $this->form_validation->set_rules('latitude', 'Latitude', 'required|trim');
+        $this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
+        $this->form_validation->set_rules('foto', 'Foto', 'required');
+
+        if (!$this->form_validation->run()) {
+            return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
+                ->set_output(json_encode([
+                    'status' => false,
+                    'message' => 'Please check your input again!'
+                    'errors' => validation_errors()
+                ]));
+        } 
+    }
+
     /**
      * Keperluan CRUD tambah data
      *
@@ -150,6 +172,8 @@ class Mahasiswa extends MY_Controller
      */
     public function insert(): CI_Output
     {
+        $this->validator();
+
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
         $config['max_size'] = 2048;
@@ -218,6 +242,8 @@ class Mahasiswa extends MY_Controller
      */
     public function update(): CI_Output
     {
+        $this->validator();
+
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
         $config['max_size'] = 2048;
