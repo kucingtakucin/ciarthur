@@ -265,7 +265,7 @@
                     setTimeout(() => {
                         Swal.hideLoading()
                         Swal.close()
-                    }, 2000);
+                    }, 100);
                 }
             },
             columnDefs: [{
