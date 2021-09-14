@@ -19,7 +19,7 @@
                 <div class="card-body p-0">
                     <div class="row chat-box">
                         <!-- Chat right side start-->
-                        <div class="col pr-0 chat-right-aside">
+                        <div class="col pr-0">
                         <!-- chat start-->
                             <div class="chat">
                                 <!-- chat-header start-->
