@@ -224,7 +224,7 @@
         }
 
         $reply = async (element) => {
-            Cookie.set('reply_id', $(element).data('id'), { expires: 7 })
+            Cookies.set('reply_id', $(element).data('id'), { expires: 7 })
             setTimeout(() => {
                 location.replace(BASE_URL + 'reply/<?= $this->encryption->encrypt(isset($_COOKIE['reply_id']) ? $_COOKIE['reply_id'] : '') ?>')
             }, 2000);
