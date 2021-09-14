@@ -281,7 +281,7 @@
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
-        let csrf, loading, $edit_account;
+        let csrf, loading, $edit_account, pusher, channel;
         $(document).ready(function() {
 
             /**
@@ -290,11 +290,11 @@
             // ================================================== //
             Pusher.logToConsole = true;
             
-            let pusher = new Pusher('21a14c9bc94b57c3db03', {
+            pusher = new Pusher('21a14c9bc94b57c3db03', {
                 cluster: 'ap1'
             });
 
-            let channel = pusher.subscribe('kirim-pengaduan-channel');
+            channel = pusher.subscribe('kirim-pengaduan-channel');
             channel.bind('kirim-pengaduan-event', function(data) {
                 Swal.fire({
                     title: data.title, 
