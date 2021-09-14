@@ -480,10 +480,10 @@
                         data: function(params) {
                             return {
                                 search: params.term, // search term
-                                page: params.page || 1
                             };
                         },
                         processResults: function(response, params) {
+                            console.log(response)
                             let myResults = [];
                             let results = response.data
                             results.map(item => {
@@ -514,7 +514,6 @@
                                 return {
                                     search: params.term, // search term
                                     fakultas_id: event.params.data.id,
-                                    page: params.page || 1
                                 };
                             },
                             processResults: function(response, params) {
