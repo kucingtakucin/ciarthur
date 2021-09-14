@@ -154,7 +154,7 @@ class Mahasiswa extends MY_Controller
         $this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
         $this->form_validation->set_rules('foto', 'Foto', 'required');
 
-        if (!$this->form_validation->run()) {
+        if ($this->form_validation->run() == FALSE) {
             return $this->output->set_content_type('application/json')
                 ->set_status_header(404)
                 ->set_output(json_encode([
