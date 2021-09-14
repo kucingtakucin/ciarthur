@@ -224,8 +224,8 @@
         }
 
         $reply = async (element) => {
-            let location = `reply/<?= $this->encryption->encrypt(':id') ?>`.replace(':id', $(this).data('id'))
-            location.replace(BASE_URL + location)
+            <?php $id = "$(element).data('id')" ?>
+            location.replace(BASE_URL + 'reply/<?= $this->encryption->encrypt($id) ?>')
         }
     })
 </script>
