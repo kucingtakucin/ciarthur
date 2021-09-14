@@ -652,8 +652,8 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        // html: err.response.data.message,
-                        text: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
                     })
                 }).then(() => {
                     $('#form_tambah button[type=submit]').show();
@@ -693,8 +693,8 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        // html: err.response.data.message,
-                        text: err.response.statusText
+                        html: err.response.data.message,
+                        // text: err.response.statusText
                     })
                 }).then(() => {
                     $('#form_ubah button[type=submit]').show();
