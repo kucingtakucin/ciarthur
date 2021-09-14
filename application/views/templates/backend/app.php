@@ -275,6 +275,9 @@
     <!-- Pusher -->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     
+    <!-- Cookie js -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
+
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
