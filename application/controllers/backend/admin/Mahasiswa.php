@@ -159,7 +159,7 @@ class Mahasiswa extends MY_Controller
                 ->set_status_header(404)
                 ->set_output(json_encode([
                     'status' => false,
-                    'message' => 'Please check your input again!'
+                    'message' => 'Please check your input again!',
                     'errors' => validation_errors()
                 ]));
         } 
