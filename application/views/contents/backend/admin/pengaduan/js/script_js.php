@@ -13,32 +13,9 @@
             destroy: true,
             // responsive: true,
             dom: `<"dt-custom-filter mb-3 d-block">
-                <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
                 <"d-flex flex-row justify-content-between"lf>
                 rt
                 <"d-flex flex-row justify-content-between"ip>`,
-            buttons: {
-                /** Tombol-tombol Export & Tambah Data */
-                buttons: [
-                    {
-                        className: 'btn btn-info m-2 text-white',
-                        text: $('<i>', {
-                            class: 'fa fa-plus'
-                        }).prop('outerHTML') + ' Tambah Data', // Tambah Data
-                        action: (e, dt, node, config) => {
-                            $('#modal_tambah').modal('show');
-                        }
-                    },
-                ],
-                dom: {
-                    button: {
-                        className: 'btn'
-                    },
-                    buttonLiner: {
-                        tag: null
-                    }
-                }
-            },
             ajax: {
                 url: BASE_URL + 'data',
                 type: 'GET',
@@ -208,6 +185,11 @@
         })
 
         bsCustomFileInput.init()
+
+        channel.bind('kirim-pengaduan-event', function(data) {
+            status_crud = true
+            datatable.ajax.reload()
+        });
         // ================================================== //
 
         /**
