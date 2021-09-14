@@ -89,7 +89,7 @@ class Mahasiswa extends MY_Controller
             ->set_status_header(200)
             ->set_output(json_encode([
                 'status' => true,
-                'data' => $this->db->like('nama', "%{$this->input->get('search')}%")
+                'data' => $this->db->like('nama', $this->input->get('search'))
                     ->get('fakultas')->result()
             ]));
     }
@@ -106,7 +106,7 @@ class Mahasiswa extends MY_Controller
             ->set_output(json_encode([
                 'status' => true,
                 'data' => $this->db->where('fakultas_id', $this->input->get('fakultas_id'))
-                    ->like('nama', "%{$this->input->get('search')}%")
+                    ->like('nama', $this->input->get('search'))
                     ->get('prodi')->result()
             ]));
     }
