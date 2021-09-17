@@ -171,7 +171,7 @@ class Mahasiswa extends MY_Controller
                     'message' => 'Please check your input again!',
                     'errors' => validation_errors()
                 ]));
-        } 
+        }
 
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -189,6 +189,7 @@ class Mahasiswa extends MY_Controller
                 ]));
         }
 
+        $this->db->trans_begin();
         $this->M_Mahasiswa->insert(
             [
                 'nim' => $this->input->post('nim', true),
@@ -205,6 +206,18 @@ class Mahasiswa extends MY_Controller
             ]
         );
 
+        if (!$this->db->trans_status()) {
+            $this->db->trans_rollback();
+            return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
+                ->set_output(json_encode([
+                    'status' => false,
+                    'message' => 'Failed',
+                    'errors' => $this->db->error()
+                ]));
+        }
+
+        $this->db->trans_commit();
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -273,6 +286,7 @@ class Mahasiswa extends MY_Controller
             }
         }
 
+        $this->db->trans_begin();
         $this->M_Mahasiswa->update(
             [
                 'nim' => $this->input->post('nim', true),
@@ -290,6 +304,19 @@ class Mahasiswa extends MY_Controller
             ],
             $this->input->post('id', true)
         );
+
+        if (!$this->db->trans_status()) {
+            $this->db->trans_rollback();
+            return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
+                ->set_output(json_encode([
+                    'status' => false,
+                    'message' => 'Failed',
+                    'errors' => $this->db->error()
+                ]));
+        }
+
+        $this->db->trans_commit();
 
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
@@ -314,6 +341,7 @@ class Mahasiswa extends MY_Controller
             unlink("./uploads/mahasiswa/{$data->foto}");
         }
 
+        $this->db->trans_begin();
         $this->M_Mahasiswa->update(
             [
                 'is_active' => '0',
@@ -322,6 +350,18 @@ class Mahasiswa extends MY_Controller
             ],
             $this->input->post('id', true)
         );
+
+        if (!$this->db->trans_status()) {
+            $this->db->trans_rollback();
+            return $this->output->set_content_type('application/json')
+                ->set_status_header(404)
+                ->set_output(json_encode([
+                    'status' => false,
+                    'message' => 'Failed',
+                    'errors' => $this->db->error()
+                ]));
+        }
+        $this->db->trans_commit();
 
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
@@ -449,8 +489,8 @@ class Mahasiswa extends MY_Controller
     public function import_excel()
     {
         if (is_uploaded_file($_FILES['import_file_excel']['tmp_name'])) {
-            if (!in_array(mime_content_type($_FILES['import_file_excel']['tmp_name']), ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return $this->output->set_content_type('application/json')                                         
+            if (!in_array(mime_content_type($_FILES['import_file_excel']['tmp_name']), ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+                return $this->output->set_content_type('application/json')
                     ->set_status_header(404)
                     ->set_output(json_encode([
                         'status' => false,
@@ -461,7 +501,7 @@ class Mahasiswa extends MY_Controller
 
             $spreadsheet = IOFactory::load($_FILES['import_file_excel']['tmp_name']);
             $data = $spreadsheet->getActiveSheet()->toArray();
-    
+
             if (
                 !($data[3][1] === 'NO' && $data[3][2] === 'NIM' && $data[3][3] === 'NAMA LENGKAP' && $data[3][4] === 'ANGKATAN'
                     && $data[3][5] === 'PROGRAM STUDI' && $data[3][6] === 'FAKULTAS' && $data[3][7] === 'LATITUDE' && $data[3][8] === 'LONGITUDE')
@@ -473,7 +513,7 @@ class Mahasiswa extends MY_Controller
                         'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
                     ]));
             }
-    
+
             for ($i = 4; $i < count($data); $i++) {
                 if (
                     $data[$i][1] && $data[$i][1] !== 'NO' && $data[$i][2] && $data[$i][2] !== 'NIM'
@@ -497,7 +537,7 @@ class Mahasiswa extends MY_Controller
                     );
                 }
             }
-    
+
             return $this->output->set_content_type('application/json')
                 ->set_output(json_encode([
                     'status' => true,

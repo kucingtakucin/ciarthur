@@ -22,7 +22,8 @@
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     }),
-                ]
+                ],
+                scrollWheelZoom: false,
             })
 
             /** Legend */
@@ -136,7 +137,8 @@
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     }),
 
-                ]
+                ],
+                scrollWheelZoom: false,
             })
 
             setTimeout(() => {
@@ -265,7 +267,7 @@
                     setTimeout(async () => {
                         await Swal.hideLoading()
                         await Swal.close()
-                    },10);
+                    }, 10);
                 }
             },
             columnDefs: [{

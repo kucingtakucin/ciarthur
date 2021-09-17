@@ -51,8 +51,7 @@
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/animate.css">
 
     <!-- DataTables -->
-    <link rel="stylesheet" type="text/css"
-        href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.css" />
 
     <!-- Bootstrap Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -93,6 +92,9 @@
                 </div>
                 <div class="nav-right col-11 pull-right right-header p-0">
                     <ul class="nav-menus">
+                        <li>
+                            <div class="settings" id="c-pills-home-tab"><i class="icon-settings"></i></div>
+                        </li>
                         <li>
                             <div class="mode"><i class="fa fa-moon-o"></i></div>
                         </li>
@@ -183,7 +185,7 @@
                                             <?= validation_feedback("username", "wajib diisi") ?>
                                         </div>
                                     </div>
-                                   
+
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -213,6 +215,8 @@
             <?= $this->load->view('templates/backend/footer', '', true) ?>
         </div>
     </div>
+
+
     <!-- latest jquery-->
     <!-- <script src="https://appt.demoo.id/tema/cuba/html/assets/js/jquery-3.5.1.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -244,8 +248,7 @@
     <!-- DataTables -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-    <script type="text/javascript"
-        src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.js">
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.js">
     </script>
 
     <!-- JQuery Validation -->
@@ -274,9 +277,15 @@
 
     <!-- Pusher -->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-    
+
+    <!-- SocketIO  -->
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+
     <!-- Cookie js -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
+
+    <!-- Theme Customizer -->
+    <script src="<?= base_url() ?>assets/cuba/js/theme-customizer/customizer.js"></script>
 
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
@@ -285,11 +294,11 @@
         $(document).ready(function() {
 
             /**
-            * Keperluan pusher pengaduan
-            */
+             * Keperluan pusher pengaduan
+             */
             // ================================================== //
             Pusher.logToConsole = true;
-            
+
             pusher = new Pusher('21a14c9bc94b57c3db03', {
                 cluster: 'ap1'
             });
@@ -297,23 +306,23 @@
             channel = pusher.subscribe('kirim-pengaduan-channel');
             channel.bind('kirim-pengaduan-event', function(data) {
                 Swal.fire({
-                    title: data.title, 
-                    icon: 'info', 
+                    title: data.title,
+                    icon: 'info',
                     text: data.message
                 })
             });
 
             /**
-            * Keperluan show preloader
-            */
+             * Keperluan show preloader
+             */
             // ================================================== //
             $('.preloader-container').fadeOut(500)
 
             /**
-            * Keperluan resize Google Recaptchaa
-            */
+             * Keperluan resize Google Recaptchaa
+             */
             // ================================================== //
-            
+
             let width = $('.g-recaptcha').parent().width();
             if (width < 302) {
                 let scale = width / 302;
@@ -324,10 +333,10 @@
             }
 
             /**
-            * Keperluan disable inspect element
-            */
+             * Keperluan disable inspect element
+             */
             // ================================================== //
-            
+
             // Disable right click
             $(document).contextmenu(function(event) {
                 event.preventDefault()
@@ -354,8 +363,8 @@
             })
 
             /**
-            * Keperluan show loading
-            */
+             * Keperluan show loading
+             */
             // ================================================== //
             loading = () => {
                 Swal.fire({
@@ -370,8 +379,8 @@
             }
 
             /**
-            * Keperluan generate csrf
-            */
+             * Keperluan generate csrf
+             */
             // ================================================== //
             csrf = async () => {
                 let formData = new FormData()
@@ -385,10 +394,10 @@
             }
 
             /**
-            * Keperluan edit account
-            */
+             * Keperluan edit account
+             */
             // ================================================== //
-            $('#edit-account').click(function () {
+            $('#edit-account').click(function() {
                 $('#modal_account').modal('show')
             })
 
@@ -399,7 +408,7 @@
                 }
             });
 
-             $('#modal_account').on('hide.bs.modal', () => {
+            $('#modal_account').on('hide.bs.modal', () => {
                 $('#form_account').removeClass('was-validated')
                 $('#form_account').trigger('reset')
             })
@@ -407,8 +416,8 @@
             $edit_account = async (form) => {
                 let formData = new FormData(form)
                 formData.append(
-                        await csrf().then(csrf => csrf.token_name),
-                        await csrf().then(csrf => csrf.hash)
+                    await csrf().then(csrf => csrf.token_name),
+                    await csrf().then(csrf => csrf.hash)
                 )
                 axios.post("<?= base_url('auth/edit_account') ?>", formData)
                     .then(res => {
@@ -436,7 +445,7 @@
                     })
             }
 
-            $('#logout').click(function () {
+            $('#logout').click(function() {
                 location.replace("<?= base_url('logout') ?>")
             })
         })

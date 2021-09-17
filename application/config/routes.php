@@ -50,13 +50,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'frontend/home';
-$route['login'] = 'auth/login';
-$route['logout'] = 'auth/logout';
-$route['email'] = 'email/email';
-$route['img/(.+)'] = 'image/show/$1';   // League Glide
-
 $route['pengaduan'] = 'frontend/pengaduan/index';
 
+$route['~/login'] = 'auth/login';
+$route['~/logout'] = 'auth/logout';
+$route['~/email'] = 'email/email';
+
+$route['img/(.+)'] = 'image/show/$1';   // League Glide
 $route['logs'] = "logViewerController/index";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
