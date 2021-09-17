@@ -158,7 +158,7 @@
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="<?= base_url() ?>assets/snowlake/js/scripts.js"></script>
     <script>
-        let csrf, loading, $edit_account;
+        let csrf, loading;
 
         // Document ready
         $(() => {

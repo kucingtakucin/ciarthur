@@ -143,6 +143,9 @@ class Mahasiswa extends MY_Controller
             ]));
     }
 
+    /**
+     * Keperluan validasi server-side
+     */
     public function validator()
     {
         $this->form_validation->set_rules('nim', 'NIM', 'required|trim');

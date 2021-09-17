@@ -26,6 +26,8 @@
                 scrollWheelZoom: false,
             })
 
+            map.scrollWheelZoom.disable();
+
             /** Legend */
             legend = L.control({
                 position: "bottomleft"
@@ -145,6 +147,7 @@
                 map_modal.invalidateSize()
             }, 500);
 
+            map_modal.scrollWheelZoom.disable();
             map_modal.on('click', (event) => {
                 if (marker_modal) map_modal.removeLayer(marker_modal)
                 marker_modal = L.marker([event.latlng.lat, event.latlng
