@@ -55,130 +55,130 @@
                 <?= $this->load->view($page, '', true) ?>
             </div>
         </div>
-        <!-- Axios -->
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </div>
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-        <!-- latest jquery-->
-        <script src="<?= base_url() ?>/assets/cuba/js/jquery-3.5.1.min.js"></script>
-        <!-- Bootstrap js-->
-        <script src="<?= base_url() ?>/assets/cuba/js/bootstrap/popper.min.js"></script>
-        <script src="<?= base_url() ?>/assets/cuba/js/bootstrap/bootstrap.js"></script>
-        <!-- feather icon js-->
-        <script src="<?= base_url() ?>/assets/cuba/js/icons/feather-icon/feather.min.js"></script>
-        <script src="<?= base_url() ?>/assets/cuba/js/icons/feather-icon/feather-icon.js"></script>
-        <!-- Sidebar jquery-->
-        <script src="<?= base_url() ?>/assets/cuba/js/config.js"></script>
-        <!-- Plugins JS start-->
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
-        <!-- Cookie js -->
-        <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
-        <!-- SocketIO  -->
-        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+    <!-- latest jquery-->
+    <script src="<?= base_url() ?>/assets/cuba/js/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap js-->
+    <script src="<?= base_url() ?>/assets/cuba/js/bootstrap/popper.min.js"></script>
+    <script src="<?= base_url() ?>/assets/cuba/js/bootstrap/bootstrap.js"></script>
+    <!-- feather icon js-->
+    <script src="<?= base_url() ?>/assets/cuba/js/icons/feather-icon/feather.min.js"></script>
+    <script src="<?= base_url() ?>/assets/cuba/js/icons/feather-icon/feather-icon.js"></script>
+    <!-- Sidebar jquery-->
+    <script src="<?= base_url() ?>/assets/cuba/js/config.js"></script>
+    <!-- Plugins JS start-->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
+    <!-- Cookie js -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
+    <!-- SocketIO  -->
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 
-        <!-- Plugins JS Ends-->
-        <!-- Theme js-->
-        <script src="<?= base_url() ?>/assets/cuba/js/script.js"></script>
-        <!-- login js-->
-        <script>
-            let csrf, loading;
+    <!-- Plugins JS Ends-->
+    <!-- Theme js-->
+    <script src="<?= base_url() ?>/assets/cuba/js/script.js"></script>
+    <!-- login js-->
+    <script>
+        let csrf, loading;
+
+        /**
+         * Keperluan socket.io
+         */
+        // ================================================== //
+        socket = io("ws://localhost:2021")
+
+        csrf = () => {
+            socket.emit('minta-csrf', {
+                token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
+                url: "<?= base_url('csrf/generate') ?>",
+                cookie: Cookies.get('ci_csrf_cookie'),
+                session: Cookies.get('ci_session')
+            })
+
+            return new Promise((resolve, reject) => {
+                socket.on('terima-csrf', data => {
+                    resolve({
+                        token_name: data.csrf_token_name,
+                        hash: data.csrf_hash,
+                    })
+                })
+            })
+        }
+
+        $(document).ready(function() {
 
             /**
-             * Keperluan socket.io
+             * Keperluan show preloader
              */
             // ================================================== //
-            socket = io("ws://localhost:2021")
+            $('.preloader-container').fadeOut(500)
 
-            csrf = () => {
-                socket.emit('minta-csrf', {
-                    token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
-                    url: "<?= base_url('csrf/generate') ?>",
-                    cookie: Cookies.get('ci_csrf_cookie'),
-                    session: Cookies.get('ci_session')
-                })
+            /**
+             * Keperluan resize Google Recaptchaa
+             */
+            // ================================================== //
 
-                return new Promise((resolve, reject) => {
-                    socket.on('terima-csrf', data => {
-                        resolve({
-                            token_name: data.csrf_token_name,
-                            hash: data.csrf_hash,
-                        })
-                    })
-                })
+            let width = $('.g-recaptcha').parent().width();
+            if (width < 302) {
+                let scale = width / 302;
+                $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('transform-origin', '0 0');
+                $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
             }
 
-            $(document).ready(function() {
+            /**
+             * Keperluan disable inspect element
+             */
+            // ================================================== //
 
-                /**
-                 * Keperluan show preloader
-                 */
-                // ================================================== //
-                $('.preloader-container').fadeOut(500)
+            // Disable right click
+            $(document).contextmenu(function(event) {
+                event.preventDefault()
+            })
 
-                /**
-                 * Keperluan resize Google Recaptchaa
-                 */
-                // ================================================== //
+            $(document).keydown(function(event) {
+                // Disable F12
+                if (event.keyCode == 123) return false;
 
-                let width = $('.g-recaptcha').parent().width();
-                if (width < 302) {
-                    let scale = width / 302;
-                    $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
-                    $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
-                    $('.g-recaptcha').css('transform-origin', '0 0');
-                    $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
+                // Disable Ctrl + Shift + I
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                    return false;
                 }
 
-                /**
-                 * Keperluan disable inspect element
-                 */
-                // ================================================== //
+                // Disable Ctrl + Shift + J
+                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                    return false;
+                }
 
-                // Disable right click
-                $(document).contextmenu(function(event) {
-                    event.preventDefault()
-                })
-
-                $(document).keydown(function(event) {
-                    // Disable F12
-                    if (event.keyCode == 123) return false;
-
-                    // Disable Ctrl + Shift + I
-                    if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-                        return false;
-                    }
-
-                    // Disable Ctrl + Shift + J
-                    if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-                        return false;
-                    }
-
-                    // Disable Ctrl + U
-                    if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-                        return false;
-                    }
-                })
-
-                /**
-                 * Keperluan show loading
-                 */
-                // ================================================== //
-                loading = () => {
-                    Swal.fire({
-                        title: 'Loading...',
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    })
+                // Disable Ctrl + U
+                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                    return false;
                 }
             })
-        </script>
-        <!-- Plugin used-->
-        <?= $this->load->view($script, '', true) ?>
-    </div>
+
+            /**
+             * Keperluan show loading
+             */
+            // ================================================== //
+            loading = () => {
+                Swal.fire({
+                    title: 'Loading...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                })
+            }
+        })
+    </script>
+    <!-- Plugin used-->
+    <?= $this->load->view($script, '', true) ?>
 </body>
 
 </html>
