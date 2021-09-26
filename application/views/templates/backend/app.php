@@ -322,6 +322,47 @@
             }
         })
 
+        /**
+         * Keperluan socket.io pengaduan
+         */
+        // ================================================== //
+        socket = io("ws://localhost:2021")
+
+        /* Handle event dari node.js server */
+        socket.on('backend-pengaduan-terima', (data) => {
+            Swal.fire({
+                title: data.title,
+                icon: 'info',
+                text: data.message,
+                showConfirmButton: false,
+                allowEscapeKey: false,
+                timer: 1500
+            })
+        })
+
+        /**
+         * Keperluan generate csrf
+         */
+        // ================================================== //
+        csrf = () => {
+            socket.emit('minta-csrf', {
+                token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
+                url: "<?= base_url('csrf/generate') ?>",
+                cookie: Cookies.get('ci_csrf_cookie'),
+                session: Cookies.get('ci_session')
+            })
+
+            return new Promise((resolve, reject) => {
+                socket.on('terima-csrf', data => {
+                    resolve({
+                        token_name: data.csrf_token_name,
+                        hash: data.csrf_hash,
+                    })
+                })
+            })
+        }
+
+
         $(document).ready(function() {
 
             /**
@@ -341,25 +382,7 @@
             //         icon: 'info',
             //         text: data.message
             //     })
-            // });
-
-            /**
-             * Keperluan socket.io pengaduan
-             */
-            // ================================================== //
-            socket = io("ws://localhost:2021")
-
-            /* Handle event dari node.js server */
-            socket.on('backend-pengaduan-terima', (data) => {
-                Swal.fire({
-                    title: data.title,
-                    icon: 'info',
-                    text: data.message,
-                    showConfirmButton: false,
-                    allowEscapeKey: false,
-                    timer: 1500
-                })
-            })
+            // })
 
             /**
              * Keperluan show preloader
@@ -396,37 +419,6 @@
                     }
                 })
             }
-
-            /**
-             * Keperluan generate csrf
-             */
-            // ================================================== //
-            csrf = async () => {
-                let formData = new FormData()
-                formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
-
-                let res = await axios.post("<?= base_url('csrf/generate') ?>", formData)
-                return {
-                    token_name: res.data.csrf_token_name,
-                    hash: res.data.csrf_hash
-                }
-            }
-
-            // csrf_new = () => {
-            //     socket.emit('minta-csrf', {
-            //         key: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
-            //         url: "<?= base_url('csrf/generate') ?>"
-            //     })
-
-            //     return new Promise((resolve, reject) => {
-            //         socket.on('terima-csrf', data => {
-            //             resolve({
-            //                 token_name: data.csrf_token_name,
-            //                 hash: data.csrf_hash,
-            //             })
-            //         })
-            //     })
-            // }
 
             /**
              * Keperluan edit account
@@ -481,7 +473,7 @@
             }
 
             $('#logout').click(function() {
-                location.replace("<?= base_url('logout') ?>")
+                location.replace("<?= base_url('~/logout') ?>")
             })
         })
     </script>

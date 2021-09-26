@@ -26,7 +26,14 @@ class Csrf extends CI_Controller
      */
     public function generate()
     {
-        if ($this->input->method() == 'post' && ($this->encryption->decrypt($this->input->post('key')) === bin2hex('csrf'))) {
+        $headers = explode(' ', $this->input->get_request_header('Authorization', TRUE));
+        $token = end($headers);
+
+        if (
+            $this->input->method() === 'post' &&
+            $this->encryption->decrypt($token) === bin2hex('csrf') &&
+            $this->input->get_request_header('Authorization', TRUE)
+        ) {
             return $this->output->set_content_type('application/json')
                 ->set_output(json_encode([
                     'csrf_token_name' => $this->security->get_csrf_token_name(),
@@ -38,7 +45,6 @@ class Csrf extends CI_Controller
             ->set_output(json_encode([
                 'status' => false,
                 'message' => 'Key required',
-                'input' => $this->input->post()
             ]));
     }
 

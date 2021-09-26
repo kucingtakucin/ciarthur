@@ -4,23 +4,6 @@
 
     // Document ready
     $(() => {
-
-        /**
-         * Keperluan show loading
-         */
-        // ================================================== //
-        loading = () => {
-            Swal.fire({
-                title: 'Loading...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            })
-        }
-
         /**
          * Keperluan login
          */

@@ -71,97 +71,111 @@
         <!-- Plugins JS start-->
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
+        <!-- Cookie js -->
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
+        <!-- SocketIO  -->
+        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 
         <!-- Plugins JS Ends-->
         <!-- Theme js-->
         <script src="<?= base_url() ?>/assets/cuba/js/script.js"></script>
         <!-- login js-->
         <script>
-        let csrf, loading;
-        $(document).ready(function() {
+            let csrf, loading;
 
             /**
-            * Keperluan show preloader
-            */
+             * Keperluan socket.io
+             */
             // ================================================== //
-            $('.preloader-container').fadeOut(500)
+            socket = io("ws://localhost:2021")
 
-            /**
-            * Keperluan resize Google Recaptchaa
-            */
-            // ================================================== //
-            
-            let width = $('.g-recaptcha').parent().width();
-            if (width < 302) {
-                let scale = width / 302;
-                $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
-                $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
-                $('.g-recaptcha').css('transform-origin', '0 0');
-                $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
-            }
+            csrf = () => {
+                socket.emit('minta-csrf', {
+                    token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
+                    url: "<?= base_url('csrf/generate') ?>",
+                    cookie: Cookies.get('ci_csrf_cookie'),
+                    session: Cookies.get('ci_session')
+                })
 
-            /**
-            * Keperluan disable inspect element
-            */
-            // ================================================== //
-            
-            // Disable right click
-            $(document).contextmenu(function(event) {
-                event.preventDefault()
-            })
-
-            $(document).keydown(function(event) {
-                // Disable F12
-                if (event.keyCode == 123) return false;
-
-                // Disable Ctrl + Shift + I
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + Shift + J
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + U
-                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-                    return false;
-                }
-            })
-
-            /**
-            * Keperluan show loading
-            */
-            // ================================================== //
-            loading = () => {
-                Swal.fire({
-                    title: 'Loading...',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                return new Promise((resolve, reject) => {
+                    socket.on('terima-csrf', data => {
+                        resolve({
+                            token_name: data.csrf_token_name,
+                            hash: data.csrf_hash,
+                        })
+                    })
                 })
             }
 
-            /**
-            * Keperluan generate csrf
-            */
-            // ================================================== //
-            csrf = async () => {
-                let formData = new FormData()
-                formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
+            $(document).ready(function() {
 
-                let res = await axios.post("<?= base_url('csrf/generate') ?>", formData)
-                return {
-                    token_name: res.data.csrf_token_name,
-                    hash: res.data.csrf_hash
+                /**
+                 * Keperluan show preloader
+                 */
+                // ================================================== //
+                $('.preloader-container').fadeOut(500)
+
+                /**
+                 * Keperluan resize Google Recaptchaa
+                 */
+                // ================================================== //
+
+                let width = $('.g-recaptcha').parent().width();
+                if (width < 302) {
+                    let scale = width / 302;
+                    $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+                    $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+                    $('.g-recaptcha').css('transform-origin', '0 0');
+                    $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
                 }
-            }
-        })
-    </script>
+
+                /**
+                 * Keperluan disable inspect element
+                 */
+                // ================================================== //
+
+                // Disable right click
+                $(document).contextmenu(function(event) {
+                    event.preventDefault()
+                })
+
+                $(document).keydown(function(event) {
+                    // Disable F12
+                    if (event.keyCode == 123) return false;
+
+                    // Disable Ctrl + Shift + I
+                    if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                        return false;
+                    }
+
+                    // Disable Ctrl + Shift + J
+                    if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                        return false;
+                    }
+
+                    // Disable Ctrl + U
+                    if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                        return false;
+                    }
+                })
+
+                /**
+                 * Keperluan show loading
+                 */
+                // ================================================== //
+                loading = () => {
+                    Swal.fire({
+                        title: 'Loading...',
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    })
+                }
+            })
+        </script>
         <!-- Plugin used-->
         <?= $this->load->view($script, '', true) ?>
     </div>

@@ -40,7 +40,11 @@ io.on('connection', (socket) => {
 		params.append('key', data.key)
 		fetch(data.url, {
 				method: 'POST',
-				body: params
+				body: params,
+				headers: {
+					'Cookie': `ci_csrf_cookie=${data.cookie}; ci_session=${data.session}`,
+					'Authorization': `Bearer ${data.token}`
+				}
 			})
 			.then(res => res.json())
 			.then(res => {

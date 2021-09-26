@@ -193,6 +193,28 @@
             }
         })
 
+        /**
+         * Keperluan generate csrf
+         */
+        // ================================================== //
+        csrf = () => {
+            socket.emit('minta-csrf', {
+                token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
+                url: "<?= base_url('csrf/generate') ?>",
+                cookie: Cookies.get('ci_csrf_cookie'),
+                session: Cookies.get('ci_session')
+            })
+
+            return new Promise((resolve, reject) => {
+                socket.on('terima-csrf', data => {
+                    resolve({
+                        token_name: data.csrf_token_name,
+                        hash: data.csrf_hash,
+                    })
+                })
+            })
+        }
+
         // Document ready
         $(() => {
 
@@ -236,21 +258,6 @@
                         Swal.showLoading();
                     }
                 })
-            }
-
-            /**
-             * Keperluan generate csrf
-             */
-            // ================================================== //
-            csrf = async () => {
-                let formData = new FormData()
-                formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
-
-                let res = await axios.post("<?= base_url('csrf/generate') ?>", formData)
-                return {
-                    token_name: res.data.csrf_token_name,
-                    hash: res.data.csrf_hash
-                }
             }
         })
     </script>
