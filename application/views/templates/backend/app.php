@@ -290,27 +290,76 @@
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
-        let csrf, loading, $edit_account, pusher, channel;
+        let csrf, loading, $edit_account, pusher, socket, channel;
+
+        /**
+         * Keperluan disable inspect element
+         */
+        // ================================================== //
+
+        // Disable right click
+        $(document).contextmenu(function(event) {
+            event.preventDefault()
+        })
+
+        $(document).keydown(function(event) {
+            // Disable F12
+            if (event.keyCode == 123) return false;
+
+            // Disable Ctrl + Shift + I
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+
+            // Disable Ctrl + Shift + J
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+
+            // Disable Ctrl + U
+            if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        })
+
         $(document).ready(function() {
 
             /**
              * Keperluan pusher pengaduan
              */
             // ================================================== //
-            Pusher.logToConsole = true;
+            // Pusher.logToConsole = true;
 
-            pusher = new Pusher('21a14c9bc94b57c3db03', {
-                cluster: 'ap1'
-            });
+            // pusher = new Pusher('21a14c9bc94b57c3db03', {
+            //     cluster: 'ap1'
+            // });
 
-            channel = pusher.subscribe('kirim-pengaduan-channel');
-            channel.bind('kirim-pengaduan-event', function(data) {
+            // channel = pusher.subscribe('kirim-pengaduan-channel');
+            // channel.bind('kirim-pengaduan-event', function(data) {
+            //     Swal.fire({
+            //         title: data.title,
+            //         icon: 'info',
+            //         text: data.message
+            //     })
+            // });
+
+            /**
+             * Keperluan socket.io pengaduan
+             */
+            // ================================================== //
+            socket = io("ws://localhost:2021")
+
+            /* Handle event dari node.js server */
+            socket.on('backend-pengaduan-terima', (data) => {
                 Swal.fire({
                     title: data.title,
                     icon: 'info',
-                    text: data.message
+                    text: data.message,
+                    showConfirmButton: false,
+                    allowEscapeKey: false,
+                    timer: 1500
                 })
-            });
+            })
 
             /**
              * Keperluan show preloader
@@ -331,36 +380,6 @@
                 $('.g-recaptcha').css('transform-origin', '0 0');
                 $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
             }
-
-            /**
-             * Keperluan disable inspect element
-             */
-            // ================================================== //
-
-            // Disable right click
-            $(document).contextmenu(function(event) {
-                event.preventDefault()
-            })
-
-            $(document).keydown(function(event) {
-                // Disable F12
-                if (event.keyCode == 123) return false;
-
-                // Disable Ctrl + Shift + I
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + Shift + J
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + U
-                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-                    return false;
-                }
-            })
 
             /**
              * Keperluan show loading
@@ -392,6 +411,22 @@
                     hash: res.data.csrf_hash
                 }
             }
+
+            // csrf_new = () => {
+            //     socket.emit('minta-csrf', {
+            //         key: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
+            //         url: "<?= base_url('csrf/generate') ?>"
+            //     })
+
+            //     return new Promise((resolve, reject) => {
+            //         socket.on('terima-csrf', data => {
+            //             resolve({
+            //                 token_name: data.csrf_token_name,
+            //                 hash: data.csrf_hash,
+            //             })
+            //         })
+            //     })
+            // }
 
             /**
              * Keperluan edit account

@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/font/font2.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
-    
+
     <!-- Google re-Captcha  -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -136,9 +136,9 @@
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.video.min.js"></script>
-    
+
     <!-- Pusher -->
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script> 
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 
     <!-- Axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -154,26 +154,65 @@
 
     <!-- Cookie js -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
-    
+
+    <!-- SocketIO  -->
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+
     <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
     <script src="<?= base_url() ?>assets/snowlake/js/scripts.js"></script>
     <script>
-        let csrf, loading;
+        let csrf, loading, socket;
+
+        /**
+         * Keperluan disable inspect element
+         */
+        // ================================================== //
+
+        // Disable right click
+        $(document).contextmenu(function(event) {
+            event.preventDefault()
+        })
+
+        $(document).keydown(function(event) {
+            // Disable F12
+            if (event.keyCode == 123) return false;
+
+            // Disable Ctrl + Shift + I
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+
+            // Disable Ctrl + Shift + J
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+
+            // Disable Ctrl + U
+            if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        })
 
         // Document ready
         $(() => {
 
             /**
-            * Keperluan show preloader
-            */
+             * Keperluan show preloader
+             */
             // ================================================== //
             $('.preloader-container').fadeOut(500)
 
             /**
-            * Keperluan resize Google Recaptchaa
-            */
+             * Keperluan socket.io pengaduan
+             */
             // ================================================== //
-            
+            socket = io("ws://localhost:2021")
+
+            /**
+             * Keperluan resize Google Recaptchaa
+             */
+            // ================================================== //
+
             let width = $('.g-recaptcha').parent().width();
             if (width < 302) {
                 let scale = width / 302;
@@ -184,38 +223,8 @@
             }
 
             /**
-            * Keperluan disable inspect element
-            */
-            // ================================================== //
-            
-            // Disable right click
-            $(document).contextmenu(function(event) {
-                event.preventDefault()
-            })
-
-            $(document).keydown(function(event) {
-                // Disable F12
-                if (event.keyCode == 123) return false;
-
-                // Disable Ctrl + Shift + I
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + Shift + J
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + U
-                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-                    return false;
-                }
-            })
-
-            /**
-            * Keperluan show loading
-            */
+             * Keperluan show loading
+             */
             // ================================================== //
             loading = () => {
                 Swal.fire({
@@ -230,8 +239,8 @@
             }
 
             /**
-            * Keperluan generate csrf
-            */
+             * Keperluan generate csrf
+             */
             // ================================================== //
             csrf = async () => {
                 let formData = new FormData()
@@ -245,7 +254,7 @@
             }
         })
     </script>
-    <?= $this->load->view($script,'', true) ?>
+    <?= $this->load->view($script, '', true) ?>
 </body>
 
 </html>

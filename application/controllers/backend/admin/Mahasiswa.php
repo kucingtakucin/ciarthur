@@ -27,7 +27,7 @@ class Mahasiswa extends MY_Controller
         parent::__construct();
         check_group("admin");
         $this->load->model($this->_path . 'M_Mahasiswa');   // Load model M_Mahasisw
-        $this->load->library(['upload', 'image_lib', 'form_validation']);  // Load library upload, image_lib
+        $this->load->library(['upload', 'form_validation']);  // Load library upload
     }
 
     /**

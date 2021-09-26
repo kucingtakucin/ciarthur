@@ -4,8 +4,8 @@
 
     $(() => {
         /**
-        * Keperluan store pengaduan
-        */
+         * Keperluan store pengaduan
+         */
         // ================================================== //
         $insert = async (form) => {
             if (!grecaptcha.getResponse()) {
@@ -28,7 +28,7 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     loading()
-        
+
                     let formData = new FormData(form)
                     formData.append(
                         await csrf().then(csrf => csrf.token_name),
@@ -44,6 +44,12 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
+
+                            socket.emit('frontend-pengaduan-kirim', {
+                                title: 'Pemberitahuan',
+                                message: 'Ada pengaduan masuk!'
+                            })
+
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({
@@ -60,7 +66,7 @@
             })
         }
 
-        $('#form-pengaduan').submit(function (event) {
+        $('#form-pengaduan').submit(function(event) {
             event.preventDefault()
             if (this.checkValidity()) {
                 $insert(this)

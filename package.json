@@ -1,0 +1,33 @@
+{
+  "name": "ciarthur",
+  "version": "1.0.0",
+  "description": "Boilerplate Codeigniter",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamArthurF/ciarthur.git"
+  },
+  "keywords": [
+    "php",
+    "javascript",
+    "codeigniter",
+    "express"
+  ],
+  "author": "Adam Arthur Faizal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdamArthurF/ciarthur/issues"
+  },
+  "homepage": "https://github.com/AdamArthurF/ciarthur#readme",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.17.1",
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.0.0",
+    "socket.io": "^4.2.0"
+  }
+}

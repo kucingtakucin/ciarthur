@@ -1,6 +1,7 @@
 <script>
- const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, status_crud = false, $get, $chat
+    const BASE_URL = "<?= base_url($uri_segment) ?>"
+    let datatable, status_crud = false,
+        $get, $chat
 
     $(() => {
         /**
@@ -186,10 +187,14 @@
 
         bsCustomFileInput.init()
 
-        channel.bind('kirim-pengaduan-event', function(data) {
+        // channel.bind('kirim-pengaduan-event', function(data) {
+        //     status_crud = true
+        //     datatable.ajax.reload()
+        // });
+        socket.on('backend-pengaduan-terima', function(data) {
             status_crud = true
             datatable.ajax.reload()
-        });
+        })
         // ================================================== //
 
         /**

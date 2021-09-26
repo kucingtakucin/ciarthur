@@ -26,8 +26,6 @@
                 scrollWheelZoom: false,
             })
 
-            map.scrollWheelZoom.disable();
-
             /** Legend */
             legend = L.control({
                 position: "bottomleft"
@@ -147,7 +145,6 @@
                 map_modal.invalidateSize()
             }, 500);
 
-            map_modal.scrollWheelZoom.disable();
             map_modal.on('click', (event) => {
                 if (marker_modal) map_modal.removeLayer(marker_modal)
                 marker_modal = L.marker([event.latlng.lat, event.latlng
@@ -575,6 +572,11 @@
         })
 
         bsCustomFileInput.init()
+
+        socket.on('backend-reload_dt-mahasiswa', () => {
+            initMap()
+            datatable.ajax.reload();
+        })
         // ================================================== //
 
         /**
@@ -643,7 +645,6 @@
 
             axios.post(BASE_URL + 'insert', formData)
                 .then(res => {
-                    initMap()
                     $('#form_tambah button[type=submit]').hide();
                     $('#form_tambah button.loader').show();
                     Swal.fire({
@@ -653,7 +654,8 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    datatable.ajax.reload();
+
+                    socket.emit('backend-crud-mahasiswa', {})
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -694,7 +696,8 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    datatable.ajax.reload();
+
+                    socket.emit('backend-crud-mahasiswa', {})
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -736,8 +739,6 @@
 
                     axios.post(BASE_URL + 'delete', formData)
                         .then(res => {
-                            initMap()
-
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success!',
@@ -746,7 +747,7 @@
                                 timer: 1500
                             })
 
-                            datatable.ajax.reload()
+                            socket.emit('backend-crud-mahasiswa', {})
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({
@@ -797,7 +798,8 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                            datatable.ajax.reload();
+
+                            socket.emit('backend-crud-mahasiswa', {})
                         }).catch(err => {
                             Swal.fire({
                                 icon: 'error',

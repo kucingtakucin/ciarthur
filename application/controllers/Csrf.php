@@ -37,7 +37,8 @@ class Csrf extends CI_Controller
             ->set_status_header(404)
             ->set_output(json_encode([
                 'status' => false,
-                'message' => 'Key required'
+                'message' => 'Key required',
+                'input' => $this->input->post()
             ]));
     }
 
