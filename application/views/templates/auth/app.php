@@ -94,8 +94,8 @@
             socket.emit('minta-csrf', {
                 token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
                 url: "<?= base_url('csrf/generate') ?>",
-                cookie: Cookies.get('ci_csrf_cookie'),
-                session: Cookies.get('ci_session')
+                cookie: Cookies.get('ciarthur_csrf_cookie'),
+                session: Cookies.get('ciarthur_session')
             })
 
             return new Promise((resolve, reject) => {

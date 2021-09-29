@@ -15,6 +15,11 @@ class Mahasiswa extends RestController
         $this->load->library(['upload', 'image_lib', 'ion_auth']);  // Load library upload, image_lib
     }
 
+    public function index_get()
+    {
+        echo "Codeigniter Rest-Server v3.1";
+    }
+
     public function all_get()
     {
         $data = $this->M_Mahasiswa->get();

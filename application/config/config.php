@@ -381,12 +381,12 @@ $config['encryption_key'] = 'a79e9e79b3b935f46dd101298f3f60d3';
 |
 */
 $config['sess_driver'] = 'database';
-$config['sess_cookie_name'] = 'ci_session';
-$config['sess_expiration'] = 7200;
+$config['sess_cookie_name'] = 'ciarthur_session';
+$config['sess_expiration'] = 3600;
 $config['sess_save_path'] = 'ci_sessions';
-$config['sess_match_ip'] = FALSE;
-$config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+$config['sess_match_ip'] = true;
+$config['sess_time_to_update'] = 60;
+$config['sess_regenerate_destroy'] = true;
 
 /*
 |--------------------------------------------------------------------------
@@ -403,8 +403,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix']    = '';
-$config['cookie_domain']    = '';
+$config['cookie_prefix']    = 'ciarthur_';
+$config['cookie_domain']    = 'demoo.id';
 $config['cookie_path']        = '/';
 $config['cookie_secure']    = true;
 $config['cookie_httponly']     = FALSE;
@@ -453,8 +453,8 @@ $config['global_xss_filtering'] = FALSE;
 */
 $config['csrf_protection'] = true;
 $config['csrf_token_name'] = 'ci_csrf_token';
-$config['csrf_cookie_name'] = 'ci_csrf_cookie';
-$config['csrf_expire'] = 7200;
+$config['csrf_cookie_name'] = 'csrf_cookie';
+$config['csrf_expire'] = 3600;
 $config['csrf_regenerate'] = TRUE;
 $config['csrf_exclude_uris'] = ['csrf/generate'];
 

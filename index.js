@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
 				method: 'POST',
 				body: params,
 				headers: {
-					'Cookie': `ci_csrf_cookie=${data.cookie}; ci_session=${data.session}`,
+					'Cookie': `ciarthur_csrf_cookie=${data.cookie}; ciarthur_session=${data.session}`,
 					'Authorization': `Bearer ${data.token}`
 				}
 			})

@@ -40,8 +40,8 @@ $config['database_group_name'] = '';
 | Database table names.
 */
 $config['tables']['users']           = 'users';
-$config['tables']['groups']          = 'groups';
-$config['tables']['users_groups']    = 'users_groups';
+$config['tables']['groups']          = 'roles';
+$config['tables']['users_groups']    = 'role_user';
 $config['tables']['login_attempts']  = 'login_attempts';
 
 /*
@@ -51,7 +51,7 @@ $config['tables']['login_attempts']  = 'login_attempts';
  | Joins from groups.id
  */
 $config['join']['users']  = 'user_id';
-$config['join']['groups'] = 'group_id';
+$config['join']['groups'] = 'role_id';
 
 /*
  | -------------------------------------------------------------------------
@@ -123,7 +123,7 @@ $config['argon2_default_params']	= [
  | The library will fail for empty password or password size above 4096 bytes.
  | This is an arbitrary (long) value to protect against DOS attack.
  */
-$config['site_title']                 = "Example.com";       // Site Title, example.com
+$config['site_title']                 = "appt.demoo.id/omahan/ciarthur";       // Site Title, example.com
 $config['admin_email']                = "admin@example.com"; // Admin Email, admin@example.com
 $config['default_group']              = 'members';           // Default group, use name
 $config['admin_group']                = 'admin';             // Default administrators group, use name
@@ -135,12 +135,12 @@ $config['min_password_length']        = 8;                   // Minimum Required
 $config['email_activation']           = FALSE;               // Email Activation for registration
 $config['manual_activation']          = FALSE;               // Manual Activation for registration
 $config['remember_users']             = TRUE;                // Allow users to be remembered and enable auto-login
-$config['user_expire']                = 86500;               // How long to remember the user (seconds). Set to zero for no expiration - see sess_expiration in CodeIgniter Session Config for session expiration
+$config['user_expire']                = 3600;               // How long to remember the user (seconds). Set to zero for no expiration - see sess_expiration in CodeIgniter Session Config for session expiration
 $config['user_extend_on_login']       = FALSE;               // Extend the users cookies every time they auto-login
 $config['track_login_attempts']       = TRUE;                // Track the number of failed login attempts for each user or ip.
 $config['track_login_ip_address']     = TRUE;                // Track login attempts by IP Address, if FALSE will track based on identity. (Default: TRUE)
 $config['maximum_login_attempts']     = 3;                   // The maximum number of failed login attempts.
-$config['lockout_time']               = 600;                 /* The number of seconds to lockout an account due to exceeded attempts
+$config['lockout_time']               = 300;                 /* The number of seconds to lockout an account due to exceeded attempts
 																You should not use a value below 60 (1 minute) */
 $config['forgot_password_expiration'] = 1800;                /* The number of seconds after which a forgot password request will expire. If set to 0, forgot password requests will not expire.
                    												30 minutes to 1 hour are good values (enough for a user to receive the email and reset its password)
@@ -211,7 +211,7 @@ $config['email_forgot_password'] = 'forgot_password.tpl.php';
  | -------------------------------------------------------------------------
  */
 $config['delimiters_source']       = 'config'; 	// "config" = use the settings defined here, "form_validation" = use the settings defined in CI's form validation library
-$config['message_start_delimiter'] = '<p>'; 	// Message start delimiter
-$config['message_end_delimiter']   = '</p>'; 	// Message end delimiter
-$config['error_start_delimiter']   = '<p>';		// Error message start delimiter
-$config['error_end_delimiter']     = '</p>';	// Error message end delimiter
+$config['message_start_delimiter'] = ''; 	// Message start delimiter
+$config['message_end_delimiter']   = ''; 	// Message end delimiter
+$config['error_start_delimiter']   = '';		// Error message start delimiter
+$config['error_end_delimiter']     = '';	// Error message end delimiter
