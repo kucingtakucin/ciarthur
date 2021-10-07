@@ -326,7 +326,7 @@
          * Keperluan socket.io pengaduan
          */
         // ================================================== //
-        socket = io("ws://localhost:2021")
+        socket = io("ws://localhost:3021")
 
         /* Handle event dari node.js server */
         socket.on('backend-pengaduan-terima', (data) => {

@@ -194,6 +194,13 @@
         })
 
         /**
+         * Keperluan socket.io pengaduan
+         */
+        // ================================================== //
+        // socket = io("ws://223.27.152.101:2021")
+        socket = io("ws://localhost:3021/")
+
+        /**
          * Keperluan generate csrf
          */
         // ================================================== //
@@ -223,12 +230,6 @@
              */
             // ================================================== //
             $('.preloader-container').fadeOut(500)
-
-            /**
-             * Keperluan socket.io pengaduan
-             */
-            // ================================================== //
-            socket = io("ws://localhost:2021")
 
             /**
              * Keperluan resize Google Recaptchaa

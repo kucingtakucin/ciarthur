@@ -14,6 +14,12 @@ const io = new Server(server, {
 		origin: "*",
 		methods: ["GET", "POST"],
 		credentials: true
+	},
+	cookie: {
+		name: "my-ci-scoket-cookie",
+		httpOnly: true,
+		sameSite: "strict",
+		maxAge: 86400
 	}
 });
 app.get('/', (req, res) => {
@@ -64,11 +70,15 @@ io.on('connection', (socket) => {
 		io.emit('backend-reload_dt-mahasiswa', data)
 	})
 
+	socket.on("connect_error", (err) => {
+		console.log(`> connect_error due to ${err.message}`);
+	});
+
 	socket.on('disconnect', () => {
 		console.log(`> User ${socket.id} disconnected`);
 	});
 });
 
-server.listen(2021, () => {
-	console.log('> listening on http://localhost:2021');
+server.listen(3021, () => {
+	console.log('> listening on http://localhost:3021');
 });

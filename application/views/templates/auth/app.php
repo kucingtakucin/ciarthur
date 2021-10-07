@@ -88,7 +88,7 @@
          * Keperluan socket.io
          */
         // ================================================== //
-        socket = io("ws://localhost:2021")
+        socket = io("ws://localhost:3021")
 
         csrf = () => {
             socket.emit('minta-csrf', {
