@@ -204,22 +204,37 @@
          * Keperluan generate csrf
          */
         // ================================================== //
-        csrf = () => {
-            socket.emit('minta-csrf', {
-                token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
-                url: "<?= base_url('csrf/generate') ?>",
-                cookie: Cookies.get('ciarthur_csrf_cookie'),
-                session: Cookies.get('ciarthur_session'),
-            })
+        // csrf = () => {
+        //     socket.emit('minta-csrf', {
+        //         token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
+        //         url: "<?= base_url('csrf/generate') ?>",
+        //         cookie: Cookies.get('ciarthur_csrf_cookie'),
+        //         session: Cookies.get('ciarthur_session'),
+        //     })
 
-            return new Promise((resolve, reject) => {
-                socket.on('terima-csrf', data => {
-                    resolve({
-                        token_name: data.csrf_token_name,
-                        hash: data.csrf_hash,
-                    })
-                })
+        //     return new Promise((resolve, reject) => {
+        //         socket.on('terima-csrf', data => {
+        //             resolve({
+        //                 token_name: data.csrf_token_name,
+        //                 hash: data.csrf_hash,
+        //             })
+        //         })
+        //     })
+        // }
+
+        csrf = async () => {
+            let formData = new FormData()
+            // formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
+
+            let res = await axios.post("<?= base_url('csrf/generate') ?>", formData, {
+                headers: {
+                    'Authorization': `Bearer <?= $this->encryption->encrypt(bin2hex('csrf')) ?>`
+                }
             })
+            return {
+                token_name: res.data.csrf_token_name,
+                hash: res.data.csrf_hash
+            }
         }
 
         // Document ready
