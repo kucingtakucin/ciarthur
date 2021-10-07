@@ -35,10 +35,9 @@
                         text: res.data.message,
                         showConfirmButton: false,
                         timer: 1500
-                    })
-                    setTimeout(() => {
+                    }).then(() => {
                         location.replace(res.data.redirect)
-                    }, 1000);
+                    })
                 }).catch(err => {
                     console.log(err)
                     Swal.fire({
