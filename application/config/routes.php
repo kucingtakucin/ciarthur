@@ -53,7 +53,7 @@ $route['default_controller'] = 'frontend/home';
 $route['pengaduan'] = 'frontend/pengaduan/index';
 
 $route['~/login'] = 'auth/login';
-$route['~/logout'] = 'auth/logout';
+$route['~/logout'] = 'auth/login/logout';
 $route['~/email'] = 'email/email';
 
 $route['img/(.+)'] = 'image/show/$1';   // League Glide

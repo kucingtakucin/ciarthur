@@ -70,6 +70,32 @@ io.on('connection', (socket) => {
 		io.emit('backend-reload_dt-mahasiswa', data)
 	})
 
+	/* User */
+	socket.on('auth-crud-user', (data) => {
+		console.log(`> Admin ${socket.id} melakukan crud user`)
+
+		io.emit('auth-reload_dt-user', data)
+	})
+
+	socket.on('auth-activate-user', (data) => {
+		console.log(`> Admin ${socket.id} melakukan activate user`)
+
+		io.emit('auth-reload_dt-user', data)
+	})
+
+	socket.on('auth-deactivate-user', (data) => {
+		console.log(`> Admin ${socket.id} melakukan deactivate user`)
+
+		io.emit('auth-reload_dt-user', data)
+	})
+
+	/* Role */
+	socket.on('auth-crud-role', (data) => {
+		console.log(`> Admin ${socket.id} melakukan crud role`)
+
+		io.emit('auth-reload_dt-role', data)
+	})
+
 	socket.on("connect_error", (err) => {
 		console.log(`> connect_error due to ${err.message}`);
 	});

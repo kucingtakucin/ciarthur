@@ -10,7 +10,7 @@ class NamaController extends MY_Controller
     private $_path = 'backend/role/apa/'; // Contoh 'backend/admin/dashboard'
 
     /**
-     * Mahasiswa constructor
+     * NamaController constructor
      */
     public function __construct()
     {
@@ -237,4 +237,4 @@ class NamaController extends MY_Controller
     }
 }
 
-/* End of file Mahasiswa.php */
+/* End of file NamaController.php */

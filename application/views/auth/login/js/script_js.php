@@ -1,5 +1,5 @@
 <script>
-    let login;
+    let login, status_crud = false;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
 
     // Document ready
@@ -22,12 +22,13 @@
             loading();
 
             let formData = new FormData(form);
+
             formData.append(
                 await csrf().then(csrf => csrf.token_name),
                 await csrf().then(csrf => csrf.hash)
             )
 
-            axios.post(BASE_URL + 'login', formData)
+            axios.post(BASE_URL + 'index', formData)
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
@@ -57,5 +58,7 @@
                 login(this);
             }
         })
+
+        // ================================================== //
     })
 </script>

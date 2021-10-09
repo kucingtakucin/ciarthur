@@ -3,7 +3,11 @@
 }
 
 #develbar-container {
-	z-index: 99;
+	z-index: 99 !important;
+}
+
+#develbar-off {
+	z-index: 100 !important;
 }
 
 .preloader-container {

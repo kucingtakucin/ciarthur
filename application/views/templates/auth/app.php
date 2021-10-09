@@ -117,6 +117,7 @@
                     'Authorization': `Bearer <?= $this->encryption->encrypt(bin2hex('csrf')) ?>`
                 }
             })
+
             return {
                 token_name: res.data.csrf_token_name,
                 hash: res.data.csrf_hash

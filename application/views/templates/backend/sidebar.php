@@ -27,7 +27,9 @@
             <h6>Manajemen</h6>
         </div>
     </li>
-    <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(1, 'auth') ?>" href="<?= base_auth() ?>"><i data-feather="users"></i><span>User</span></a></li>
+    <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(2, 'users') ?>" href="<?= base_auth('users') ?>"><i data-feather="users"></i><span>Users</span></a></li>
+    <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(2, 'roles') ?>" href="<?= base_auth('roles') ?>"><i data-feather="settings"></i><span>Roles</span></a></li>
+    <li class="sidebar-list"><a class="nav-link sidebar-title sidebar-link <?= sidebar_active(2, 'permissions') ?>" href="<?= base_auth('permissions') ?>"><i data-feather="lock"></i><span>Permissions</span></a></li>
 <?php endif ?>
 
 <!-- Sidebar Member -->
