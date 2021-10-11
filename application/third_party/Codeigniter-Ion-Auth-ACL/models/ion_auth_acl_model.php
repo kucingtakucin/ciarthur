@@ -1,4 +1,4 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed');
+<?php (defined('BASEPATH')) or exit('No direct script access allowed');
 /**
  * Name:  Ion Auth ACL
  *
@@ -31,7 +31,7 @@ class Ion_auth_acl_model extends Ion_auth_model
         $this->load->config('ion_auth_acl', TRUE);
 
         // initialize additional db tables data
-        $this->tables  =	array_merge($this->tables, $this->config->item('tables', 'ion_auth_acl'));
+        $this->tables  =    array_merge($this->tables, $this->config->item('tables', 'ion_auth_acl'));
 
         // initialize additional db join data
         $this->join     =   array_merge($this->join, $this->config->item('join', 'ion_auth_acl'));
@@ -48,21 +48,19 @@ class Ion_auth_acl_model extends Ion_auth_model
     public function create_permission($perm_key =  FALSE, $perm_name = '')
     {
         // bail if the permission key was not passed
-        if( ! $perm_key)
-        {
+        if (!$perm_key) {
             $this->set_error('permissions_key_required');
             return FALSE;
         }
 
         // bail if the permission key already exists
         $existing_permissions = $this->db->get_where($this->tables['permissions'], array('perm_key' => $perm_key))->num_rows();
-        if($existing_permissions !== 0)
-        {
+        if ($existing_permissions !== 0) {
             $this->set_error('permissions_already_exists');
             return FALSE;
         }
 
-        $data = array('perm_key'=>$perm_key,'perm_name'=>$perm_name);
+        $data = array('perm_key' => $perm_key, 'perm_name' => $perm_name);
 
         $this->trigger_events('extra_permission_set');
 
@@ -91,14 +89,12 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         $data = array();
 
-        if (!empty($perm_key))
-        {
+        if (!empty($perm_key)) {
             // we are changing the perm key, so do some checks
 
             // bail if the perm key already exists
             $existing_permission = $this->db->get_where($this->tables['permissions'], array('perm_key' => $perm_key))->row();
-            if(isset($existing_permission->id) && $existing_permission->id != $permission_id)
-            {
+            if (isset($existing_permission->id) && $existing_permission->id != $permission_id) {
                 $this->set_error('permission_already_exists');
                 return FALSE;
             }
@@ -108,8 +104,7 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         // restrict change of perm key of the admin permission
         $permission = $this->db->get_where($this->tables['permissions'], array('id' => $permission_id))->row();
-        if($this->config->item('admin_permission', 'ion_auth_acl') === $permission->perm_key && $perm_key !== $permission->perm_key)
-        {
+        if ($this->config->item('admin_permission', 'ion_auth_acl') === $permission->perm_key && $perm_key !== $permission->perm_key) {
             $this->set_error('permission_key_admin_not_alter');
             return FALSE;
         }
@@ -142,13 +137,11 @@ class Ion_auth_acl_model extends Ion_auth_model
     public function remove_permission($permission_id = FALSE)
     {
         // bail if mandatory param not set
-        if(!$permission_id || empty($permission_id))
-        {
+        if (!$permission_id || empty($permission_id)) {
             return FALSE;
         }
         $permission = $this->permission($permission_id);
-        if($permission->perm_key == $this->config->item('admin_permission', 'ion_auth_acl'))
-        {
+        if ($permission->perm_key == $this->config->item('admin_permission', 'ion_auth_acl')) {
             $this->trigger_events(array('post_delete_permission', 'post_delete_permission_notallowed'));
             $this->set_error('permission_delete_notallowed');
             return FALSE;
@@ -163,8 +156,7 @@ class Ion_auth_acl_model extends Ion_auth_model
         // remove the permission itself
         $this->db->delete($this->tables['permissions'], array('id' => $permission_id));
 
-        if ($this->db->trans_status() === FALSE)
-        {
+        if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             $this->trigger_events(array('post_delete_permission', 'post_delete_permission_unsuccessful'));
             $this->set_error('permission_delete_unsuccessful');
@@ -193,7 +185,7 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         $users_groups   =   array();
 
-        foreach( $this->get_users_groups($user_id)->result() as $group )
+        foreach ($this->get_users_groups($user_id)->result() as $group)
             $users_groups[] = $group->id;
 
         return $users_groups;
@@ -214,8 +206,8 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         $groups     =   array();
 
-        foreach( $this->groups()->result() as $group )
-            if( $format == 'full' )
+        foreach ($this->groups()->result() as $group)
+            if ($format == 'full')
                 $groups[]   =   array('id' => $group->id, 'name' => $group->name);
             else
                 $groups[]   =   $group->id;
@@ -236,15 +228,15 @@ class Ion_auth_acl_model extends Ion_auth_model
     {
         $this->trigger_events('permissions');
 
-        $this->db->order_by('perm_name', 'ASC');
+        // $this->db->order_by('perm_name', 'ASC');
 
         $query      =   $this->db->get($this->tables['permissions']);
         $result     =   $query->result();
 
         $permissions    =   array();
 
-        foreach( $result as $permission )
-            if( $format == 'full' )
+        foreach ($result as $permission)
+            if ($format == 'full')
                 $permissions[$permission->{$key}]   =   array('id' => $permission->id, 'key' => $permission->perm_key, 'name' => $permission->perm_name);
             else
                 $permissions[]   =   $permission->id;
@@ -265,7 +257,7 @@ class Ion_auth_acl_model extends Ion_auth_model
     {
         $this->trigger_events('permission');
 
-        if( ! $id ) return FALSE;
+        if (!$id) return FALSE;
 
         $this->db->where('id', $id);
 
@@ -295,18 +287,17 @@ class Ion_auth_acl_model extends Ion_auth_model
         $permissions            =   $this->permissions('full');
         $user_permissions       =   array();
 
-        foreach( $query->result() as $perm )
-        {
-            $permission   =   ( array_key_exists($perm->perm_id, $permissions) ) ? $permissions[$perm->perm_id] : FALSE;
+        foreach ($query->result() as $perm) {
+            $permission   =   (array_key_exists($perm->perm_id, $permissions)) ? $permissions[$perm->perm_id] : FALSE;
 
-            if( ! $permission ) continue;
+            if (!$permission) continue;
 
             $user_permissions[$permission['key']]     =   array(
                 'id'            =>  $permission['id'],
                 'name'          =>  $permission['name'],
                 'key'           =>  $permission['key'],
                 'inherited'     =>  FALSE,
-                'value'         =>  ($perm->value == '1') ? TRUE : FALSE
+                'value'         => ($perm->value == '1') ? TRUE : FALSE
             );
         }
 
@@ -325,14 +316,12 @@ class Ion_auth_acl_model extends Ion_auth_model
     public function add_permission_to_user($user_id = FALSE, $perm_id = FALSE, $value = 0)
     {
         // bail if the user id & permission id were not passed
-        if( ! $user_id)
-        {
+        if (!$user_id) {
             $this->set_error('user_permissions_user_id_required');
             return FALSE;
         }
 
-        if( ! $perm_id)
-        {
+        if (!$perm_id) {
             $this->set_error('user_permissions_permission_id_required');
             return FALSE;
         }
@@ -347,21 +336,18 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         $this->db->trans_start();
 
-        if( $existing_group_permission )
+        if ($existing_group_permission)
             $this->db->replace($this->tables['users_permissions'], $data);
         else
             $this->db->insert($this->tables['users_permissions'], $data);
 
         $this->db->trans_complete();
 
-        if ($this->db->trans_status() === FALSE)
-        {
+        if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             $this->set_message('user_permission_add_unsuccessful');
             return FALSE;
-        }
-        else
-        {
+        } else {
             $this->set_message('user_permission_add_successful');
             return TRUE;
         }
@@ -378,14 +364,12 @@ class Ion_auth_acl_model extends Ion_auth_model
     public function remove_permission_from_user($user_id = FALSE, $perm_id = FALSE)
     {
         // bail if the user id was not passed
-        if( ! $user_id)
-        {
+        if (!$user_id) {
             $this->set_error('user_permissions_user_id_required');
             return FALSE;
         }
 
-        if( ! $perm_id)
-        {
+        if (!$perm_id) {
             $this->set_error('user_permissions_permission_id_required');
             return FALSE;
         }
@@ -395,15 +379,12 @@ class Ion_auth_acl_model extends Ion_auth_model
         $this->db->trans_begin();
 
         // remove permission from the user
-        if( ! $this->db->delete($this->tables['users_permissions'], array('user_id' => $user_id, 'perm_id' => $perm_id)) )
-        {
+        if (!$this->db->delete($this->tables['users_permissions'], array('user_id' => $user_id, 'perm_id' => $perm_id))) {
             $this->db->trans_rollback();
             $this->trigger_events(array('post_delete_user_permission', 'post_delete_user_permission_unsuccessful'));
             $this->set_error('user_permission_delete_unsuccessful');
             return FALSE;
-        }
-        else
-        {
+        } else {
             $this->db->trans_commit();
             $this->trigger_events(array('post_delete_user_permission', 'post_delete_user_permission_successful'));
             $this->set_message('user_permission_delete_successful');
@@ -423,14 +404,12 @@ class Ion_auth_acl_model extends Ion_auth_model
     public function add_permission_to_group($group_id = FALSE, $perm_id = FALSE, $value = 0)
     {
         // bail if the group id & permission id were not passed
-        if( ! $group_id)
-        {
+        if (!$group_id) {
             $this->set_error('group_permissions_group_id_required');
             return FALSE;
         }
 
-        if( ! $perm_id)
-        {
+        if (!$perm_id) {
             $this->set_error('group_permissions_permission_id_required');
             return FALSE;
         }
@@ -445,21 +424,18 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         $this->db->trans_start();
 
-        if( $existing_group_permission )
+        if ($existing_group_permission)
             $this->db->replace($this->tables['group_permissions'], $data);
         else
             $this->db->insert($this->tables['group_permissions'], $data);
 
         $this->db->trans_complete();
 
-        if ($this->db->trans_status() === FALSE)
-        {
+        if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             $this->set_message('group_permission_add_unsuccessful');
             return FALSE;
-        }
-        else
-        {
+        } else {
             $this->set_message('group_permission_add_successful');
             return TRUE;
         }
@@ -476,14 +452,12 @@ class Ion_auth_acl_model extends Ion_auth_model
     public function remove_permission_from_group($group_id = FALSE, $perm_id = FALSE)
     {
         // bail if the group id & permission id were not passed
-        if( ! $group_id)
-        {
+        if (!$group_id) {
             $this->set_error('group_permissions_group_id_required');
             return FALSE;
         }
 
-        if( ! $perm_id)
-        {
+        if (!$perm_id) {
             $this->set_error('group_permissions_permission_id_required');
             return FALSE;
         }
@@ -491,21 +465,18 @@ class Ion_auth_acl_model extends Ion_auth_model
         $this->trigger_events('pre_delete_group_permission');
 
         $this->db->trans_begin();
-        
+
         // remove permission from the group
         $this->db->delete($this->tables['group_permissions'], array('group_id' => $group_id, 'perm_id' => $perm_id));
-        
+
         $this->db->trans_complete();
-        
-        if ($this->db->trans_status() === FALSE)
-        {
+
+        if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
             $this->trigger_events(array('post_delete_group_permission', 'post_delete_group_permission_unsuccessful'));
             $this->set_error('group_permission_delete_unsuccessful');
             return FALSE;
-        }
-        else
-        {
+        } else {
             $this->trigger_events(array('post_delete_group_permission', 'post_delete_group_permission_successful'));
             $this->set_message('group_permission_delete_successful');
             return TRUE;
@@ -525,15 +496,15 @@ class Ion_auth_acl_model extends Ion_auth_model
         $this->trigger_events('get_group_permissions');
 
         //  Try to get the currently logged in users groups if none supplied
-        if( ! $group_id )
-            foreach($this->get_users_groups()->result() as $group)
+        if (!$group_id)
+            foreach ($this->get_users_groups()->result() as $group)
                 $group_id[]     =   $group->id;
 
         //  Still No groups then theres nothing to do!
-        if( ! $group_id )
+        if (!$group_id)
             return FALSE;
 
-        if( is_array($group_id) )
+        if (is_array($group_id))
             $this->db->where_in('group_id', $group_id);
         else
             $this->db->where('group_id', $group_id);
@@ -542,20 +513,19 @@ class Ion_auth_acl_model extends Ion_auth_model
             ->get($this->tables['group_permissions']);
 
         $permissions            =   $this->permissions('full');
-        $group_permissions	    =	array();
+        $group_permissions        =    array();
 
-        foreach( $query->result() as $perm )
-        {
-            $permission	=	( array_key_exists($perm->perm_id, $permissions) ) ? $permissions[$perm->perm_id] : FALSE;
+        foreach ($query->result() as $perm) {
+            $permission    =    (array_key_exists($perm->perm_id, $permissions)) ? $permissions[$perm->perm_id] : FALSE;
 
-            if( ! $permission ) continue;
+            if (!$permission) continue;
 
-            $group_permissions[$permission['key']]	=	array(
-                'id'				=>	$permission['id'],
-                'name'				=>	$permission['name'],
-                'key'				=>	$permission['key'],
-                'inherited'		    =>	TRUE,
-                'value'				=>	($perm->value === '1') ? TRUE : FALSE,
+            $group_permissions[$permission['key']]    =    array(
+                'id'                =>    $permission['id'],
+                'name'                =>    $permission['name'],
+                'key'                =>    $permission['key'],
+                'inherited'            =>    TRUE,
+                'value'                => ($perm->value === '1') ? TRUE : FALSE,
             );
         }
 
@@ -587,5 +557,4 @@ class Ion_auth_acl_model extends Ion_auth_model
 
         return $permissions;
     }
-
 }

@@ -456,7 +456,7 @@ $config['csrf_token_name'] = 'ci_csrf_token';
 $config['csrf_cookie_name'] = 'csrf_cookie';
 $config['csrf_expire'] = 3600;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = ['csrf/generate'];
+$config['csrf_exclude_uris'] = ['csrf/generate', 'api/[a-z]+/[a-z]+'];
 
 /*
 |--------------------------------------------------------------------------

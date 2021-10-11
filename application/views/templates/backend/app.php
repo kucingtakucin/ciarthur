@@ -101,8 +101,8 @@
                         <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
                         <li class="profile-nav onhover-dropdown p-0 mr-0">
                             <div class="media profile-media"><img class="b-r-10" src="https://appt.demoo.id/tema/cuba/html/assets/images/dashboard/profile.jpg" alt="">
-                                <div class="media-body"><span><?= ucwords($this->ion_auth_model->user()->row()->username) ?></span>
-                                    <p class="mb-0 font-roboto"><?= ($this->ion_auth_model->in_group("admin") ? 'Admin' : 'Member') ?> <i class="middle fa fa-angle-down"></i></p>
+                                <div class="media-body"><span><?= ucwords(user()->username) ?></span>
+                                    <p class="mb-0 font-roboto"><?= (in_role("admin") ? 'Admin' : 'Member') ?> <i class="middle fa fa-angle-down"></i></p>
                                 </div>
                             </div>
                             <ul class="profile-dropdown onhover-show-div">
@@ -292,6 +292,10 @@
     <script>
         let csrf, loading, $edit_account, pusher, socket, channel;
 
+        axios.defaults.headers.common = {
+            "X-Requested-With": "XMLHttpRequest",
+        };
+
         /**
          * Keperluan disable inspect element
          */
@@ -326,19 +330,19 @@
          * Keperluan socket.io pengaduan
          */
         // ================================================== //
-        socket = io("ws://localhost:3021")
+        // socket = io("ws://localhost:3021")
 
         /* Handle event dari node.js server */
-        socket.on('backend-pengaduan-terima', (data) => {
-            Swal.fire({
-                title: data.title,
-                icon: 'info',
-                text: data.message,
-                showConfirmButton: false,
-                allowEscapeKey: false,
-                timer: 1500
-            })
-        })
+        // socket.on('backend-pengaduan-terima', (data) => {
+        //     Swal.fire({
+        //         title: data.title,
+        //         icon: 'info',
+        //         text: data.message,
+        //         showConfirmButton: false,
+        //         allowEscapeKey: false,
+        //         timer: 1500
+        //     })
+        // })
 
         /**
          * Keperluan generate csrf

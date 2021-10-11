@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        <h5>Selamat Datang di Halaman Member</h5>
+        <h5>Selamat Datang di Halaman <?= ucwords(user()->username) ?></h5>
         <div class="card-header-right">
             <ul class="list-unstyled card-option">
                 <li><i class="fa fa-spin fa-cog"></i></li>

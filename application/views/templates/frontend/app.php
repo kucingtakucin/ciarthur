@@ -163,6 +163,11 @@
     <script>
         let csrf, loading, socket;
 
+        axios.defaults.headers.common = {
+            "X-Requested-With": "XMLHttpRequest",
+        };
+        s
+
         /**
          * Keperluan disable inspect element
          */
@@ -198,7 +203,7 @@
          */
         // ================================================== //
         // socket = io("ws://223.27.152.101:2021")
-        socket = io("ws://localhost:3021/")
+        // socket = io("ws://localhost:3021/")
 
         /**
          * Keperluan generate csrf

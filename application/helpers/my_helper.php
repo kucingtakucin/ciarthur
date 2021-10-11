@@ -16,16 +16,6 @@ function sidebar_active($no, $menu)
     }
 }
 
-function redirect_to()
-{
-    $ci = &get_instance();
-    if ($ci->ion_auth_model->in_group('admin')) {   // $ci->ion_auth->is_admin('admin')
-        return base_admin('dashboard');
-    } elseif ($ci->ion_auth_model->in_group('member')) {
-        return base_member('dashboard');
-    }
-}
-
 function logged_in()
 {
     $ci = &get_instance();
@@ -50,32 +40,103 @@ function is_admin()
     return $ci->ion_auth->is_admin();
 }
 
-function in_group($group)
+function in_role($role)
 {
     $ci = &get_instance();
-    return $ci->ion_auth_model->in_group($group);
+    return $ci->ion_auth_model->in_group($role);
 }
 
-function check_group($group)
+function role($role)
+{
+    if (!logged_in()) {
+        redirect('auth/login');
+    }
+
+    $ci = &get_instance();
+    if (!$ci->ion_auth_model->in_group($role))
+        if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
+            $ci->output->set_content_type('application/json')
+                ->set_status_header(403);
+            echo json_encode([
+                'status' => false,
+                'message' => 'You must be an administrator to access this resource',
+                'data' => null
+            ]);
+            exit;
+        } else {
+            show_error("You must be an administrator to access this resource", 403, "Forbidden");
+        }
+}
+
+function has_permission($permission_key)
+{
+    if (!logged_in()) {
+        redirect('auth/login');
+    }
+
+    $ci = &get_instance();
+    if (!$ci->ion_auth_acl->has_permission($permission_key)) {
+        if ($ci->input->method() === 'get') {
+            if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
+                $ci->output->set_content_type('application/json')
+                    ->set_status_header(403);
+                echo json_encode([
+                    'status' => false,
+                    'message' => "Access Denied. You don't have permission to access this resource",
+                    'data' => null
+                ]);
+                exit;
+            } else {
+                // return redirect('auth/login');
+                show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
+                // $ci->load->view('errors/html/error_403');
+                // exit();
+            }
+        } elseif ($ci->input->method() === 'post') {
+            if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
+                $ci->output->set_content_type('application/json')
+                    ->set_status_header(403);
+                echo json_encode([
+                    'status' => false,
+                    'message' => "Access Denied. You don't have permission to access this resource",
+                    'data' => null
+                ]);
+                exit;
+            } else {
+                show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
+            }
+        }
+    }
+}
+
+function is_allowed($permission_key)
 {
     $ci = &get_instance();
-    if (!$ci->ion_auth_model->in_group($group))
-        return redirect('auth/login');
+    return $ci->ion_auth_acl->is_allowed($permission_key);
+}
+
+function method($method)
+{
+    $ci = &get_instance();
+    if ($ci->input->method() !== strtolower($method)) {
+        if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
+            $ci->output->set_content_type('application/json')
+                ->set_status_header(403);
+            echo json_encode([
+                'status' => false,
+                'message' => 'Method Not Allowed',
+                'data' => null
+            ]);
+            exit;
+        } else {
+            show_error("Method Not Allowed", 403, 'Forbidden');
+        }
+    }
 }
 
 function base_auth($link = null)
 {
     return base_url("auth/$link");
-}
-
-function base_admin($link = null)
-{
-    return base_url("backend/admin/$link");
-}
-
-function base_member($link = null)
-{
-    return base_url("backend/member/$link");
 }
 
 function validation_feedback($field, $message)

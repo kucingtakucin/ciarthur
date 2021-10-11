@@ -3,17 +3,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Dashboard extends MY_Controller
 {
-	private $_path = 'backend/member/dashboard/';
+	private $_path = 'backend/dashboard/';
 	private $_table = '';
 
 	public function __construct()
 	{
 		parent::__construct();
-		check_group("member");
+		has_permission('access-dashboard');
 	}
 
 	public function index()
 	{
+		method('get');
 		$this->templates->render([
 			'title' => 'Dashboard',
 			'type' => 'backend',

@@ -37,7 +37,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        location.replace(res.data.redirect)
+                        location.replace("<?= base_url() ?>" + res.data.redirect)
                     })
                 }).catch(err => {
                     console.log(err)

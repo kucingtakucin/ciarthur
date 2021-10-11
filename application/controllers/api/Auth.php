@@ -10,6 +10,9 @@ class Auth extends RestController
 
         // Load the user model
         $this->load->model('ion_auth_model', 'auth');
+        $this->load->helper('jwt');
+        $this->load->config('jwt');
+        $this->load->library('session');
     }
 
     public function login_post()
@@ -19,26 +22,111 @@ class Auth extends RestController
         $password = $this->post('password');
 
         // Validate the post data
-        if (!empty($username) && !empty($password)) {
+        if ($username && $password) {
 
-            if ($this->auth->login($this->input->post('identity'), $this->input->post('password'))) {
+            if ($this->auth->login($this->input->post('username'), $this->input->post('password'))) {
                 //if the login is successful
-                //redirect them back to the home page
                 // Set the response and exit
-                $this->response([
-                    'status' => TRUE,
-                    'message' => 'Login successfuly',
-                    'api_key' => generate_api_key(),
-                    'api_key2' => md5('administratr:REST API:password')
-                ], RestController::HTTP_OK);
+                return $this->respondWithToken(generateToken([
+                    'id' => $this->auth->get_user_id_from_identity($this->input->post('username')),
+                    'username' => $this->input->post('username')
+                ]));
             } else {
                 // if the login was un-successful
                 // redirect them back to the login page
-                $this->response("Wrong username or password", RestController::HTTP_BAD_REQUEST);
+                $this->response([
+                    'status' => false,
+                    'message' => "Wrong username or password"
+                ], RestController::HTTP_BAD_REQUEST);
             }
         } else {
             // Set the response and exit
-            $this->response("Provide username and password", RestController::HTTP_BAD_REQUEST);
+            $this->response(
+                [
+                    'status' => false,
+                    'message' => "Unauthorized"
+                ],
+                RestController::HTTP_UNAUTHORIZED
+            );
         }
+    }
+
+    public function me_post()
+    {
+        if (
+            array_key_exists('Authorization', $this->input->request_headers()) &&
+            !empty($this->input->request_headers()['Authorization'])
+        ) {
+            $headers = explode(" ", $this->input->request_headers()["Authorization"]);
+            $bearer_token = end($headers);
+            $decodedToken = validateTimestamp($bearer_token);
+
+            // return response if token is valid
+            if ($decodedToken->status) {
+                return $this->response([
+                    'status' => true,
+                    'id' => $decodedToken->token->data->id,
+                    'username' => $decodedToken->token->data->username
+                ], RestController::HTTP_OK);
+            } else {
+                return $this->response([
+                    'status' => false,
+                    'message' => $decodedToken->message,
+                    'exception' => @$decodedToken->exception
+                ], RestController::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $this->response([
+            'status' => false,
+            'message' => "Unauthorized"
+        ], RestController::HTTP_UNAUTHORIZED);
+    }
+
+    public function refresh_post()
+    {
+        if (
+            array_key_exists('Authorization', $this->input->request_headers()) &&
+            !empty($this->input->request_headers()['Authorization'])
+        ) {
+            $headers = explode(" ", $this->input->request_headers()["Authorization"]);
+            $bearer_token = end($headers);
+            $decodedToken = validateTimestamp($bearer_token);
+
+            // return response if token is valid
+            if ($decodedToken->status) {
+                // $this->set_response($decodedToken, RestController::HTTP_OK);
+                $this->respondWithToken(generateToken([
+                    'id' => $decodedToken->token->data->id,
+                    'username' => $decodedToken->token->data->username
+                ]));
+            } else {
+                return $this->response([
+                    'status' => false,
+                    'message' => $decodedToken->message,
+                    'exception' => @$decodedToken->exception
+                ], RestController::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $this->response([
+            'status' => false,
+            'message' => "Unauthorized"
+        ], RestController::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     */
+    protected function respondWithToken($token)
+    {
+        $this->response([
+            'status' => true,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->config->item('exp')
+        ], RestController::HTTP_OK);
     }
 }

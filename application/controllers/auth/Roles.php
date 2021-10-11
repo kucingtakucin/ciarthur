@@ -13,7 +13,7 @@ class Roles extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        check_group("admin");    // admin, ...
+        role("admin");    // admin, ...
         $this->load->library(['upload', 'form_validation']);  // Load library upload
         $this->lang->load('auth');
     }

@@ -96,6 +96,13 @@ io.on('connection', (socket) => {
 		io.emit('auth-reload_dt-role', data)
 	})
 
+	/* Permission */
+	socket.on('auth-crud-permission', (data) => {
+		console.log(`> Admin ${socket.id} melakukan crud permission`)
+
+		io.emit('auth-reload_dt-permission', data)
+	})
+
 	socket.on("connect_error", (err) => {
 		console.log(`> connect_error due to ${err.message}`);
 	});

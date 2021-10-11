@@ -191,10 +191,10 @@
         //     status_crud = true
         //     datatable.ajax.reload()
         // });
-        socket.on('backend-pengaduan-terima', function(data) {
-            status_crud = true
-            datatable.ajax.reload()
-        })
+        // socket.on('backend-pengaduan-terima', function(data) {
+        //     status_crud = true
+        //     datatable.ajax.reload()
+        // })
         // ================================================== //
 
         /**

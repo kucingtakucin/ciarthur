@@ -24,7 +24,7 @@ class Users extends MY_Controller
 
 		$this->lang->load('auth');
 
-		check_group('admin');
+		role('admin');
 	}
 
 	/**

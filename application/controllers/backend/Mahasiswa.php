@@ -17,7 +17,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Mahasiswa extends MY_Controller
 {
-    private $_path = 'backend/admin/mahasiswa/'; // Contoh 'backend/admin/dashboard'
+    private $_path = 'backend/mahasiswa/'; // Contoh 'backend/admin/dashboard'
 
     /**
      * Mahasiswa constructor
@@ -25,7 +25,7 @@ class Mahasiswa extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        check_group("admin");
+        has_permission('access-mahasiswa');
         $this->load->model($this->_path . 'M_Mahasiswa');   // Load model M_Mahasisw
         $this->load->library(['upload', 'form_validation']);  // Load library upload
     }
@@ -37,6 +37,7 @@ class Mahasiswa extends MY_Controller
      */
     public function index(): CI_Loader
     {
+        method('get');
         return $this->templates->render([
             'title' => 'Mahasiswa',
             'type' => 'backend', // auth, frontend, backend
@@ -59,6 +60,7 @@ class Mahasiswa extends MY_Controller
      */
     public function data(): CI_Output
     {
+        method('get');
         $datatables = new Datatables(new CodeigniterAdapter());
         $datatables->query(
             "SELECT a.id, a.nim, a.nama, a.angkatan, a.foto,
@@ -85,6 +87,7 @@ class Mahasiswa extends MY_Controller
      */
     public function get_fakultas(): CI_Output
     {
+        method('get');
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -101,6 +104,7 @@ class Mahasiswa extends MY_Controller
      */
     public function get_prodi(): CI_Output
     {
+        method('get');
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -118,6 +122,7 @@ class Mahasiswa extends MY_Controller
      */
     public function get_latlng(): CI_Output
     {
+        method('get');
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -135,6 +140,7 @@ class Mahasiswa extends MY_Controller
      */
     public function get_kecamatan(): CI_Output
     {
+        method('get');
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -165,10 +171,12 @@ class Mahasiswa extends MY_Controller
      */
     public function insert(): CI_Output
     {
+        has_permission('create-mahasiswa');
+        method('post');
         $this->validator();
         if (!$this->form_validation->run()) {
             return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
+                ->set_status_header(422)
                 ->set_output(json_encode([
                     'status' => false,
                     'message' => 'Please check your input again!',
@@ -236,6 +244,7 @@ class Mahasiswa extends MY_Controller
      */
     public function get_where(): CI_Output
     {
+        method('get');
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -257,10 +266,12 @@ class Mahasiswa extends MY_Controller
      */
     public function update(): CI_Output
     {
+        has_permission('update-mahasiswa');
+        method('post');
         $this->validator();
         if (!$this->form_validation->run()) {
             return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
+                ->set_status_header(422)
                 ->set_output(json_encode([
                     'status' => false,
                     'message' => 'Please check your input again!',
@@ -336,6 +347,9 @@ class Mahasiswa extends MY_Controller
      */
     public function delete(): CI_Output
     {
+        has_permission('delete-mahasiswa');
+        method('post');
+
         $data = $this->M_Mahasiswa->get_where([
             'a.id' => $this->input->post('id', true),
             'a.is_active' => '1'
@@ -381,6 +395,7 @@ class Mahasiswa extends MY_Controller
      */
     public function export_excel(): void
     {
+        method('get');
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getActiveSheet()->setTitle('Data Mahasiswa');
         $spreadsheet->getProperties()->setCreator('Mahasiswa')
@@ -491,6 +506,7 @@ class Mahasiswa extends MY_Controller
      */
     public function import_excel()
     {
+        method('post');
         if (is_uploaded_file($_FILES['import_file_excel']['tmp_name'])) {
             if (!in_array(mime_content_type($_FILES['import_file_excel']['tmp_name']), ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
                 return $this->output->set_content_type('application/json')
@@ -562,6 +578,7 @@ class Mahasiswa extends MY_Controller
      */
     public function download_template_excel()
     {
+        method('get');
         $spreadsheet = IOFactory::load(FCPATH . 'assets/templates/excel/template_daftar_mahasiswa.xlsx');
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="template_daftar_mahasiswa.xlsx"');
@@ -578,6 +595,7 @@ class Mahasiswa extends MY_Controller
      */
     public function export_word(): void
     {
+        method('get');
         $templateProcessor = new TemplateProcessor('assets/templates/word/template_word.docx');
         // $templateProcessor->setValue('param', 'value');
 
@@ -595,6 +613,7 @@ class Mahasiswa extends MY_Controller
      */
     public function export_pdf(): void
     {
+        method('get');
         // instantiate and use the dompdf class
         $dompdf = new Dompdf();
         $dompdf->getOptions()->setChroot('assets/templates/pdf');
@@ -612,6 +631,7 @@ class Mahasiswa extends MY_Controller
 
     public function get_geojson()
     {
+        method('get');
         $client = new Client([
             // Base URI is used with relative requests
             'base_uri' => 'https://covid19.karanganyarkab.go.id/assets/maps/map-kab-kra.geojson',

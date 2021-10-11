@@ -228,7 +228,7 @@ class Ion_auth_acl_model extends Ion_auth_model
     {
         $this->trigger_events('permissions');
 
-        $this->db->order_by('perm_name', 'ASC');
+        // $this->db->order_by('perm_name', 'ASC');
 
         $query      =   $this->db->get($this->tables['permissions']);
         $result     =   $query->result();

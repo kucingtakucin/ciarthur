@@ -182,9 +182,9 @@
             });
         });
 
-        socket.on('auth-reload_dt-user', () => {
-            datatable_user.ajax.reload();
-        })
+        // socket.on('auth-reload_dt-user', () => {
+        //     datatable_user.ajax.reload();
+        // })
         // ================================================== //
 
 
@@ -225,7 +225,8 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(() => {
-                                socket.emit('auth-crud-user', {})
+                                // socket.emit('auth-crud-user', {})
+                                datatable_user.ajax.reload()
                                 location.replace(BASE_URL)
                             })
 
@@ -335,7 +336,8 @@
                                 timer: 1500
                             })
 
-                            socket.emit('auth-crud-user', {})
+                            // socket.emit('auth-crud-user', {})
+                            datatable_user.ajax.reload()
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({

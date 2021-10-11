@@ -573,10 +573,10 @@
 
         bsCustomFileInput.init()
 
-        socket.on('backend-reload_dt-mahasiswa', () => {
-            initMap()
-            datatable.ajax.reload();
-        })
+        // socket.on('backend-reload_dt-mahasiswa', () => {
+        //     initMap()
+        //     datatable.ajax.reload();
+        // })
         // ================================================== //
 
         /**
@@ -655,12 +655,13 @@
                         timer: 1500
                     })
 
-                    socket.emit('backend-crud-mahasiswa', {})
+                    // socket.emit('backend-crud-mahasiswa', {})
+                    datatable.ajax.reload()
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
+                        title: err.response.statusText,
                         html: err.response.data.message,
                         // text: err.response.statusText,
                     })
@@ -697,12 +698,13 @@
                         timer: 1500
                     })
 
-                    socket.emit('backend-crud-mahasiswa', {})
+                    // socket.emit('backend-crud-mahasiswa', {})
+                    datatable.ajax.reload()
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
+                        title: err.response.statusTex,
                         html: err.response.data.message,
                         // text: err.response.statusText
                     })
@@ -747,14 +749,15 @@
                                 timer: 1500
                             })
 
-                            socket.emit('backend-crud-mahasiswa', {})
+                            // socket.emit('backend-crud-mahasiswa', {})
+                            datatable.ajax.reload()
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Oops...',
-                                // html: err.response.data.message,
-                                text: err.response.statusText
+                                title: err.response.statusText,
+                                html: err.response.data.message,
+                                // text: err.response.
                             })
                         })
                 }
@@ -799,7 +802,8 @@
                                 timer: 1500
                             })
 
-                            socket.emit('backend-crud-mahasiswa', {})
+                            // socket.emit('backend-crud-mahasiswa', {})
+                            datatable.ajax.reload()
                         }).catch(err => {
                             Swal.fire({
                                 icon: 'error',

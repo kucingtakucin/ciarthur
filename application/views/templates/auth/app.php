@@ -84,11 +84,15 @@
     <script>
         let csrf, loading;
 
+        axios.defaults.headers.common = {
+            "X-Requested-With": "XMLHttpRequest",
+        };
+
         /**
          * Keperluan socket.io
          */
         // ================================================== //
-        socket = io("ws://localhost:3021")
+        // socket = io("ws://localhost:3021")
 
         // csrf = () => {
         //     socket.emit('minta-csrf', {

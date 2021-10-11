@@ -22,7 +22,7 @@ class Login extends MY_Controller
 
         if ($this->input->method() == 'get') {
             if (logged_in()) {
-                redirect(redirect_to());
+                redirect('backend/dashboard');
             }
 
             // the user is not logging in so display the login page
@@ -47,7 +47,7 @@ class Login extends MY_Controller
                     ->set_output(json_encode([
                         'status' => true,
                         'message' => 'Login Berhasil!',
-                        'redirect' => redirect_to()
+                        'redirect' => 'backend/dashboard'
                     ]));
             } else {
                 // if the login was un-successful
