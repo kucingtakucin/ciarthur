@@ -38,6 +38,9 @@ class NamaController extends MY_Controller
             'title' => 'Judul',
             'type' => 'backend', // auth, frontend, backend
             'uri_segment' => $this->_path,
+            'breadcrumb' => [
+                'Backend', 'Menu', 'Apa'
+            ],
             'page' => 'contents/' . $this->_path . 'index',
             'script' => 'contents/' . $this->_path . 'js/script_js',
             'style' => 'contents/' . $this->_path . 'css/style_css',

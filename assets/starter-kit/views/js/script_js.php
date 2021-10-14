@@ -393,14 +393,6 @@
             });
         });
 
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            endDate: 'now',
-            clearBtn: true,
-            todayBtn: 'linked',
-            autoclose: true
-        })
-
         bsCustomFileInput.init()
 
         // socket.on('backend-reload_dt-mahasiswa', () => {
