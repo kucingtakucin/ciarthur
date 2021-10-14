@@ -93,6 +93,9 @@ class Permissions extends MY_Controller
                 'title' => 'Permissions',
                 'type' => 'backend', // auth, frontend, backend
                 'uri_segment' => $this->_path,
+                'breadcrumb' => [
+                    'Auth', 'Manajemen', 'Permissions', 'Add'
+                ],
                 'page' => $this->_path . 'manage/add_permission',
                 'script' => $this->_path . 'manage/js/script_js',
                 'style' => $this->_path . 'manage/css/style_css',
@@ -135,6 +138,9 @@ class Permissions extends MY_Controller
                 'title' => 'Permissions',
                 'type' => 'backend', // auth, frontend, backend
                 'permission' => $permission,
+                'breadcrumb' => [
+                    'Auth', 'Manajemen', 'Permissions', 'Update'
+                ],
                 'uri_segment' => $this->_path,
                 'page' => $this->_path . 'manage/edit_permission',
                 'script' => $this->_path . 'manage/js/script_js',
@@ -248,6 +254,9 @@ class Permissions extends MY_Controller
                 'title' => 'Permissions',
                 'type' => 'backend', // auth, frontend, backend
                 'uri_segment' => $this->_path,
+                'breadcrumb' => [
+                    'Auth', 'Manajemen', 'Permissions', 'Role Access'
+                ],
                 'permissions' => $this->ion_auth_acl->permissions('full'),
                 'group_id' => $group_id,
                 'group_permissions' => $this->ion_auth_acl->get_group_permissions($group_id),
@@ -259,64 +268,64 @@ class Permissions extends MY_Controller
         }
     }
 
-    public function users()
-    {
-        $data['users']  =   $this->ion_auth->users()->result();
+    // public function users()
+    // {
+    //     $data['users']  =   $this->ion_auth->users()->result();
 
-        $this->load->view('auth/permission/users', $data);
-    }
+    //     $this->load->view('auth/permission/users', $data);
+    // }
 
-    public function manage_user()
-    {
-        $user_id  =   $this->uri->segment(3);
+    // public function manage_user()
+    // {
+    //     $user_id  =   $this->uri->segment(3);
 
-        if (!$user_id) {
-            $this->session->set_flashdata('message', "No user ID passed");
-            redirect("/permission/users", 'refresh');
-        }
+    //     if (!$user_id) {
+    //         $this->session->set_flashdata('message', "No user ID passed");
+    //         redirect("/permission/users", 'refresh');
+    //     }
 
-        $data['user']               =   $this->ion_auth->user($user_id)->row();
-        $data['user_groups']        =   $this->ion_auth->get_users_groups($user_id)->result();
-        $data['user_acl']           =   $this->ion_auth_acl->build_acl($user_id);
+    //     $data['user']               =   $this->ion_auth->user($user_id)->row();
+    //     $data['user_groups']        =   $this->ion_auth->get_users_groups($user_id)->result();
+    //     $data['user_acl']           =   $this->ion_auth_acl->build_acl($user_id);
 
-        $this->load->view('auth/permission/manage_user', $data);
-    }
+    //     $this->load->view('auth/permission/manage_user', $data);
+    // }
 
-    public function user_permissions()
-    {
-        $user_id  =   $this->uri->segment(3);
+    // public function user_permissions()
+    // {
+    //     $user_id  =   $this->uri->segment(3);
 
-        if (!$user_id) {
-            $this->session->set_flashdata('message', "No user ID passed");
-            redirect("/permission/users", 'refresh');
-        }
+    //     if (!$user_id) {
+    //         $this->session->set_flashdata('message', "No user ID passed");
+    //         redirect("/permission/users", 'refresh');
+    //     }
 
-        if ($this->input->post() && $this->input->post('cancel'))
-            redirect("/permission/manage_user/{$user_id}", 'refresh');
+    //     if ($this->input->post() && $this->input->post('cancel'))
+    //         redirect("/permission/manage_user/{$user_id}", 'refresh');
 
 
-        if ($this->input->post() && $this->input->post('save')) {
-            foreach ($this->input->post() as $k => $v) {
-                if (substr($k, 0, 5) == 'perm_') {
-                    $permission_id  =   str_replace("perm_", "", $k);
+    //     if ($this->input->post() && $this->input->post('save')) {
+    //         foreach ($this->input->post() as $k => $v) {
+    //             if (substr($k, 0, 5) == 'perm_') {
+    //                 $permission_id  =   str_replace("perm_", "", $k);
 
-                    if ($v == "X")
-                        $this->ion_auth_acl->remove_permission_from_user($user_id, $permission_id);
-                    else
-                        $this->ion_auth_acl->add_permission_to_user($user_id, $permission_id, $v);
-                }
-            }
+    //                 if ($v == "X")
+    //                     $this->ion_auth_acl->remove_permission_from_user($user_id, $permission_id);
+    //                 else
+    //                     $this->ion_auth_acl->add_permission_to_user($user_id, $permission_id, $v);
+    //             }
+    //         }
 
-            redirect("/permission/manage_user/{$user_id}", 'refresh');
-        }
+    //         redirect("/permission/manage_user/{$user_id}", 'refresh');
+    //     }
 
-        $user_groups    =   $this->ion_auth_acl->get_user_groups($user_id);
+    //     $user_groups    =   $this->ion_auth_acl->get_user_groups($user_id);
 
-        $data['user_id']                =   $user_id;
-        $data['permissions']            =   $this->ion_auth_acl->permissions('full', 'perm_key');
-        $data['group_permissions']      =   $this->ion_auth_acl->get_group_permissions($user_groups);
-        $data['users_permissions']      =   $this->ion_auth_acl->build_acl($user_id);
+    //     $data['user_id']                =   $user_id;
+    //     $data['permissions']            =   $this->ion_auth_acl->permissions('full', 'perm_key');
+    //     $data['group_permissions']      =   $this->ion_auth_acl->get_group_permissions($user_groups);
+    //     $data['users_permissions']      =   $this->ion_auth_acl->build_acl($user_id);
 
-        $this->load->view('auth/permission/user_permissions', $data);
-    }
+    //     $this->load->view('auth/permission/user_permissions', $data);
+    // }
 }

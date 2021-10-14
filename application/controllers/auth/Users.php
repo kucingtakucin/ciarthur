@@ -98,11 +98,6 @@ class Users extends MY_Controller
 	{
 		$this->data['title'] = $this->lang->line('create_user_heading');
 
-		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
-			redirect('auth', 'refresh');
-		}
-
-		$tables = $this->config->item('tables', 'ion_auth');
 		$identity_column = $this->config->item('identity', 'ion_auth');
 		$this->data['identity_column'] = $identity_column;
 
@@ -197,6 +192,9 @@ class Users extends MY_Controller
 				'title' => $this->data['title'],
 				'type' => 'backend',
 				'identity_column' => $this->data['identity_column'],
+				'breadcrumb' => [
+					'Auth', 'Manajemen', 'Users', 'Create'
+				],
 				'first_name' => $this->data['first_name'],
 				'last_name' => $this->data['last_name'],
 				'identity' => $this->data['identity'],
@@ -338,6 +336,9 @@ class Users extends MY_Controller
 			$this->templates->render([
 				'title' => $this->data['title'],
 				'type' => 'backend',
+				'breadcrumb' => [
+					'Auth', 'Manajemen', 'Users', 'Edit'
+				],
 				'first_name' => $this->data['first_name'],
 				'last_name' => $this->data['last_name'],
 				'company' => $this->data['company'],
@@ -664,6 +665,9 @@ class Users extends MY_Controller
 			$this->templates->render([
 				'title' => 'Deactivate User',
 				'type' => 'backend',
+				'breadcrumb' => [
+					'Auth', 'Manajemen', 'Users', 'Deactivate'
+				],
 				'user' => $this->data['user'],
 				'identity' => $this->data['identity'],
 				'uri_segment' => $this->_path,

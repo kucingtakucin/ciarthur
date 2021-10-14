@@ -1,12 +1,13 @@
 <?php
 
-class LogViewerController extends CI_Controller
+class LogViewerController extends MY_Controller
 {
     private $logViewer;
 
     public function __construct()
     {
         parent::__construct();
+        role('admin');
         $this->logViewer = new \CILogViewer\CILogViewer();
         //...
     }

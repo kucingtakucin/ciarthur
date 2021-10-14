@@ -24,7 +24,6 @@ class Login extends MY_Controller
      */
     public function index()
     {
-        $this->data['title'] = $this->lang->line('login_heading');
         $recaptcha = new ReCaptcha('6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o');
         $response = $recaptcha->setExpectedHostname('appt.demoo.id')
             ->verify($this->input->post('g-recaptcha-response'));

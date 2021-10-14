@@ -9,7 +9,7 @@
         <div class="space30"></div>
         <div class="row gutter-60 text-center align-items-end">
             <div class="col-md-4">
-                <figure class="mb-30"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept14.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept14@2x.png 2x" alt="" /></figure>
+                <figure class="mb-30"><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept14.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept14@2x.png 2x" alt="" /></figure>
                 <h4>Social Media</h4>
                 <p class="mb-15">Maecenas faucibus mollis interdum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</p>
                 <div class="text-center"><a href="#" class="more">Learn more</a></div>
@@ -17,7 +17,7 @@
             <!--/column -->
             <div class="space20 d-md-none"></div>
             <div class="col-md-4">
-                <figure class="mb-30"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept19.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept19@2x.png 2x" alt="" /></figure>
+                <figure class="mb-30"><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept19.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept19@2x.png 2x" alt="" /></figure>
                 <h4>Digital Marketing</h4>
                 <p class="mb-15">Maecenas faucibus mollis interdum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</p>
                 <div class="text-center"><a href="#" class="more">Learn more</a></div>
@@ -25,7 +25,7 @@
             <!--/column -->
             <div class="space20 d-md-none"></div>
             <div class="col-md-4">
-                <figure class="mb-30"><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept18.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept18@2x.png 2x" alt="" /></figure>
+                <figure class="mb-30"><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept18.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept18@2x.png 2x" alt="" /></figure>
                 <h4>SEO Optimization</h4>
                 <p class="mb-15">Maecenas faucibus mollis interdum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus.</p>
                 <div class="text-center"><a href="#" class="more">Learn more</a></div>
@@ -36,7 +36,7 @@
         <div class="space140"></div>
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <figure><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept15.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept15@2x.png 2x" alt="" /></figure>
+                <figure><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept15.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept15@2x.png 2x" alt="" /></figure>
             </div>
             <!--/column -->
             <div class="space20 d-md-none"></div>
@@ -77,7 +77,7 @@
         <div class="space140"></div>
         <div class="row align-items-center">
             <div class="col-lg-6 order-lg-2 text-center">
-                <figure><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept17.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept17@2x.png 2x" alt="" /></figure>
+                <figure><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept17.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept17@2x.png 2x" alt="" /></figure>
             </div>
             <!--/column -->
             <div class="space20 d-md-none"></div>
@@ -147,7 +147,7 @@
 </div>
 
 <!-- /.wrapper -->
-<div class="wrapper image-wrapper bg-image gradient-overlay inverse-text" data-image-src="<?= base_url() ?>assets/snowlake/images/art/bg25.jpg">
+<div class="wrapper image-wrapper bg-image gradient-overlay inverse-text" data-image-src="<?= $this->config->item('assets_frontend'); ?>style/images/art/bg25.jpg">
     <div class="container inner pt-140 pb-140 text-center">
         <h2 class="title-bg bg-white color-dark">How We Do It?</h2>
         <div class="space10"></div>
@@ -170,7 +170,7 @@
         <div class="grid-view">
             <div class="carousel owl-carousel" data-margin="30" data-dots="true" data-autoplay="false" data-autoplay-timeout="5000" data-responsive='{"0":{"items": "1"}, "768":{"items": "2"}, "992":{"items": "3"}}'>
                 <div class="item">
-                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= base_url() ?>assets/snowlake/images/art/b1.jpg" alt="" /></a>
+                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/b1.jpg" alt="" /></a>
                         <figcaption>
                             <h5 class="from-top mb-0">Read More</h5>
                         </figcaption>
@@ -179,7 +179,7 @@
                 </div>
                 <!-- /.item -->
                 <div class="item">
-                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= base_url() ?>assets/snowlake/images/art/b2.jpg" alt="" /></a>
+                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/b2.jpg" alt="" /></a>
                         <figcaption>
                             <h5 class="from-top mb-0">Read More</h5>
                         </figcaption>
@@ -188,7 +188,7 @@
                 </div>
                 <!-- /.item -->
                 <div class="item">
-                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= base_url() ?>assets/snowlake/images/art/b3.jpg" alt="" /></a>
+                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/b3.jpg" alt="" /></a>
                         <figcaption>
                             <h5 class="from-top mb-0">Read More</h5>
                         </figcaption>
@@ -197,7 +197,7 @@
                 </div>
                 <!-- /.item -->
                 <div class="item">
-                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= base_url() ?>assets/snowlake/images/art/b4.jpg" alt="" /></a>
+                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/b4.jpg" alt="" /></a>
                         <figcaption>
                             <h5 class="from-top mb-0">Read More</h5>
                         </figcaption>
@@ -206,7 +206,7 @@
                 </div>
                 <!-- /.item -->
                 <div class="item">
-                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= base_url() ?>assets/snowlake/images/art/b5.jpg" alt="" /></a>
+                    <figure class="overlay overlay1 rounded mb-30"><a href="#"> <img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/b5.jpg" alt="" /></a>
                         <figcaption>
                             <h5 class="from-top mb-0">Read More</h5>
                         </figcaption>
@@ -234,7 +234,7 @@
         <div class="space40"></div>
         <div class="row align-items-center">
             <div class="col-lg-6 pr-60 pr-md-15">
-                <figure><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept16.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept16@2x.png 2x" alt="" /></figure>
+                <figure><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept16.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept16@2x.png 2x" alt="" /></figure>
             </div>
             <!--/column -->
             <div class="space20 d-md-none"></div>
@@ -285,14 +285,14 @@
         <!--/.row -->
         <div class="space80"></div>
         <div class="carousel owl-carousel clients" data-margin="30" data-loop="true" data-dots="false" data-autoplay="true" data-autoplay-timeout="3000" data-responsive='{"0":{"items": "2"}, "768":{"items": "4"}, "992":{"items": "5"}, "1140":{"items": "6"}}'>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z1.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z2.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z3.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z4.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z5.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z6.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z7.svg" alt="" /></div>
-            <div class="item pl-15 pr-15"><img src="<?= base_url() ?>assets/snowlake/images/art/z8.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z1.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z2.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z3.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z4.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z5.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z6.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z7.svg" alt="" /></div>
+            <div class="item pl-15 pr-15"><img src="<?= $this->config->item('assets_frontend'); ?>style/images/art/z8.svg" alt="" /></div>
         </div>
         <!-- /.owl-carousel -->
     </div>
@@ -405,7 +405,7 @@
         <div class="space140"></div>
         <div class="row">
             <div class="col-lg-6">
-                <figure><img src="#" srcset="<?= base_url() ?>assets/snowlake/images/concept/concept13.png 1x, <?= base_url() ?>assets/snowlake/images/concept/concept13@2x.png 2x" alt="" /></figure>
+                <figure><img src="#" srcset="<?= $this->config->item('assets_frontend'); ?>style/images/concept/concept13.png 1x, <?= $this->config->item('assets_frontend'); ?>style/images/concept/concept13@2x.png 2x" alt="" /></figure>
             </div>
             <!--/column -->
             <div class="space50 d-none d-md-block d-lg-none"></div>

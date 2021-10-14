@@ -60,6 +60,9 @@ class Pengaduan extends MY_Controller
 			'title' => 'Pengaduan / Chat',
 			'type' => 'backend',
 			'uri_segment' => $this->_path,
+			'breadcrumb' => [
+				'Backend', 'Menu', 'Pengaduan', 'Chat'
+			],
 			'page' => 'contents/' . $this->_path . 'chat/index',
 			'script' => 'contents/' . $this->_path . 'chat/js/script_js',
 			'style' => 'contents/' . $this->_path . 'chat/css/style_css',

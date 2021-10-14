@@ -4,18 +4,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/favicon.png">
+    <link rel="shortcut icon" href="<?= $this->config->item('assets_frontend') ?>style/images/favicon.png">
     <title>Snowlake</title>
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/plugins.css">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/css/settings.css">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/css/layers.css">
-    <link rel="styleslaeet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/css/navigation.css">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/type/type.css">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style.css">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/color/purple.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/css/plugins.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/revolution/css/settings.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/revolution/css/layers.css">
+    <link rel="styleslaeet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/revolution/css/navigation.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/type/type.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/css/color/purple.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/font/font2.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_frontend') ?>style/css/font/font2.css">
 
     <!-- Google re-Captcha  -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -40,7 +40,7 @@
     <div class="content-wrapper">
         <nav class="navbar absolute transparent inverse-text navbar-hover-opacity nav-uppercase navbar-expand-lg">
             <div class="container flex-row justify-content-center">
-                <div class="navbar-brand"><a href="<?= base_url() ?>"><img src="#" srcset="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo.png 1x, https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo@2x.png 2x" class="logo-dark" alt="" /><img src="#" srcset="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light.png 1x, https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light@2x.png 2x" class="logo-light" alt="" /></a></div>
+                <div class="navbar-brand"><a href="<?= base_url() ?>"><img src="#" srcset="<?= $this->config->item('assets_frontend') ?>style/images/logo.png 1x, <?= $this->config->item('assets_frontend') ?>style/images/logo@2x.png 2x" class="logo-dark" alt="" /><img src="#" srcset="<?= $this->config->item('assets_frontend') ?>style/images/logo-light.png 1x, <?= $this->config->item('assets_frontend') ?>style/images/logo-light@2x.png 2x" class="logo-light" alt="" /></a></div>
                 <div class="navbar-other ml-auto order-lg-3">
                     <ul class="navbar-nav flex-row align-items-center" data-sm-skip="true">
                         <li class="nav-item">
@@ -66,7 +66,7 @@
                 <!-- /.navbar-other -->
                 <div class="navbar-collapse offcanvas-nav">
                     <div class="offcanvas-header d-lg-none d-xl-none">
-                        <a href="<?= base_url() ?>"><img src="#" srcset="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light.png 1x, https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light@2x.png 2x" alt="" /></a>
+                        <a href="<?= base_url() ?>"><img src="#" srcset="<?= $this->config->item('assets_frontend') ?>style/images/logo-light.png 1x, <?= $this->config->item('assets_frontend') ?>style/images/logo-light@2x.png 2x" alt="" /></a>
                         <button class="plain offcanvas-close offcanvas-nav-close"><i class="jam jam-close"></i></button>
                     </div>
                     <?= $this->load->view('templates/frontend/navbar', '', true) ?>
@@ -79,7 +79,7 @@
 
         <div class="offcanvas-info inverse-text">
             <button class="plain offcanvas-close offcanvas-info-close"><i class="jam jam-close"></i></button>
-            <a href="<?= base_url() ?>"><img src="#" srcset="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light.png 1x, https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/images/logo-light@2x.png 2x" alt="" /></a>
+            <a href="<?= base_url() ?>"><img src="#" srcset="<?= $this->config->item('assets_frontend') ?>style/images/logo-light.png 1x, <?= $this->config->item('assets_frontend') ?>style/images/logo-light@2x.png 2x" alt="" /></a>
             <div class="space30"></div>
             <p>Snowlake is a multi-concept and powerful site template contains rich layouts with possibility of unlimited combinations & beautiful elements.</p>
             <div class="space20"></div>
@@ -126,20 +126,20 @@
         <!-- /.Footer -->
     </div>
     <!-- /.content-wrapper -->
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/jquery.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/popper.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/bootstrap.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/jquery.themepunch.tools.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/jquery.themepunch.revolution.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.actions.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.migration.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/revolution/js/extensions/revolution.extension.video.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/js/jquery.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/js/popper.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/js/bootstrap.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/jquery.themepunch.tools.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/jquery.themepunch.revolution.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/revolution/js/extensions/revolution.extension.video.min.js"></script>
 
     <!-- Pusher -->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
@@ -162,8 +162,8 @@
     <!-- SocketIO  -->
     <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 
-    <script src="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/js/plugins.js"></script>
-    <script src="<?= base_url() ?>assets/snowlake/js/scripts.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/js/plugins.js"></script>
+    <script src="<?= $this->config->item('assets_frontend') ?>style/js/scripts.js"></script>
     <script>
         let csrf, loading, socket;
 

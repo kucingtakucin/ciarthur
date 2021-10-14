@@ -110,6 +110,9 @@ class Roles extends MY_Controller
             $this->templates->render([
                 'title' => 'Create Role',
                 'type' => 'backend',
+                'breadcrumb' => [
+                    'Auth', 'Manajemen', 'Roles', 'Create'
+                ],
                 'group_name' => $this->data['group_name'],
                 'description' => $this->data['description'],
                 'uri_segment' => $this->_path,
@@ -195,6 +198,9 @@ class Roles extends MY_Controller
             $this->templates->render([
                 'title' => $this->data['title'],
                 'type' => 'backend',
+                'breadcrumb' => [
+                    'Auth', 'Manajemen', 'Roles', 'Edit'
+                ],
                 'message' => $this->data['message'],
                 'group' => $this->data['group'],
                 'group_name' => $this->data['group_name'],

@@ -21,7 +21,7 @@
                   </div>
 
                   <div class="form-group">
-                        <a href="<?= base_auth() ?>" class="btn btn-secondary btn-pill">Kembali</a>
+                        <a href="<?= base_auth('roles') ?>" class="btn btn-secondary btn-pill">Kembali</a>
                         <?php echo form_submit('submit', 'Save Role', 'class="btn btn-primary btn-pill"'); ?>
                         <button class="btn btn-primary btn-pill loader" type="button" disabled style="display: none;">
                               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

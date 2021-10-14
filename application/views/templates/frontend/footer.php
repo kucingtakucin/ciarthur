@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-4 col-lg-3">
                 <div class="widget">
-                    <img src="#" srcset="<?= base_url() ?>assets/snowlake/images/logo-light.png 1x, <?= base_url() ?>assets/snowlake/images/logo-light@2x.png 2x" alt="" />
+                    <img src="#" srcset="<?= $this->config->item('assets_frontend') ?>style/images/logo-light.png 1x, <?= $this->config->item('assets_frontend') ?>style/images/logo-light@2x.png 2x" alt="" />
                     <div class="space40"></div>
                     <p>© 2020 Snowlake App. <br class="d-none d-lg-block" />All rights reserved.</p>
                 </div>

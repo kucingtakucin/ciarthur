@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+date_default_timezone_set('Asia/Jakarta');
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,12 @@ $config['base_url'] = 'https://appt.demoo.id/omahan/ciarthur/';
 /** Codeigniter Log Viewer */
 $config["clv_log_folder_path"] = APPPATH . "logs";
 $config["clv_log_file_pattern"] = "log-*.php";
+
+/** Assets URL */
+$config["assets_frontend"] = $config['base_url'] . 'assets/snowlake/';
+$config["assets_auth"] = $config['base_url'] . 'assets/cuba/';
+$config["assets_backend"] = $config['base_url'] . 'assets/cuba/';
+
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -491,7 +498,7 @@ $config['compress_output'] = FALSE;
 | helper' page of the user guide for information regarding date handling.
 |
 */
-$config['time_reference'] = 'local';
+$config['time_reference'] = 'Asia/Jakarta';
 
 /*
 |--------------------------------------------------------------------------

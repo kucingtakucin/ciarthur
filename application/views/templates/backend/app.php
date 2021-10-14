@@ -12,43 +12,43 @@
     <meta name="description" content="Cuba admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Cuba admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="https://appt.demoo.id/tema/cuba/html/assets/images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="https://appt.demoo.id/tema/cuba/html/assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="<?= $this->config->item('assets_backend') ?>images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= $this->config->item('assets_backend') ?>images/favicon.png" type="image/x-icon">
 
     <!-- Google font-->
     <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/fontawesome.css">
 
     <!-- ico-font-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/icofont.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/icofont.css">
 
     <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/themify.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/themify.css">
 
     <!-- Flag icon-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/flag-icon.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/flag-icon.css">
 
     <!-- Feather icon-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/feather-icon.css">
 
     <!-- Bootstrap css-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/bootstrap.css">
 
     <!-- App css-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/style.css">
-    <link id="color" rel="stylesheet" href="https://appt.demoo.id/tema/cuba/html/assets/css/color-1.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/style.css">
+    <link id="color" rel="stylesheet" href="<?= $this->config->item('assets_backend') ?>css/color-1.css" media="screen">
 
     <!-- Responsive css-->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/responsive.css">
 
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
     <!-- Animate.css -->
-    <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/cuba/html/assets/css/vendors/animate.css">
+    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/animate.css">
 
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.css" />
@@ -89,7 +89,7 @@
                 <div class="header-logo-wrapper">
                     <div class="logo-wrapper">
                         <a href="<?= base_url() ?>">
-                            <img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt="">
+                            <img class="img-fluid" src="<?= $this->config->item('assets_backend') ?>images/logo/logo.png" alt="">
                         </a>
                     </div>
                     <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="sliders" id="sidebar-toggle"> </i></div>
@@ -112,7 +112,7 @@
                         </li>
                         <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
                         <li class="profile-nav onhover-dropdown p-0 mr-0">
-                            <div class="media profile-media"><img class="b-r-10" src="https://appt.demoo.id/tema/cuba/html/assets/images/dashboard/profile.jpg" alt="">
+                            <div class="media profile-media"><img class="b-r-10" src="<?= $this->config->item('assets_backend') ?>images/dashboard/profile.jpg" alt="">
                                 <div class="media-body"><span><?= ucwords(user()->username) ?></span>
                                     <p class="mb-0 font-roboto"><?= (in_role("admin") ? 'Admin' : 'Member') ?> <i class="middle fa fa-angle-down"></i></p>
                                 </div>
@@ -147,11 +147,11 @@
             <div class="sidebar-wrapper">
                 <div class="logo-wrapper">
                     <a href="<?= base_url() ?>">
-                        <img class="img-fluid for-light" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt="logo">
-                        <img class="img-fluid for-dark" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo_dark.png" alt="logo dark">
+                        <img class="img-fluid for-light" src="<?= $this->config->item('assets_backend') ?>images/logo/logo.png" alt="logo">
+                        <img class="img-fluid for-dark" src="<?= $this->config->item('assets_backend') ?>images/logo/logo_dark.png" alt="logo dark">
                     </a>
                 </div>
-                <div class="logo-icon-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo-icon.png" alt=""></a></div>
+                <div class="logo-icon-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="<?= $this->config->item('assets_backend') ?>images/logo/logo-icon.png" alt=""></a></div>
                 <nav>
                     <div class="sidebar-main">
                         <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
@@ -219,29 +219,29 @@
 
 
     <!-- latest jquery-->
-    <!-- <script src="https://appt.demoo.id/tema/cuba/html/assets/js/jquery-3.5.1.min.js"></script> -->
+    <!-- <script src="<?= $this->config->item('assets_backend') ?>js/jquery-3.5.1.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <!-- Bootstrap js-->
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/bootstrap/popper.min.js"></script>
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/bootstrap/bootstrap.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/bootstrap/popper.min.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/bootstrap/bootstrap.js"></script>
 
     <!-- feather icon js-->
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/icons/feather-icon/feather.min.js"></script>
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/icons/feather-icon/feather-icon.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/icons/feather-icon/feather.min.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/icons/feather-icon/feather-icon.js"></script>
 
     <!-- Sidebar jquery-->
     <script src="<?= base_url() ?>assets/cuba/js/sidebar-menu.js"></script>
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/config.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/config.js"></script>
 
     <!-- Clipboard .js-->
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/clipboard/clipboard.min.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/clipboard/clipboard.min.js"></script>
 
     <!-- Custom Card -->
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/custom-card/custom-card.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/custom-card/custom-card.js"></script>
 
     <!-- Tooltip init -->
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/tooltip-init.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/tooltip-init.js"></script>
 
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -265,7 +265,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
     <!-- Form Validation Custom -->
-    <script src="https://appt.demoo.id/tema/cuba/html/assets/js/form-validation-custom.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/form-validation-custom.js"></script>
 
     <!-- Bootstrap Custom File Input -->
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
@@ -291,7 +291,7 @@
     <!-- Custom Scripts-->
     <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
     <script>
-        let csrf, loading, $edit_account, pusher, socket, channel;
+        let csrf, loading, $edit_account, pusher, socket, channel, hex2bin, bin2hex;
 
         /** Set default AJAX headers */
         axios.defaults.headers.common = {
@@ -518,6 +518,21 @@
                 $('#form_logout #csrf-logout').val(await csrf().then(csrf => csrf.hash))
                 $('#form_logout').submit()
             })
+
+            // ================================================//
+            /**
+             * Implement hex2bin and bin2hex in JavaScript
+             * https://gist.github.com/jasperck
+             *
+             * Copyright 2017, JasperChang <jasperc8@gmail.com>
+             * Licensed under The MIT License
+             * http://www.opensource.org/licenses/mit-license
+             */
+
+            hex2bin = str => str.match(/.{1,2}/g).reduce((str, hex) => str += String.fromCharCode(parseInt(hex, 16)), '');
+
+            bin2hex = str => str.split('').reduce((str, glyph) => str += glyph.charCodeAt().toString(16).length < 2 ? `0${glyph.charCodeAt().toString(16)}` :
+                glyph.charCodeAt().toString(16), '');
         })
     </script>
     <?= $this->load->view($script, '', true) ?>
