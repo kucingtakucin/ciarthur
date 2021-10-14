@@ -31,7 +31,7 @@
         height: 100vh;
     }
 
-    .map-modal-container {
+    .map-swal-container {
         height: 50vh;
     }
 </style>

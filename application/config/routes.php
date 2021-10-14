@@ -56,6 +56,7 @@ $route['~/login'] = 'auth/login';
 $route['~/logout'] = 'auth/login/logout';
 $route['~/email'] = 'email/email';
 
+$route['api'] = 'api/auth/index';
 $route['img/(.+)'] = 'image/show/$1';   // League Glide
 $route['logs'] = "logViewerController/index";
 $route['404_override'] = '';

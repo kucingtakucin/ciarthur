@@ -1,6 +1,6 @@
 <script>
     let datatable_permission, status_crud = false,
-        $add_permission, $update_permission, $delete_permission;
+        $add_permission, $update_permission, $delete;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
 
     // Document ready
@@ -27,7 +27,8 @@
                         class: 'fa fa-plus'
                     }).prop('outerHTML') + ' Tambah Permission', // Tambah Data
                     action: (e, dt, node, config) => {
-                        location.replace(BASE_URL + 'add_permission')
+                        // location.replace(BASE_URL + 'add_permission')
+                        $('#modal_tambah').modal('show');
                     }
                 }, ],
                 dom: {
@@ -133,13 +134,16 @@
             initComplete: function(event) {
                 $(this).on('click', '.btn_edit', function(event) {
                     event.preventDefault()
-                    location.replace(BASE_URL + `update_permission/${$(this).data('id')}`)
+                    // location.replace(BASE_URL + `update_permission/${$(this).data('id')}`)
+                    $get(this)
                 });
 
                 $(this).on('click', '.btn_delete', function(event) {
                     event.preventDefault()
-                    $delete_permission(this);
+                    $delete(this);
                 });
+
+                $('[title]').tooltip()
                 // ================================================== //
             },
         })
@@ -164,123 +168,101 @@
          */
         // ================================================== //
 
-        $add_permission = async (event) => {
-            event.preventDefault()
-
-            Swal.fire({
-                title: 'Apakah anda yakin?',
-                text: "Pastikan data yang terisi sudah benar!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, sudah!'
-            }).then(async (result) => {
-                if (result.isConfirmed && event.target.checkValidity()) {
-                    $('#add_permission input[type=submit]').hide();
-                    $('#add_permission button.loader').show();
-                    status_crud = true
-                    loading()
-
-                    let formData = new FormData(event.target);
-                    formData.append(
-                        await csrf().then(csrf => csrf.token_name),
-                        await csrf().then(csrf => csrf.hash)
-                    )
-
-                    axios.post(BASE_URL + 'add_permission', formData)
-                        .then(res => {
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: res.data.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                // socket.emit('auth-crud-permission')
-                                datatable_permission.ajax.reload()
-                                location.replace(BASE_URL)
-                            })
-
-                        }).catch(err => {
-                            console.error(err);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                html: err.response.data.message,
-                                // text: err.response.statusText
-                            })
-                        }).then(() => {
-                            $('#add_permission input[type=submit]').show();
-                            $('#add_permission button.loader').hide();
-                            $('#add_permission').trigger('reset');
-                            $('#add_permission select').val(null).trigger('change')
-                            $('#add_permission').removeClass('was-validated')
-                        })
-                }
-            })
+        $get = (element) => {
+            let row = datatable_permission.row($(element).closest('tr')).data();
+            console.log(row)
+            $('#modal_ubah').modal('show');
+            $('#form_ubah input#id[name=id]').val(row.id)
+            $('#form_ubah input#ubah_perm_name[name=perm_name]').val(row.perm_name);
+            $('#form_ubah input#ubah_perm_key[name=perm_key]').val(row.perm_key);
         }
 
-        $update_permission = async (event, id) => {
-            event.preventDefault()
+        $insert = async (form) => {
+            status_crud = true
+            loading()
 
-            Swal.fire({
-                title: 'Apakah anda yakin?',
-                text: "Pastikan data yang terisi sudah benar!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, sudah!'
-            }).then(async (result) => {
-                if (result.isConfirmed && event.target.checkValidity()) {
-                    $('#update_permission input[type=submit]').hide();
-                    $('#update_permission button.loader').show();
-                    status_crud = true
-                    loading()
+            let formData = new FormData(form);
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
 
-                    let formData = new FormData(event.target);
-                    formData.append(
-                        await csrf().then(csrf => csrf.token_name),
-                        await csrf().then(csrf => csrf.hash)
-                    )
+            axios.post(BASE_URL + 'add_permission', formData)
+                .then(res => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // socket.emit('auth-crud-permission')
+                        datatable_permission.ajax.reload()
+                    })
 
-                    axios.post(BASE_URL + 'update_permission/' + id, formData)
-                        .then(res => {
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: res.data.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                // socket.emit('auth-crud-permission')
-                                datatable_permission.ajax.reload()
-                                location.replace(BASE_URL)
-                            })
-
-                        }).catch(err => {
-                            console.error(err);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                html: err.response.data.message,
-                                // text: err.response.statusText
-                            })
-                        }).then(() => {
-                            $('#update_permission input[type=submit]').show();
-                            $('#update_permission button.loader').hide();
-                            $('#update_permission').trigger('reset');
-                            $('#update_permission select').val(null).trigger('change')
-                            $('#update_permission').removeClass('was-validated')
-                        })
-                }
-            })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: err.response.data.message,
+                        // text: err.response.statusText
+                    })
+                }).then(() => {
+                    $('#form_tambah button[type=submit]').show();
+                    $('#form_tambah button.loader').hide();
+                    $('#form_tambah').trigger('reset');
+                    $('#form_tambah select').val(null).trigger('change')
+                    $('#form_tambah').removeClass('was-validated')
+                    $('#modal_tambah').modal('hide');
+                })
         }
 
-        $delete_permission = async (element) => {
+        $update = async (form) => {
+            status_crud = true
+            loading()
+
+            let formData = new FormData(form);
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
+
+            axios.post(BASE_URL + 'update_permission', formData)
+                .then(res => {
+                    $('#form_ubah button[type=submit]').hide();
+                    $('#form_ubah button.loader').show();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // socket.emit('backend-crud-mahasiswa', {})
+                        datatable_permission.ajax.reload()
+                    })
+
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: err.response.data.message,
+                        // text: err.response.statusText
+                    })
+                }).then(() => {
+                    $('#form_ubah button[type=submit]').show();
+                    $('#form_ubah button.loader').hide();
+                    $('#form_ubah').trigger('reset');
+                    $('#form_ubah select').val(null).trigger('change')
+                    $('#form_ubah').removeClass('was-validated')
+                    $('#modal_ubah').modal('hide');
+                })
+        }
+
+        $delete = async (element) => {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -327,5 +309,23 @@
                 }
             })
         }
+
+        /**
+         * Keperluan event click tombol, reset, export, validasi dan submit form
+         */
+        // ================================================== //
+        $('#form_tambah').submit(function(event) {
+            event.preventDefault()
+            if (this.checkValidity()) {
+                $insert(this);
+            }
+        });
+
+        $('#form_ubah').submit(function(event) {
+            event.preventDefault();
+            if (this.checkValidity()) {
+                $update(this);
+            }
+        });
     })
 </script>

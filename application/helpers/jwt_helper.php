@@ -100,7 +100,22 @@ function jwt_encode($data, $key, $algo = 'HS256')
     $signature = jwt_sign($signing_input, $key, $algo);
     $segments[] = jwt_urlsafeB64Encode($signature);
 
-    return implode('.', $segments);
+    $token = implode('.', $segments);
+
+    $CI->db->update('tokens', [
+        'is_active' => '0'
+    ], ['is_active' => '1', 'user_id' => $data['id']]);
+
+    $CI->db->insert("tokens", [
+        "user_id" => $data["id"],
+        "token" => $token,
+        "level" => null,
+        "ip_addresses" => $CI->input->ip_address(),
+        "is_active" => '1',
+        'created_at' => time()
+    ]);
+
+    return $token;
 }
 
 /**
@@ -219,20 +234,40 @@ function validateTimestamp($token)
 {
     $CI = &get_instance();
     try {
-        $token = validateToken($token);
-        if ($token) {
-            if (time() - $token->iat < $CI->config->item('exp')) {
-                return (object)[
-                    'status' => true,
-                    'token' => $token
-                ];
-            } else {
-                return (object)[
-                    'status' => false,
-                    'message' => "Token expired"
-                ];
-            }
+        $token_from_user = validateToken($token);
+        // var_dump($token_from_user->data->id);
+        // exit();
+        if (!$token_from_user) {
+            return (object)[
+                'status' => false,
+                'message' => "Token Not Found"
+            ];
         }
+
+        $check_in_db = $CI->db->get_where('tokens', [
+            'user_id' => $token_from_user->data->id,
+            'is_active' => '1'
+        ])->row();
+        // var_dump($check_in_db);
+        // exit();
+
+        if (!$check_in_db) {
+            return (object)[
+                'status' => false,
+                'message' => "Token Unavailable"
+            ];
+        }
+
+        if (time() - $check_in_db->created_at < $CI->config->item('exp')) {
+            return (object)[
+                'status' => true,
+                'token' => $token_from_user
+            ];
+        }
+        return (object)[
+            'status' => false,
+            'message' => "Token expired"
+        ];
     } catch (Throwable $th) {
         return (object)[
             'status' => false,

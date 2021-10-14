@@ -2,183 +2,10 @@
     const BASE_URL = "<?= base_url($uri_segment) ?>"
     let datatable, status_crud = false,
         $insert, $update, $delete, $import,
-        map, map_modal, marker_modal, legend;
+        $export_excel, $export_pdf, $export_word;
 
     // Document ready
     $(() => {
-        /**
-         * Keperluan WebGIS dengan Leaflet
-         * 
-         */
-        // ================================================== //
-
-        const initMap = () => {
-            if (map) map.remove()
-            map = L.map("map", {
-                center: [-7.5828, 111.0444],
-                zoom: 12,
-                layers: [
-                    /** OpenStreetMap Tile Layer */
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    }),
-                ],
-                scrollWheelZoom: false,
-            })
-
-            /** Legend */
-            legend = L.control({
-                position: "bottomleft"
-            })
-
-            legend.onAdd = (map) => {
-                let div = L.DomUtil.create("div", "legend");
-                div.innerHTML += "<h3><b>KABUPATEN KARANGANYAR</b></h3>";
-                return div;
-            }
-
-            legend.addTo(map)
-
-            /** GeoJSON Features */
-            $.getJSON(BASE_URL + 'get_geojson',
-                response => {
-                    let geojson = L.geoJSON(response, {
-                        onEachFeature: (feature, layer) => {
-                            layer.on({
-                                mouseover: (event) => {
-                                    let layer = event.target;
-                                    layer.setStyle({
-                                        weight: 5,
-                                        dashArray: '',
-                                        fillOpacity: 0.7
-                                    });
-                                    if (!L.Browser.ie && !L.Browser.opera &&
-                                        !L.Browser.edge) {
-                                        layer.bringToFront();
-                                    }
-                                },
-                                mouseout: (event) => {
-                                    geojson.resetStyle(event.target)
-                                },
-                                click: (event) => {
-                                    map.fitBounds(event
-                                        .target
-                                        .getBounds()
-                                    );
-                                }
-                            })
-                        }
-                    }).addTo(map)
-                })
-
-            axios.get(BASE_URL + 'get_kecamatan')
-                .then(res => {
-                    let results = res.data.data
-                    results.map(item => {
-                        if (item.latitude && item.longitude) {
-                            L.marker([item.latitude, item.longitude])
-                                .addTo(map)
-                                .bindPopup(
-                                    new L.Popup({
-                                        autoClose: false,
-                                        closeOnClick: false
-                                    })
-                                    .setContent(`<b>${item.nama}</b>`)
-                                    .setLatLng([item.latitude, item.longitude])
-                                ).openPopup();
-                        }
-                    })
-                })
-
-            axios.get(BASE_URL + 'get_latlng')
-                .then(res => {
-                    let results = res.data.data
-                    results.map(item => {
-                        if (item.latitude && item.longitude) {
-                            L.marker([item.latitude, item.longitude], {
-                                    icon: L.icon({
-                                        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-                                        iconSize: [
-                                            40, 40
-                                        ], // size of the icon
-                                        iconAnchor: [
-                                            20, 40
-                                        ], // point of the icon which will correspond to marker's location
-                                        popupAnchor: [
-                                            0, -30
-                                        ] // point from which the popup should open relative to the iconAnchor
-                                    })
-                                })
-                                .addTo(map)
-                                .bindPopup(
-                                    new L.Popup({
-                                        autoClose: false,
-                                        closeOnClick: false
-                                    })
-                                    .setContent(`<b>${item.nama}</b>`)
-                                    .setLatLng([
-                                        item.latitude, item.longitude
-                                    ])
-                                ).openPopup();
-                        }
-                    })
-                })
-        }
-
-        const mapInModal = (status) => {
-
-            if (map_modal) map_modal.remove()
-            map_modal = L.map(`map-${status}`, {
-                center: [-7.5828, 111.0444],
-                zoom: 12,
-                layers: [
-                    /** OpenStreetMap Tile Layer */
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    }),
-
-                ],
-                scrollWheelZoom: false,
-            })
-
-            setTimeout(() => {
-                map_modal.invalidateSize()
-            }, 500);
-
-            map_modal.on('click', (event) => {
-                if (marker_modal) map_modal.removeLayer(marker_modal)
-                marker_modal = L.marker([event.latlng.lat, event.latlng
-                    .lng
-                ], { //-7.641355, 111.0377783
-                    icon: L.icon({
-                        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-                        iconSize: [40, 40], // size of the icon
-                        iconAnchor: [
-                            20, 40
-                        ], // point of the icon which will correspond to marker's location
-                        popupAnchor: [
-                            0, -30
-                        ] // point from which the popup should open relative to the iconAnchor
-                    })
-                })
-                marker_modal.addTo(map_modal)
-                marker_modal.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
-
-                $(`#${status}_latitude`).val(event.latlng.lat)
-                $(`#${status}_longitude`).val(event.latlng.lng)
-            })
-        }
-
-        $('#modal_tambah').on('show.bs.modal', () => {
-            mapInModal('tambah')
-        })
-
-        $('#modal_ubah').on('show.bs.modal', () => {
-            mapInModal('ubah')
-        })
-
-        initMap() // Init leaflet map
-
         /**
          * Keperluan DataTable, Datepicker, Summernote dan BsCustomFileInput
          */
@@ -201,7 +28,8 @@
                             class: 'fa fa-file-word-o'
                         }).prop('outerHTML') + ' Export DOCX', // Export DOCX
                         action: (e, dt, node, config) => {
-                            location.replace(BASE_URL + 'export_word');
+                            // location.replace(BASE_URL + 'export_word');
+                            $export_word()
                         }
                     },
                     {
@@ -210,7 +38,8 @@
                             class: 'fa fa-file-pdf-o'
                         }).prop('outerHTML') + ' Export PDF', // Export PDF
                         action: (e, dt, node, config) => {
-                            location.replace(BASE_URL + 'export_pdf');
+                            // location.replace(BASE_URL + 'export_pdf');
+                            $export_pdf()
                         }
                     },
                     {
@@ -219,7 +48,8 @@
                             class: 'fa fa-file-excel-o'
                         }).prop('outerHTML') + ' Export XLSX', // Export XLSX
                         action: (e, dt, node, config) => {
-                            location.replace(BASE_URL + 'export_excel');
+                            // location.replace(BASE_URL + 'export_excel');
+                            $export_excel()
                         }
                     },
                     {
@@ -573,10 +403,10 @@
 
         bsCustomFileInput.init()
 
-        socket.on('backend-reload_dt-mahasiswa', () => {
-            initMap()
-            datatable.ajax.reload();
-        })
+        // socket.on('backend-reload_dt-mahasiswa', () => {
+        //     initMap()
+        //     datatable.ajax.reload();
+        // })
         // ================================================== //
 
         /**
@@ -636,6 +466,8 @@
         $insert = async (form) => {
             status_crud = true
             loading()
+            $('#form_tambah button[type=submit]').hide();
+            $('#form_tambah button.loader').show();
 
             let formData = new FormData(form);
             formData.append(
@@ -645,17 +477,17 @@
 
             axios.post(BASE_URL + 'insert', formData)
                 .then(res => {
-                    $('#form_tambah button[type=submit]').hide();
-                    $('#form_tambah button.loader').show();
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
                         text: res.data.message,
                         showConfirmButton: false,
                         timer: 1500
+                    }).then(() => {
+                        datatable.ajax.reload()
                     })
 
-                    socket.emit('backend-crud-mahasiswa', {})
+                    // socket.emit('backend-crud-mahasiswa', {})
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -695,9 +527,11 @@
                         text: res.data.message,
                         showConfirmButton: false,
                         timer: 1500
+                    }).then(() => {
+                        datatabke.ajax.reload()
                     })
 
-                    socket.emit('backend-crud-mahasiswa', {})
+                    // socket.emit('backend-crud-mahasiswa', {})
                 }).catch(err => {
                     console.error(err);
                     Swal.fire({
@@ -745,9 +579,11 @@
                                 text: res.data.message,
                                 showConfirmButton: false,
                                 timer: 1500
+                            }).then(() => {
+                                datatable.ajax.reload()
                             })
 
-                            socket.emit('backend-crud-mahasiswa', {})
+                            // socket.emit('backend-crud-mahasiswa', {})
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({
@@ -799,7 +635,7 @@
                                 timer: 1500
                             })
 
-                            socket.emit('backend-crud-mahasiswa', {})
+                            // socket.emit('backend-crud-mahasiswa', {})
                         }).catch(err => {
                             Swal.fire({
                                 icon: 'error',
@@ -816,6 +652,123 @@
                         })
                 }
             })
+        }
+
+        $export_excel = async () => {
+            loading()
+
+            let formData = new FormData();
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
+
+            axios.post(BASE_URL + 'export_excel', formData, {
+                    responseType: 'blob'
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob.data]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'export_excel.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Berhasil melakukan export",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
+                    })
+                })
+        }
+
+        $export_pdf = async () => {
+            loading()
+
+            let formData = new FormData();
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
+
+            axios.post(BASE_URL + 'export_pdf', formData, {
+                    responseType: 'blob'
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob.data]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'export_pdf.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Berhasil melakukan export",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
+                    })
+                })
+        }
+
+        $export_word = async () => {
+            loading()
+
+            let formData = new FormData();
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
+
+            axios.post(BASE_URL + 'export_docx', formData, {
+                    responseType: 'blob'
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob.data]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'export_word.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Berhasil melakukan export",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
+                    })
+                })
         }
         // ================================================== //
 

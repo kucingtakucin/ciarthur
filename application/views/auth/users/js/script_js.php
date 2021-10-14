@@ -169,6 +169,8 @@
                     event.preventDefault()
                     $activate_user(this)
                 })
+
+                $('[title]').tooltip()
                 // ================================================== //
             },
         })

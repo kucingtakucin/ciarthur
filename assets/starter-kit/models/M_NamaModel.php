@@ -6,9 +6,9 @@ class M_NamaModel extends CI_Model
 
     public function get()
     {
-        return $this->db->select('a.*, b.nama as nama_fakultas, c.nama as nama_prodi')
-            ->join('fakultas b', 'b.id = a.fakultas_id')
-            ->join('prodi c', 'c.id = a.prodi_id')
+        return $this->db->select('a.*, b.nama as nama_apa_b, c.nama as nama_apa_c')
+            ->join('apa_b b', 'b.id = a.apa_b_id')
+            ->join('apa_c c', 'c.id = a.prodi_id')
             ->get("{$this->table} a")->result();
     }
 
@@ -19,9 +19,9 @@ class M_NamaModel extends CI_Model
 
     public function get_where($where = [])
     {
-        return $this->db->select('a.*, b.nama as nama_fakultas, c.nama as nama_prodi')
-            ->join('fakultas b', 'b.id = a.fakultas_id')
-            ->join('prodi c', 'c.id = a.prodi_id')
+        return $this->db->select('a.*, b.nama as nama_apa_b, c.nama as nama_apa_c')
+            ->join('apa_b b', 'b.id = a.apa_b_id')
+            ->join('apa_c c', 'c.id = a.apa_c_id')
             ->get_where("{$this->table} a", $where)->row();
     }
 

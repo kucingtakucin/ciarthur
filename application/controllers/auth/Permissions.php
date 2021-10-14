@@ -20,7 +20,7 @@ class Permissions extends MY_Controller
     {
         parent::__construct();
         $this->load->library('form_validation');
-        role('admin')
+        role('admin');
     }
 
     public function index()
@@ -34,12 +34,18 @@ class Permissions extends MY_Controller
         return $this->templates->render([
             'title' => 'Permissions',
             'type' => 'backend', // auth, frontend, backend
+            'breadcrumb' => [
+                'Auth', 'Manajemen', 'Permissions', 'Manage'
+            ],
             'uri_segment' => $this->_path,
             'permissions' => $this->ion_auth_acl->permissions('full'),
             'page' => $this->_path . 'manage/index',
             'script' => $this->_path . 'manage/js/script_js',
             'style' => $this->_path . 'manage/css/style_css',
-            'modals' => [],
+            'modals' => [
+                $this->_path . 'manage/modal/tambah',
+                $this->_path . 'manage/modal/ubah',
+            ],
         ]);
     }
 
@@ -117,9 +123,9 @@ class Permissions extends MY_Controller
         }
     }
 
-    public function update_permission($id)
+    public function update_permission()
     {
-        $permission_id = $id;
+        $permission_id = $this->input->post('id');
         $permission =   $this->ion_auth_acl->permission($permission_id);
 
         if ($this->input->method() === 'get') {
@@ -191,7 +197,7 @@ class Permissions extends MY_Controller
         redirect($this->_path);
     }
 
-    public function roles()
+    public function role()
     {
         // $data['groups'] = $this->ion_auth->groups()->result();
 
@@ -199,6 +205,9 @@ class Permissions extends MY_Controller
         return $this->templates->render([
             'title' => 'Permissions',
             'type' => 'backend', // auth, frontend, backend
+            'breadcrumb' => [
+                'Auth', 'Manajemen', 'Permissions', 'Role'
+            ],
             'uri_segment' => $this->_path,
             'permissions' => $this->ion_auth_acl->permissions('full'),
             'page' => $this->_path . 'roles/index',

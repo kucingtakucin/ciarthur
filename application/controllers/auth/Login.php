@@ -10,6 +10,15 @@ class Login extends MY_Controller
 {
     private $_path = 'auth/login/'; // Contoh 'backend/admin/dashboard'
 
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('', '');
+    }
+
+
     /**
      * Log the user in
      */
@@ -20,13 +29,13 @@ class Login extends MY_Controller
         $response = $recaptcha->setExpectedHostname('appt.demoo.id')
             ->verify($this->input->post('g-recaptcha-response'));
 
-        if ($this->input->method() == 'get') {
+        if ($this->input->method() === 'get') {
             if (logged_in()) {
                 redirect('backend/dashboard');
             }
 
             // the user is not logging in so display the login page
-            $this->templates->render([
+            return $this->templates->render([
                 'title' => 'Login',
                 'type' => 'auth',
                 'uri_segment' => $this->_path,
@@ -35,7 +44,7 @@ class Login extends MY_Controller
                 'style' => $this->_path . 'css/style_css',
                 'modal' => [],
             ]);
-        } elseif ($this->input->method() == 'post' && $response->isSuccess()) {
+        } elseif ($this->input->method() === 'post' && $response->isSuccess()) {
             // check to see if the user is logging in
             // check for "remember me"
             $remember = (bool) $this->input->post('remember');
@@ -49,25 +58,22 @@ class Login extends MY_Controller
                         'message' => 'Login Berhasil!',
                         'redirect' => 'backend/dashboard'
                     ]));
-            } else {
-                // if the login was un-successful
-                // redirect them back to the login page
-                return $this->output->set_content_type('application/json')
-                    ->set_status_header(404)
-                    ->set_output(json_encode([
-                        'status' => false,
-                        'message' => $this->ion_auth->errors()
-                    ]));
             }
-        } else {
+            // if the login was un-successful
+            // redirect them back to the login page
             return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
+                ->set_status_header(422)
                 ->set_output(json_encode([
                     'status' => false,
-                    'message' => 'Ada kesalahan. Silakan coba lagi',
-                    'errors' => $response->getErrorCodes()
+                    'message' => $this->ion_auth->errors()
                 ]));
         }
+        return $this->output->set_content_type('application/json')
+            ->set_status_header(422)
+            ->set_output(json_encode([
+                'status' => false,
+                'message' => $response->getErrorCodes(),
+            ]));
     }
 
     /**
@@ -76,6 +82,7 @@ class Login extends MY_Controller
      */
     public function logout()
     {
+        method('post');
         $this->data['title'] = "Logout";
 
         // log the user out

@@ -28,6 +28,9 @@ class Roles extends MY_Controller
         return $this->templates->render([
             'title' => 'Roles',
             'type' => 'backend', // auth, frontend, backend
+            'breadcrumb' => [
+                'Auth', 'Manajemen', 'Roles'
+            ],
             'uri_segment' => $this->_path,
             'page' => $this->_path . 'index',
             'script' => $this->_path . 'js/script_js',

@@ -114,7 +114,7 @@ $(`
                     </div>
                     <div class="body bg-light"> <span class="badge badge-primary">Border</span></div>
                 </li>
-                <li data-attr="iconcolor-sidebar">
+                <li data-attr="iconcolor-sidebar" id="iconcolor-sidebar">
                     <div class="header bg-light">
                         <ul>
                             <li></li>
@@ -256,6 +256,7 @@ $(document).ready(function () {
 	if (localStorage.getItem("secondary") != null) {
 		document.documentElement.style.setProperty('--theme-secondary', localStorage.getItem("secondary"));
 	}
+
 	$("#c-pills-home-tab").click(function () {
 		$(".customizer-contain").toggleClass("open");
 		// $(".customizer-links").addClass("open");
@@ -288,14 +289,12 @@ $(document).ready(function () {
 		document.documentElement.style.setProperty('--theme-secondary', secondary);
 	};
 
-
 	$(".customizer-color.dark li").on('click', function () {
 		$(".customizer-color.dark li").removeClass('active');
 		$(this).addClass("active");
 		$("body").attr("class", "dark-only");
 		localStorage.setItem("dark", "dark-only");
 	});
-
 
 	$(".customizer-mix li").on('click', function () {
 		$(".customizer-mix li").removeClass('active');

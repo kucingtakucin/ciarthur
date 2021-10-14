@@ -140,6 +140,8 @@
                     event.preventDefault()
                     $delete_role(this);
                 });
+
+                $('[title]').tooltip()
                 // ================================================== //
             },
         })

@@ -1,13 +1,7 @@
 <div class="card">
     <div class="card-header">
-        <h5 class="text-center">Kelola Data Mahasiswa</h5>
+        <h5 class="text-center">Kelola Data Apa</h5>
         <p class="text-muted text-center mb-0">Sistem Informasi <?= sistem()->nama ?></p>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-body map-body-container">
-        <div id="map"></div>
     </div>
 </div>
 

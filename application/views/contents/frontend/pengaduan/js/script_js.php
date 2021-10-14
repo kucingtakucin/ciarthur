@@ -45,10 +45,10 @@
                                 timer: 1500
                             })
 
-                            socket.emit('frontend-pengaduan-kirim', {
-                                title: 'Pemberitahuan',
-                                message: 'Ada pengaduan masuk!'
-                            })
+                            // socket.emit('frontend-pengaduan-kirim', {
+                            //     title: 'Pemberitahuan',
+                            //     message: 'Ada pengaduan masuk!'
+                            // })
 
                         }).catch(err => {
                             console.error(err);

@@ -18,6 +18,9 @@ class Dashboard extends MY_Controller
 		$this->templates->render([
 			'title' => 'Dashboard',
 			'type' => 'backend',
+			'breadcrumb' => [
+				'Backend', 'Dashboard'
+			],
 			'uri_segment' => $this->_path,
 			'page' => 'contents/' . $this->_path . 'index',
 			'script' => 'contents/' . $this->_path . 'js/script_js',

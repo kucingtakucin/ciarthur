@@ -59,6 +59,10 @@
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 
+    <!-- Pace -->
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
+
     <!-- Custom Stylesheets -->
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
     <?= $this->load->view($style, '', true) ?>
@@ -82,21 +86,29 @@
         <!-- Page Header Start-->
         <div class="page-header">
             <div class="header-wrapper row m-0">
-                <div class="header-logo-wrapper col-1">
+                <div class="header-logo-wrapper">
                     <div class="logo-wrapper">
                         <a href="<?= base_url() ?>">
                             <img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo.png" alt="">
                         </a>
                     </div>
-                    <div class="toggle-sidebar"><i class="status_toggle middle" data-feather="grid" id="sidebar-toggle"> </i></div>
+                    <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="sliders" id="sidebar-toggle"> </i></div>
                 </div>
-                <div class="nav-right col-11 pull-right right-header p-0">
+                <div class="left-header col horizontal-wrapper pl-0">
+                    <ul class="horizontal-menu"></ul>
+                </div>
+                <div class="nav-right col-8 pull-right right-header p-0">
                     <ul class="nav-menus">
                         <li>
-                            <div class="settings" id="c-pills-home-tab"><i class="icon-settings"></i></div>
+                            <div class="website" title="See Website" style="cursor: pointer;" onclick="javascript:location.replace('<?= base_url() ?>')">
+                                <i class="fa fa-globe"></i>
+                            </div>
                         </li>
                         <li>
-                            <div class="mode"><i class="fa fa-moon-o"></i></div>
+                            <div class="settings" id="c-pills-home-tab" title="Settings"><i class="icon-settings"></i></div>
+                        </li>
+                        <li>
+                            <div class="mode"><i class="fa fa-moon-o" title="Mode"></i></div>
                         </li>
                         <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
                         <li class="profile-nav onhover-dropdown p-0 mr-0">
@@ -106,8 +118,22 @@
                                 </div>
                             </div>
                             <ul class="profile-dropdown onhover-show-div">
-                                <li id="edit-account"><i data-feather="user"></i><span>Account </span></li>
-                                <li id="logout"><i data-feather="log-out"></i><span>Log out</span></li>
+                                <li id="edit-account">
+                                    <a href="javascript:void(0);">
+                                        <i data-feather="user"></i>
+                                        <span>Account </span>
+                                    </a>
+                                </li>
+                                <li id="logout">
+                                    <a href="javascript:void(0);">
+                                        <i data-feather="log-out"></i>
+                                        <span>Log out </span>
+                                    </a>
+                                    <!-- Form Logout -->
+                                    <form class="form-inline" id="form_logout">
+                                        <input type="hidden" id="csrf-logout">
+                                    </form>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -128,11 +154,13 @@
                 <div class="logo-icon-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="https://appt.demoo.id/tema/cuba/html/assets/images/logo/logo-icon.png" alt=""></a></div>
                 <nav>
                     <div class="sidebar-main">
+                        <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
                         <div id="sidebar-menu">
                             <ul class="sidebar-links custom-scrollbar">
                                 <?= $this->load->view('templates/backend/sidebar', '', true) ?>
                             </ul>
                         </div>
+                        <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
                     </div>
                 </nav>
             </div>
@@ -144,8 +172,24 @@
                             <div class="col-lg-12">
                                 <h3><?= $title ?></h3>
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="<?= base_url() ?>">Home</a></li>
-                                    <li class="breadcrumb-item"><?= $title ?></li>
+                                    <li class="breadcrumb-item active">
+                                        <a href="<?= base_url() ?>">
+                                            <i class="fa fa-home fa-2x"></i>
+                                        </a>
+                                    </li>
+                                    <?php $bc = 0;
+                                    foreach ($breadcrumb as $url => $item) : ?>
+                                        <li class="breadcrumb-item <?= $bc === (count($breadcrumb) - 1) ? 'active' : '' ?>">
+                                            <?php if ($bc === (count($breadcrumb) - 1)) : ?>
+                                                <a href="javascript:void(0);">
+                                                    <?= $item ?>
+                                                </a>
+                                            <?php else : ?>
+                                                <?= $item ?>
+                                            <?php endif ?>
+                                        </li>
+                                    <?php $bc++;
+                                    endforeach ?>
                                 </ol>
                             </div>
                         </div>
@@ -167,49 +211,6 @@
             <?php foreach ($modals as $modal) : ?>
                 <?= $this->load->view($modal, '', true) ?>
             <?php endforeach ?>
-
-            <div class="modal fade" id="modal_account" role="dialog" aria-labelledby="modal-popin" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <form class="needs-validation" id="form_account" method="post" enctype="multipart/form-data" novalidate>
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit Account</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close" data-original-title="" title=""><span aria-hidden="true">×</span></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="col-md-12" for="username">Username</label>
-                                            <input type="text" id="ubah_username" class="form-control" name="username" value="<?= user()->username ?>" readonly required autocomplete="off" placeholder="Masukkan Username">
-                                            <?= validation_feedback("username", "wajib diisi") ?>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="col-md-12" for="password">Password</label>
-                                            <input type="password" id="ubah_password" class="form-control" name="password" minlength="8" required autocomplete="off" placeholder="Masukkan Password">
-                                            <?= validation_feedback("password", "wajib diisi dan minimal 8 karakter") ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="id" id="id" value="<?= user()->id ?>">
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal" data-original-title="" title="">Close</button>
-                                <button class="btn btn-primary" type="submit" data-original-title="" title="">Submit Data</button>
-                                <button class="btn btn-primary loader" type="button" disabled style="display: none;">
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    Loading...
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
             <!-- END Pop In Modal -->
 
             <?= $this->load->view('templates/backend/footer', '', true) ?>
@@ -292,6 +293,7 @@
     <script>
         let csrf, loading, $edit_account, pusher, socket, channel;
 
+        /** Set default AJAX headers */
         axios.defaults.headers.common = {
             "X-Requested-With": "XMLHttpRequest",
         };
@@ -368,7 +370,6 @@
 
         csrf = async () => {
             let formData = new FormData()
-            // formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
 
             let res = await axios.post("<?= base_url('csrf/generate') ?>", formData, {
                 headers: {
@@ -384,7 +385,7 @@
 
 
         $(document).ready(function() {
-
+            $('[title]').tooltip()
             /**
              * Keperluan pusher pengaduan
              */
@@ -445,55 +446,77 @@
              */
             // ================================================== //
             $('#edit-account').click(function() {
-                $('#modal_account').modal('show')
-            })
+                // $('#modal_account').modal('show')
+                Swal.fire({
+                    title: 'Form Edit Account',
+                    width: '800px',
+                    icon: 'info',
+                    html: `<?= $this->load->view("templates/backend/components/form_edit_account", '', true); ?>`,
+                    confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false,
+                    showCloseButton: true,
+                    reverseButtons: true,
+                    didOpen: () => {
+                        $('.swal2-actions').css('z-index', '0')
 
-            $('#form_account').submit(function(event) {
-                event.preventDefault();
-                if (this.checkValidity()) {
-                    $edit_account(this);
-                }
-            });
+                        $('#input_ubah_username')
+                            .val('<?= user()->username ?>')
+                            .prop('readonly', true)
 
-            $('#modal_account').on('hide.bs.modal', () => {
-                $('#form_account').removeClass('was-validated')
-                $('#form_account').trigger('reset')
-            })
+                    },
+                    preConfirm: async () => {
+                        let formData = new FormData(document.getElementById('form_edit_account'));
 
-            $edit_account = async (form) => {
-                let formData = new FormData(form)
-                formData.append(
-                    await csrf().then(csrf => csrf.token_name),
-                    await csrf().then(csrf => csrf.hash)
-                )
-                axios.post("<?= base_url('auth/edit_account') ?>", formData)
-                    .then(res => {
+                        formData.append(
+                            await csrf().then(csrf => csrf.token_name),
+                            await csrf().then(csrf => csrf.hash)
+                        )
 
+                        let response = await axios.post("<?= base_url('auth/users/edit_account') ?>", formData)
+                            .then(res => res.data.message)
+                            .catch(err => {
+                                let errors = err.response.data.errors;
+                                if (typeof errors === 'object') {
+                                    Object.entries(errors).map(([key, value]) => {
+                                        $(`#input_ubah_${key}`).addClass('is-invalid')
+                                        $(`#error_ubah_${key}`).html(value).fadeIn(500)
+                                    })
+                                }
+                                Swal.showValidationMessage(err.response.data.message)
+                            })
+
+                        return {
+                            data: response
+                        }
+                    }
+                }).then((result) => {
+                    if (result.value) {
                         Swal.fire({
+                            title: 'Berhasil',
                             icon: 'success',
-                            title: 'Success!',
-                            text: res.data.message,
+                            text: result.value.data,
                             showConfirmButton: false,
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
                             timer: 1500
+                        }).then(() => {
+                            datatable.ajax.reload()
                         })
-                    }).catch(err => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            html: err.response.data.message,
-                            // text: err.response.statusText,
-                        })
-                    }).then(() => {
-                        $('#form_account button[type=submit]').show();
-                        $('#form_account button.loader').hide();
-                        $('#form_account').trigger('reset');
-                        $('#form_account').removeClass('was-validated')
-                        $('#modal_account').modal('hide');
-                    })
-            }
+                    }
+                })
+            })
 
-            $('#logout').click(function() {
-                location.replace("<?= base_url('~/logout') ?>")
+            $('#logout').click(async () => {
+                $('#form_logout').prop('action', "<?= base_url('~/logout') ?>")
+                $('#form_logout').prop('method', 'POST')
+                $('#form_logout #csrf-logout').prop('name', await csrf().then(csrf => csrf.token_name))
+                $('#form_logout #csrf-logout').val(await csrf().then(csrf => csrf.hash))
+                $('#form_logout').submit()
             })
         })
     </script>

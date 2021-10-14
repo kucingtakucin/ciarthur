@@ -6,14 +6,21 @@ function sistem()
     ];
 }
 
-function sidebar_active($no, $menu)
+function sidebar_active($segment, $menu)
 {
     $ci = &get_instance();
-    $uri = $ci->uri->segment($no);
+    $uri = $ci->uri->segment($segment);
 
     if ($uri == $menu) {
         return 'active';
     }
+}
+
+function total_segments()
+{
+    $ci = &get_instance();
+
+    return $ci->uri->total_segments();
 }
 
 function logged_in()
@@ -59,12 +66,12 @@ function role($role)
                 ->set_status_header(403);
             echo json_encode([
                 'status' => false,
-                'message' => 'You must be an administrator to access this resource',
+                'message' => "You must be an $role to access this resource",
                 'data' => null
             ]);
             exit;
         } else {
-            show_error("You must be an administrator to access this resource", 403, "Forbidden");
+            show_error("You must be an $role to access this resource", 403, "Forbidden");
         }
 }
 
@@ -113,6 +120,12 @@ function is_allowed($permission_key)
 {
     $ci = &get_instance();
     return $ci->ion_auth_acl->is_allowed($permission_key);
+}
+
+function is_denied($permission_key)
+{
+    $ci = &get_instance();
+    return $ci->ion_auth_acl->is_denied($permission_key);
 }
 
 function method($method)

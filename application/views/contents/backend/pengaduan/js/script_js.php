@@ -165,6 +165,7 @@
                     todayBtn: 'linked',
                     autoclose: true
                 })
+                $('[title]').tooltip()
             },
         })
 

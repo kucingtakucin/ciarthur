@@ -1,7 +1,8 @@
 <script>
     const BASE_URL = "<?= base_url($uri_segment) ?>"
     let datatable, status_crud = false,
-        $insert, $update, $delete, $import,
+        $insert, $update, $delete, $import_excel,
+        $export_excel, $export_pdf, $export_word,
         map, map_modal, marker_modal, legend;
 
     // Document ready
@@ -125,7 +126,7 @@
                 })
         }
 
-        const mapInModal = (status) => {
+        const map_in_swal = (status) => {
 
             if (map_modal) map_modal.remove()
             map_modal = L.map(`map-${status}`, {
@@ -164,18 +165,10 @@
                 marker_modal.addTo(map_modal)
                 marker_modal.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
 
-                $(`#${status}_latitude`).val(event.latlng.lat)
-                $(`#${status}_longitude`).val(event.latlng.lng)
+                $(`#input_${status}_latitude`).val(event.latlng.lat)
+                $(`#input_${status}_longitude`).val(event.latlng.lng)
             })
         }
-
-        $('#modal_tambah').on('show.bs.modal', () => {
-            mapInModal('tambah')
-        })
-
-        $('#modal_ubah').on('show.bs.modal', () => {
-            mapInModal('ubah')
-        })
 
         initMap() // Init leaflet map
 
@@ -201,7 +194,8 @@
                             class: 'fa fa-file-word-o'
                         }).prop('outerHTML') + ' Export DOCX', // Export DOCX
                         action: (e, dt, node, config) => {
-                            location.replace(BASE_URL + 'export_word');
+                            // location.replace(BASE_URL + 'export_word');
+                            $export_word()
                         }
                     },
                     {
@@ -210,7 +204,8 @@
                             class: 'fa fa-file-pdf-o'
                         }).prop('outerHTML') + ' Export PDF', // Export PDF
                         action: (e, dt, node, config) => {
-                            location.replace(BASE_URL + 'export_pdf');
+                            // location.replace(BASE_URL + 'export_pdf');
+                            $export_pdf()
                         }
                     },
                     {
@@ -219,25 +214,27 @@
                             class: 'fa fa-file-excel-o'
                         }).prop('outerHTML') + ' Export XLSX', // Export XLSX
                         action: (e, dt, node, config) => {
-                            location.replace(BASE_URL + 'export_excel');
+                            // location.replace(BASE_URL + 'export_excel');
+                            $export_excel()
                         }
                     },
                     {
-                        className: 'btn btn-success m-2',
+                        className: 'btn btn-success m-2 <?php if (is_denied('create-mahasiswa')) : ?>d-none<?php endif ?>',
                         text: $('<i>', {
                             class: 'fa fa-upload'
                         }).prop('outerHTML') + ' Import XLSX', // Import XLSX
                         action: (e, dt, node, config) => {
-                            $('#modal_import').modal('show')
+                            $import_excel()
                         }
                     },
                     {
-                        className: 'btn btn-info m-2 text-white',
+                        className: "btn btn-info m-2 text-white <?php if (is_denied('create-mahasiswa')) : ?>d-none<?php endif ?>",
                         text: $('<i>', {
-                            class: 'fa fa-plus'
+                            class: 'fa fa-plus',
                         }).prop('outerHTML') + ' Tambah Data', // Tambah Data
                         action: (e, dt, node, config) => {
-                            $('#modal_tambah').modal('show');
+                            // $('#modal_tambah').modal('show');
+                            $insert();
                         }
                     },
                 ],
@@ -356,7 +353,7 @@
                     render: (id) => {
                         let btn_edit = $('<button>', {
                             type: 'button',
-                            class: 'btn btn-success btn_edit',
+                            class: "btn btn-success btn_edit <?php if (is_denied('update-mahasiswa')) : ?>d-none<?php endif ?>",
                             'data-id': id,
                             html: $('<i>', {
                                 class: 'fa fa-edit'
@@ -366,7 +363,7 @@
 
                         let btn_delete = $('<button>', {
                             type: 'button',
-                            class: 'btn btn-danger btn_delete',
+                            class: "btn btn-danger btn_delete <?php if (is_denied('delete-mahasiswa')) : ?>d-none<?php endif ?>",
                             'data-id': id,
                             html: $('<i>', {
                                 class: 'fa fa-trash'
@@ -390,7 +387,7 @@
             initComplete: function(event) {
                 $(this).on('click', '.btn_edit', function(event) {
                     event.preventDefault()
-                    $get(this);
+                    $update(this);
                 });
 
                 $(this).on('click', '.btn_delete', function(event) {
@@ -551,10 +548,13 @@
                     todayBtn: 'linked',
                     autoclose: true
                 })
+
+                bsCustomFileInput.init()
+                $('[title]').tooltip()
             },
         })
 
-        datatable.on('draw.dt', function() {
+        datatable.on('draw.dt', () => {
             let PageInfo = datatable.page.info();
             datatable.column(0, {
                 page: 'current'
@@ -562,17 +562,6 @@
                 cell.innerHTML = i + 1 + PageInfo.start;
             });
         });
-
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            endDate: 'now',
-            clearBtn: true,
-            todayBtn: 'linked',
-            autoclose: true
-        })
-
-        bsCustomFileInput.init()
-
         // socket.on('backend-reload_dt-mahasiswa', () => {
         //     initMap()
         //     datatable.ajax.reload();
@@ -583,139 +572,173 @@
          * Keperluan CRUD
          */
         // ================================================== //
-        $get = (element) => {
+
+        $insert = async () => {
+            Swal.fire({
+                title: 'Form Tambah Data',
+                width: '800px',
+                icon: 'info',
+                html: `<?= $this->load->view("contents/$uri_segment/components/form_tambah", '', true); ?>`,
+                confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
+                showCancelButton: true,
+                focusConfirm: false,
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showCloseButton: true,
+                reverseButtons: true,
+                didOpen: () => {
+                    $('.swal2-actions').css('z-index', '0')
+                    select2_in_swal('tambah')
+                    map_in_swal('tambah')
+                    bsCustomFileInput.init()
+                },
+                preConfirm: async () => {
+                    let formData = new FormData(document.getElementById('form_tambah'));
+
+                    formData.append(
+                        await csrf().then(csrf => csrf.token_name),
+                        await csrf().then(csrf => csrf.hash)
+                    )
+
+                    let response = await axios.post(BASE_URL + 'insert', formData)
+                        .then(res => res.data.message)
+                        .catch(err => {
+                            let errors = err.response.data.errors;
+                            if (typeof errors === 'object') {
+                                Object.entries(errors).map(([key, value]) => {
+                                    $(`#input_tambah_${key}`).addClass('is-invalid')
+                                    $(`#error_tambah_${key}`).html(value).fadeIn(500)
+                                    $(`.select2-selection[aria-labelledby=select2-select_tambah_${key}-container]`).css('border-color', '#dc3545')
+                                })
+                            }
+                            Swal.showValidationMessage(err.response.data.message)
+                        })
+
+                    return {
+                        data: response
+                    }
+                }
+            }).then((result) => {
+                if (result.value) {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        icon: 'success',
+                        text: result.value.data,
+                        showConfirmButton: false,
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
+                        timer: 1500
+                    }).then(() => {
+                        bsCustomFileInput.destroy()
+                        datatable.ajax.reload()
+                    })
+                }
+            })
+        }
+
+        $update = async (element) => {
             let row = datatable.row($(element).closest('tr')).data();
-            $('#modal_ubah').modal('show');
-            $('#form_ubah input#id[name=id]').val(row.id)
-            $('#form_ubah input#ubah_nim[name=nim]').val(row.nim);
-            $('#form_ubah input#ubah_nama[name=nama]').val(row.nama);
-            $('#form_ubah input#ubah_angkatan[name=angkatan]').val(row.angkatan);
-            $('#form_ubah input#ubah_latitude[name=latitude]').val(row.latitude);
-            $('#form_ubah input#ubah_longitude[name=longitude]').val(row.longitude);
 
-            $('#form_ubah select#ubah_select_fakultas.select_fakultas')
-                .append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
-                .trigger('change')
-                .trigger({
-                    type: 'select2:select',
-                    params: {
-                        data: {
-                            id: row.fakultas_id,
-                            fakultas_id: row.fakultas_id,
-                            prodi_id: row.prodi_id
-                        }
+            Swal.fire({
+                title: 'Form Ubah Data',
+                width: '800px',
+                icon: 'info',
+                html: `<?= $this->load->view("contents/$uri_segment/components/form_ubah", '', true); ?>`,
+                confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
+                showCancelButton: true,
+                focusConfirm: false,
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showCloseButton: true,
+                reverseButtons: true,
+                didOpen: () => {
+                    $('.swal2-actions').css('z-index', '0')
+                    select2_in_swal('ubah')
+                    map_in_swal('ubah')
+
+                    $('#form_ubah input#input_ubah_nim[name=nim]').val(row.nim);
+                    $('#form_ubah input#input_ubah_nama[name=nama]').val(row.nama);
+                    $('#form_ubah input#input_ubah_angkatan[name=angkatan]').val(row.angkatan);
+                    $('#form_ubah input#input_ubah_latitude[name=latitude]').val(row.latitude);
+                    $('#form_ubah input#input_ubah_longitude[name=longitude]').val(row.longitude);
+
+                    $('#form_ubah select#select_ubah_fakultas_id')
+                        .append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
+                        .trigger('change')
+                        .trigger({
+                            type: 'select2:select',
+                            params: {
+                                data: {
+                                    id: row.fakultas_id,
+                                    fakultas_id: row.fakultas_id,
+                                    prodi_id: row.prodi_id
+                                }
+                            }
+                        })
+
+                    $('#form_ubah select#select_ubah_prodi_id')
+                        .append(new Option(row.nama_prodi, row.prodi_id, true, true))
+                        .trigger('change')
+                        .trigger({
+                            type: 'select2:select',
+                            params: {
+                                data: {
+                                    fakultas_id: row.fakultas_id,
+                                    prodi_id: row.prodi_id
+                                }
+                            }
+                        })
+
+                    bsCustomFileInput.init()
+                },
+                preConfirm: async () => {
+                    let formData = new FormData(document.getElementById('form_ubah'));
+
+                    formData.append(
+                        await csrf().then(csrf => csrf.token_name),
+                        await csrf().then(csrf => csrf.hash)
+                    )
+                    formData.append('id', row.id)
+                    formData.append('old_foto', row.foto)
+
+                    let response = await axios.post(BASE_URL + 'update', formData)
+                        .then(res => res.data.message)
+                        .catch(err => {
+                            let errors = err.response.data.errors;
+                            if (typeof errors === 'object') {
+                                Object.entries(errors).map(([key, value]) => {
+                                    $(`#input_ubah_${key}`).addClass('is-invalid')
+                                    $(`#error_ubah_${key}`).html(value).fadeIn(500)
+                                    $(`.select2-selection[aria-labelledby=select2-select_ubah_${key}-container]`).css('border-color', '#dc3545')
+                                })
+                            }
+                            Swal.showValidationMessage(err.response.data.message)
+                        })
+
+                    return {
+                        data: response
                     }
-                })
-
-            $('#form_ubah select#ubah_select_prodi.select_prodi')
-                .append(new Option(row.nama_prodi, row.prodi_id, true, true))
-                .trigger('change')
-                .trigger({
-                    type: 'select2:select',
-                    params: {
-                        data: {
-                            fakultas_id: row.fakultas_id,
-                            prodi_id: row.prodi_id
-                        }
-                    }
-                })
-
-            $('#form_ubah input#ubah_old_foto[name=old_foto]').val(row.foto)
-            $('#form_ubah input#ubah_old_foto_thumb[name=old_foto_thumb]').val(row.foto_thumb)
-            if (row.foto) {
-                $('#form_ubah #lihat').removeClass('text-danger')
-                $('#form_ubah #lihat').addClass('text-success')
-                $('#form_ubah #lihat').html(`<a href="<?= BASE_URL() ?>uploads/mahasiswa/${row.foto}" target="_blank">Lihat file</a>`)
-            } else {
-                $('#form_ubah #lihat').addClass('text-danger')
-                $('#form_ubah #lihat').removeClass('text-success')
-                $('#form_ubah #lihat').html('File belum ada')
-            }
-        }
-
-        $insert = async (form) => {
-            status_crud = true
-            loading()
-
-            let formData = new FormData(form);
-            formData.append(
-                await csrf().then(csrf => csrf.token_name),
-                await csrf().then(csrf => csrf.hash)
-            )
-
-            axios.post(BASE_URL + 'insert', formData)
-                .then(res => {
-                    $('#form_tambah button[type=submit]').hide();
-                    $('#form_tambah button.loader').show();
+                }
+            }).then((result) => {
+                if (result.value) {
                     Swal.fire({
+                        title: 'Berhasil',
                         icon: 'success',
-                        title: 'Success!',
-                        text: res.data.message,
+                        text: result.value.data,
                         showConfirmButton: false,
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
                         timer: 1500
+                    }).then(() => {
+                        bsCustomFileInput.destroy()
+                        datatable.ajax.reload()
                     })
-
-                    // socket.emit('backend-crud-mahasiswa', {})
-                    datatable.ajax.reload()
-                }).catch(err => {
-                    console.error(err);
-                    Swal.fire({
-                        icon: 'error',
-                        title: err.response.statusText,
-                        html: err.response.data.message,
-                        // text: err.response.statusText,
-                    })
-                }).then(() => {
-                    $('#form_tambah button[type=submit]').show();
-                    $('#form_tambah button.loader').hide();
-                    $('#form_tambah').trigger('reset');
-                    $('#form_tambah select').val(null).trigger('change')
-                    $('#form_tambah').removeClass('was-validated')
-                    $('#modal_tambah').modal('hide');
-                })
-        }
-
-        $update = async (form) => {
-            status_crud = true
-            loading()
-
-            let formData = new FormData(form);
-            formData.append(
-                await csrf().then(csrf => csrf.token_name),
-                await csrf().then(csrf => csrf.hash)
-            )
-
-            axios.post(BASE_URL + 'update', formData)
-                .then(res => {
-                    $('#form_ubah button[type=submit]').hide();
-                    $('#form_ubah button.loader').show();
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: res.data.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-
-                    // socket.emit('backend-crud-mahasiswa', {})
-                    datatable.ajax.reload()
-                }).catch(err => {
-                    console.error(err);
-                    Swal.fire({
-                        icon: 'error',
-                        title: err.response.statusTex,
-                        html: err.response.data.message,
-                        // text: err.response.statusText
-                    })
-                }).then(() => {
-                    $('#form_ubah button[type=submit]').show();
-                    $('#form_ubah button.loader').hide();
-                    $('#form_ubah').trigger('reset');
-                    $('#form_ubah select').val(null).trigger('change')
-                    $('#form_ubah').removeClass('was-validated')
-                    $('#modal_ubah').modal('hide');
-                })
+                }
+            })
         }
 
         $delete = async (element) => {
@@ -723,10 +746,17 @@
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
                 icon: 'warning',
-                showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, delete it!',
+                showCancelButton: true,
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showCloseButton: true,
+                reverseButtons: true,
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     status_crud = true
@@ -764,114 +794,224 @@
             })
         }
 
-        $import = async (form) => {
+        $import_excel = async () => {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "Document will be imported!",
-                icon: 'warning',
+                title: 'Form Import Excel',
+                width: '800px',
+                icon: 'info',
+                html: `<?= $this->load->view("contents/$uri_segment/components/form_import", '', true); ?>`,
+                confirmButtonText: '<i class="fa fa-check-square-o"></i> Import File',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, import it!'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    status_crud = true
-                    Swal.fire({
-                        title: 'Loading...',
-                        allowEscapeKey: false,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
+                focusConfirm: false,
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showCloseButton: true,
+                reverseButtons: true,
+                didOpen: () => {
+                    $('.swal2-actions').css('z-index', '0')
+                    bsCustomFileInput.init()
+
+                    $('#form_import #downloadTemplateExcel').click(async () => {
+                        // location.replace(BASE_URL + "download_template_excel")
+                        $('.tombol-download-template').hide()
+                        $('.loader').show()
+
+                        let formData = new FormData();
+
+                        formData.append(
+                            await csrf().then(csrf => csrf.token_name),
+                            await csrf().then(csrf => csrf.hash)
+                        )
+
+                        axios.post(BASE_URL + 'download_template_excel', formData, {
+                                responseType: 'blob'
+                            })
+                            .then(blob => {
+                                $('.tombol-download-template').show()
+                                $('.loader').hide()
+
+                                const url = window.URL.createObjectURL(new Blob([blob.data]));
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.href = url;
+                                a.download = 'template_excel.xlsx';
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                            }).catch(err => {
+                                console.error(err);
+
+                            })
                     })
 
-                    let formData = new FormData(form);
+                },
+                preConfirm: async () => {
+                    let formData = new FormData(document.getElementById('form_import'));
+
                     formData.append(
                         await csrf().then(csrf => csrf.token_name),
                         await csrf().then(csrf => csrf.hash)
                     )
-                    axios.post(BASE_URL + "import_excel", formData)
-                        .then(res => {
-                            initMap()
 
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: res.data.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
+                    let response = await axios.post(BASE_URL + 'import_excel', formData)
+                        .then(res => res.data.message)
+                        .catch(err => {
+                            let errors = err.response.data.errors;
 
-                            // socket.emit('backend-crud-mahasiswa', {})
-                            datatable.ajax.reload()
-                        }).catch(err => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                html: err.response.data.message,
-                                // text: err.response.statusText,
-                            })
-                        }).then(() => {
-                            $('#form_import button[type=submit]').show();
-                            $('#form_import button.loader').hide();
-                            $('#form_import').trigger('reset');
-                            $('#form_import').removeClass('was-validated')
-                            $('#modal_import').modal('hide');
+                            Swal.showValidationMessage(err.response.data.message)
                         })
+
+                    return {
+                        data: response
+                    }
+                }
+            }).then((result) => {
+                if (result.value) {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        icon: 'success',
+                        text: result.value.data,
+                        showConfirmButton: false,
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
+                        timer: 1500
+                    }).then(() => {
+                        bsCustomFileInput.destroy()
+                        datatable.ajax.reload()
+                    })
                 }
             })
         }
-        // ================================================== //
 
-        /**
-         * Keperluan event click tombol, reset, export, validasi dan submit form
-         */
-        // ================================================== //
-        $('#form_tambah').submit(function(event) {
-            event.preventDefault()
-            if (this.checkValidity()) {
-                $insert(this);
-            }
-        });
+        $export_excel = async () => {
+            loading()
 
-        $('#form_ubah').submit(function(event) {
-            event.preventDefault();
-            if (this.checkValidity()) {
-                $update(this);
-            }
-        });
+            let formData = new FormData();
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
 
-        $('#form_import').submit(function(event) {
-            event.preventDefault()
-            if (this.checkValidity()) {
-                $import(this)
-            }
-        })
+            axios.post(BASE_URL + 'export_excel', formData, {
+                    responseType: 'blob'
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob.data]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'export_excel.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Berhasil melakukan export",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
+                    })
+                })
+        }
 
-        $('#form_import #downloadTemplateExcel').click(() => {
-            location.replace(BASE_URL + "download_template_excel")
-        })
+        $export_pdf = async () => {
+            loading()
 
-        $('#modal_tambah').on('hide.bs.modal', () => {
-            $('#form_tambah').removeClass('was-validated')
-            $('#form_tambah').trigger('reset')
-        })
+            let formData = new FormData();
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
 
-        $('#modal_ubah').on('hide.bs.modal', () => {
-            $('#form_ubah').removeClass('was-validated')
-            $('#form_ubah').trigger('reset')
-        })
+            axios.post(BASE_URL + 'export_pdf', formData, {
+                    responseType: 'blob'
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob.data]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'export_pdf.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Berhasil melakukan export",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
+                    })
+                })
+        }
+
+        $export_word = async () => {
+            loading()
+
+            let formData = new FormData();
+            formData.append(
+                await csrf().then(csrf => csrf.token_name),
+                await csrf().then(csrf => csrf.hash)
+            )
+
+            axios.post(BASE_URL + 'export_docx', formData, {
+                    responseType: 'blob'
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(new Blob([blob.data]));
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'export_word.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: "Berhasil melakukan export",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: err.response.statusText,
+                        html: err.response.data.message,
+                        // text: err.response.statusText,
+                    })
+                })
+        }
         // ================================================== //
 
         /**
          * Keperluan input select2 didalam form
          */
         // ================================================== //
-        const select2_in_form = (status) => {
-            $(`#form_${status} select#${status}_select_fakultas.select_fakultas`).select2({
+        const select2_in_swal = (status) => {
+            $(`#form_${status} select#select_${status}_fakultas_id`).select2({
                 placeholder: 'Pilih Fakultas',
                 width: '100%',
-                dropdownParent: $(`#modal_${status}`),
+                dropdownParent: $(`#swal2-html-container`),
                 ajax: {
                     url: BASE_URL + 'get_fakultas',
                     dataType: 'JSON',
@@ -895,11 +1035,11 @@
                     }
                 }
             }).on('select2:select', function(event) {
-                $(`#form_${status} select#${status}_select_prodi.select_prodi`).prop('disabled', false)
-                $(`#form_${status} select#${status}_select_prodi.select_prodi`).select2({
+                $(`#form_${status} #select_${status}_prodi_id`).prop('disabled', false)
+                $(`#form_${status} #select_${status}_prodi_id`).select2({
                     placeholder: 'Pilih Program Studi',
                     width: '100%',
-                    dropdownParent: $(`#modal_${status}`),
+                    dropdownParent: $(`#swal2-html-container`),
                     ajax: {
                         url: BASE_URL + 'get_prodi',
                         dataType: 'JSON',
@@ -926,14 +1066,6 @@
                 })
             })
         }
-
-        $('#modal_tambah').on('show.bs.modal', () => {
-            select2_in_form('tambah')
-        })
-
-        $('#modal_ubah').on('show.bs.modal', () => {
-            select2_in_form('ubah')
-        })
         // ================================================== //
     })
 </script>

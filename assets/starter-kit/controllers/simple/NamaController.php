@@ -7,7 +7,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class NamaController extends MY_Controller
 {
-    private $_path = 'backend/role/apa/'; // Contoh 'backend/admin/dashboard'
+    private $_path = 'backend/apa/'; // Contoh 'backend/dashboard/ / 'frontend/home/'
 
     /**
      * NamaController constructor
@@ -15,7 +15,11 @@ class NamaController extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        check_group("role apa");    // admin, ...
+        // Salah satu saja, role atau permission
+        role("apa");    // admin, ...
+        has_permission('access-apa');
+        //=========================================================//
+
         $this->load->model($this->_path . 'M_NamaModel');   // Load model
         $this->load->library(['upload', 'form_validation']);  // Load library upload
     }
@@ -27,6 +31,9 @@ class NamaController extends MY_Controller
      */
     public function index(): CI_Loader
     {
+        method('get');
+        //=========================================================//        
+
         return $this->templates->render([
             'title' => 'Judul',
             'type' => 'backend', // auth, frontend, backend
@@ -49,6 +56,9 @@ class NamaController extends MY_Controller
      */
     public function data(): CI_Output
     {
+        method('get');
+        //=========================================================//
+
         $datatables = new Datatables(new CodeigniterAdapter());
         $datatables->query(
             "SELECT * FROM nama_tabel AS a
@@ -67,10 +77,22 @@ class NamaController extends MY_Controller
     /**
      * Keperluan validasi server-side
      */
-    public function validator()
+    private function _validator()
     {
+        $this->form_validation->set_error_delimiters('', '');
         $this->form_validation->set_rules('kolom_1', 'kolom_1', 'required|trim');
         $this->form_validation->set_rules('kolom_2', 'kolom_2', 'required|trim');
+
+        if (!$this->form_validation->run()) {
+            $this->output->set_content_type('application/json')
+                ->set_status_header(422);
+            echo json_encode([
+                'status' => false,
+                'message' => 'Please check your input again!',
+                'errors' => $this->form_validation->error_array()
+            ]);
+            exit;
+        }
     }
 
     /**
@@ -80,18 +102,12 @@ class NamaController extends MY_Controller
      */
     public function insert(): CI_Output
     {
-        $this->validator();
-        if (!$this->form_validation->run()) {
-            return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
-                ->set_output(json_encode([
-                    'status' => false,
-                    'message' => 'Please check your input again!',
-                    'errors' => validation_errors()
-                ]));
-        }
+        has_permission('create-apa');
+        method('post');
+        $this->_validator();
+        //=========================================================//
 
-        $this->db->trans_begin();
+        $this->db->trans_begin();   // Begin transaction
         $this->M_NamaModel->insert(
             [
                 'kolom_1' => $this->input->post('kolom_1', true),
@@ -102,10 +118,10 @@ class NamaController extends MY_Controller
             ]
         );
 
-        if (!$this->db->trans_status()) {
-            $this->db->trans_rollback();
+        if (!$this->db->trans_status()) {   // Check transaction status
+            $this->db->trans_rollback();    // Rollback transaction
             return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
+                ->set_status_header(500)
                 ->set_output(json_encode([
                     'status' => false,
                     'message' => 'Failed',
@@ -113,7 +129,7 @@ class NamaController extends MY_Controller
                 ]));
         }
 
-        $this->db->trans_commit();
+        $this->db->trans_commit();  // Commit transaction
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -129,6 +145,9 @@ class NamaController extends MY_Controller
      */
     public function get_where(): CI_Output
     {
+        method('get');
+        //=========================================================//
+
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
             ->set_output(json_encode([
@@ -150,18 +169,12 @@ class NamaController extends MY_Controller
      */
     public function update(): CI_Output
     {
-        $this->validator();
-        if (!$this->form_validation->run()) {
-            return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
-                ->set_output(json_encode([
-                    'status' => false,
-                    'message' => 'Please check your input again!',
-                    'errors' => validation_errors()
-                ]));
-        }
+        has_permission('update-apa');
+        method('post');
+        $this->_validator();
+        //=========================================================//
 
-        $this->db->trans_begin();
+        $this->db->trans_begin();   // Begin transaction
         $this->M_NamaModel->update(
             [
                 'kolom_1' => $this->input->post('kolom_1', true),
@@ -173,18 +186,17 @@ class NamaController extends MY_Controller
             $this->input->post('id', true)
         );
 
-        if (!$this->db->trans_status()) {
-            $this->db->trans_rollback();
+        if (!$this->db->trans_status()) {   // Check transaction status
+            $this->db->trans_rollback();    // Rollback transaction
             return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
+                ->set_status_header(500)
                 ->set_output(json_encode([
                     'status' => false,
                     'message' => 'Failed',
                     'errors' => $this->db->error()
                 ]));
         }
-
-        $this->db->trans_commit();
+        $this->db->trans_commit();  // Commit transaction
 
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)
@@ -201,12 +213,11 @@ class NamaController extends MY_Controller
      */
     public function delete(): CI_Output
     {
-        $data = $this->M_NamaModel->get_where([
-            'a.id' => $this->input->post('id', true),
-            'a.is_active' => '1'
-        ]);
+        has_permission('delete-apa');
+        method('post');
+        //=========================================================//
 
-        $this->db->trans_begin();
+        $this->db->trans_begin();   // Begin transaction
         $this->M_NamaModel->update(
             [
                 'is_active' => '0',
@@ -216,17 +227,17 @@ class NamaController extends MY_Controller
             $this->input->post('id', true)
         );
 
-        if (!$this->db->trans_status()) {
-            $this->db->trans_rollback();
+        if (!$this->db->trans_status()) {   // Check transaction status
+            $this->db->trans_rollback();    // Rollback transaction
             return $this->output->set_content_type('application/json')
-                ->set_status_header(404)
+                ->set_status_header(500)
                 ->set_output(json_encode([
                     'status' => false,
                     'message' => 'Failed',
                     'errors' => $this->db->error()
                 ]));
         }
-        $this->db->trans_commit();
+        $this->db->trans_commit();  // Commit transaction
 
         return $this->output->set_content_type('application/json')
             ->set_status_header(200)

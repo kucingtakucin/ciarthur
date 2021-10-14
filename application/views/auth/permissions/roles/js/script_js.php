@@ -146,6 +146,8 @@
                     event.preventDefault()
                     location.replace(BASE_URL + `role_permissions/${$(this).data('id')}`)
                 });
+
+                $('[title]').tooltip()
                 // ================================================== //
             },
         })

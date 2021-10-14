@@ -32,6 +32,11 @@
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/cuba/css/style.css">
     <link id="color" rel="stylesheet" href="<?= base_url() ?>/assets/cuba/css/color-1.css" media="screen">
+
+    <!-- Pace -->
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
+
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/cuba/css/responsive.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
@@ -84,9 +89,40 @@
     <script>
         let csrf, loading;
 
+        /** Set default AJAX headers */
         axios.defaults.headers.common = {
             "X-Requested-With": "XMLHttpRequest",
         };
+
+        /**
+         * Keperluan disable inspect element
+         */
+        // ================================================== //
+
+        // Disable right click
+        $(document).contextmenu(function(event) {
+            event.preventDefault()
+        })
+
+        $(document).keydown(function(event) {
+            // Disable F12
+            if (event.keyCode == 123) return false;
+
+            // Disable Ctrl + Shift + I
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+
+            // Disable Ctrl + Shift + J
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+
+            // Disable Ctrl + U
+            if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        })
 
         /**
          * Keperluan socket.io
@@ -149,36 +185,6 @@
                 $('.g-recaptcha').css('transform-origin', '0 0');
                 $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
             }
-
-            /**
-             * Keperluan disable inspect element
-             */
-            // ================================================== //
-
-            // Disable right click
-            $(document).contextmenu(function(event) {
-                event.preventDefault()
-            })
-
-            $(document).keydown(function(event) {
-                // Disable F12
-                if (event.keyCode == 123) return false;
-
-                // Disable Ctrl + Shift + I
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + Shift + J
-                if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-                    return false;
-                }
-
-                // Disable Ctrl + U
-                if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-                    return false;
-                }
-            })
 
             /**
              * Keperluan show loading

@@ -40,14 +40,23 @@
                         location.replace("<?= base_url() ?>" + res.data.redirect)
                     })
                 }).catch(err => {
-                    console.log(err)
+                    let errors = err.response.data.message;
+                    let html = '';
+                    console.log(typeof errors)
+                    if (typeof errors === 'object') {
+                        errors.map(item => {
+                            html += `<i class="fa fa-angle-right"></i> ${item.replaceAll('-', ' ')} <br>`
+                        });
+                    } else {
+                        html = errors
+                    }
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        // html: err.response.data.message,
-                        html: 'Something went wrong!'
+                        title: err.response.statusText,
+                        html: html,
                     })
                 }).then(res => {
+                    grecaptcha.reset()
                     $('#form-login').removeClass('was-validated')
                 })
         }

@@ -15,6 +15,15 @@ class Auth extends RestController
         $this->load->library('session');
     }
 
+    public function index_get()
+    {
+        echo "Codeigniter <b>Rest-Server</b> <i>v3.1</i> <br><br>";
+        echo "Login <b>POST</b> <i>/login</i> <br>";
+        echo "Me <b>POST</b>  <i>/me</i> <br>";
+        echo "Refresh <b>POST</b>  <i>/refresh</i> <br>";
+        echo "Logout <b>POST</b>  <i>/logout</i> <br>";
+    }
+
     public function login_post()
     {
         // Get the post data
@@ -53,66 +62,42 @@ class Auth extends RestController
 
     public function me_post()
     {
-        if (
-            array_key_exists('Authorization', $this->input->request_headers()) &&
-            !empty($this->input->request_headers()['Authorization'])
-        ) {
-            $headers = explode(" ", $this->input->request_headers()["Authorization"]);
-            $bearer_token = end($headers);
-            $decodedToken = validateTimestamp($bearer_token);
-
-            // return response if token is valid
-            if ($decodedToken->status) {
-                return $this->response([
-                    'status' => true,
-                    'id' => $decodedToken->token->data->id,
-                    'username' => $decodedToken->token->data->username
-                ], RestController::HTTP_OK);
-            } else {
-                return $this->response([
-                    'status' => false,
-                    'message' => $decodedToken->message,
-                    'exception' => @$decodedToken->exception
-                ], RestController::HTTP_BAD_REQUEST);
-            }
-        }
-
-        $this->response([
-            'status' => false,
-            'message' => "Unauthorized"
-        ], RestController::HTTP_UNAUTHORIZED);
+        $this->_check_authorization(function ($decodedToken) {
+            return $this->response([
+                'status' => true,
+                'id' => $decodedToken->token->data->id,
+                'username' => $decodedToken->token->data->username
+            ], RestController::HTTP_OK);
+        });
     }
 
     public function refresh_post()
     {
-        if (
-            array_key_exists('Authorization', $this->input->request_headers()) &&
-            !empty($this->input->request_headers()['Authorization'])
-        ) {
-            $headers = explode(" ", $this->input->request_headers()["Authorization"]);
-            $bearer_token = end($headers);
-            $decodedToken = validateTimestamp($bearer_token);
+        $this->_check_authorization(function ($decodedToken) {
+            $this->respondWithToken(generateToken([
+                'id' => $decodedToken->token->data->id,
+                'username' => $decodedToken->token->data->username
+            ]));
+        });
+    }
 
-            // return response if token is valid
-            if ($decodedToken->status) {
-                // $this->set_response($decodedToken, RestController::HTTP_OK);
-                $this->respondWithToken(generateToken([
-                    'id' => $decodedToken->token->data->id,
-                    'username' => $decodedToken->token->data->username
-                ]));
-            } else {
+    public function logout_post()
+    {
+        $this->_check_authorization(function ($decodedToken, $bearer_token) {
+            $update = $this->db->update('tokens', [
+                'is_active' => '0'
+            ], [
+                'user_id' => $decodedToken->token->data->id,
+                'is_active' => '1'
+            ]);
+
+            if ($update) {
                 return $this->response([
-                    'status' => false,
-                    'message' => $decodedToken->message,
-                    'exception' => @$decodedToken->exception
+                    'status' => true,
+                    'message' => "Logout Successfuly"
                 ], RestController::HTTP_BAD_REQUEST);
             }
-        }
-
-        $this->response([
-            'status' => false,
-            'message' => "Unauthorized"
-        ], RestController::HTTP_UNAUTHORIZED);
+        });
     }
 
     /**
@@ -128,5 +113,36 @@ class Auth extends RestController
             'token_type' => 'bearer',
             'expires_in' => $this->config->item('exp')
         ], RestController::HTTP_OK);
+    }
+
+    private function _check_authorization(Closure $callback)
+    {
+        if (
+            array_key_exists('Authorization', $this->input->request_headers()) &&
+            !empty($this->input->request_headers()['Authorization'])
+        ) {
+            $headers = explode(" ", $this->input->request_headers()["Authorization"]);
+            $bearer_token = end($headers);
+            $decodedToken = validateTimestamp($bearer_token);
+
+            // return response if token is valid
+            if ($decodedToken->status) {
+                // $this->set_response($decodedToken, RestController::HTTP_OK);
+                if (is_callable($callback)) {
+                    $callback($decodedToken, $bearer_token);
+                }
+            } else {
+                return $this->response([
+                    'status' => false,
+                    'message' => $decodedToken->message,
+                    'exception' => @$decodedToken->exception
+                ], RestController::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $this->response([
+            'status' => false,
+            'message' => "Unauthorized"
+        ], RestController::HTTP_UNAUTHORIZED);
     }
 }

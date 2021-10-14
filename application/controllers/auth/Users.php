@@ -35,6 +35,9 @@ class Users extends MY_Controller
 		$this->templates->render([
 			'title' => 'Users',
 			'type' => 'backend',
+			'breadcrumb' => [
+				'Auth', 'Manajemen', 'Users'
+			],
 			'uri_segment' => $this->_path,
 			'page' => $this->_path . 'index',
 			'script' => $this->_path . 'js/script_js',
@@ -45,6 +48,18 @@ class Users extends MY_Controller
 
 	public function edit_account()
 	{
+		$this->form_validation->set_rules('username', 'username', 'required|trim');
+		$this->form_validation->set_rules('password', 'password', 'required|trim|min_length[8]');
+		if (!$this->form_validation->run()) {
+			return $this->output->set_content_type('application/json')
+				->set_status_header(422)
+				->set_output(json_encode([
+					'status' => false,
+					'message' => 'Please check your input again!',
+					'errors' => $this->form_validation->error_array()
+				]));
+		}
+
 		$this->db->update('users', [
 			'username' => $this->input->post('username'),
 			'password' => $this->ion_auth->hash_password($this->input->post('password'))

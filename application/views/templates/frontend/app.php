@@ -16,11 +16,15 @@
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/color/purple.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://appt.demoo.id/tema/snowlake/snowlake-html/snowlake/style/css/font/font2.css">
-    <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
 
     <!-- Google re-Captcha  -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+    <!-- Pace -->
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
+
+    <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
     <?= $this->load->view($style, '', true) ?>
 </head>
 
@@ -163,10 +167,10 @@
     <script>
         let csrf, loading, socket;
 
+        /** Set default AJAX headers */
         axios.defaults.headers.common = {
             "X-Requested-With": "XMLHttpRequest",
         };
-        s
 
         /**
          * Keperluan disable inspect element

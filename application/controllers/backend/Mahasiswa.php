@@ -42,14 +42,13 @@ class Mahasiswa extends MY_Controller
             'title' => 'Mahasiswa',
             'type' => 'backend', // auth, frontend, backend
             'uri_segment' => $this->_path,
+            'breadcrumb' => [
+                'Backend', 'Menu', 'Mahasiswa'
+            ],
             'page' => 'contents/' . $this->_path . 'index',
             'script' => 'contents/' . $this->_path . 'js/script_js',
             'style' => 'contents/' . $this->_path . 'css/style_css',
-            'modals' => [
-                'contents/' . $this->_path . 'modal/tambah',
-                'contents/' . $this->_path . 'modal/ubah',
-                'contents/' . $this->_path . 'modal/import',
-            ],
+            'modals' => [],
         ]);
     }
 
@@ -93,7 +92,7 @@ class Mahasiswa extends MY_Controller
             ->set_output(json_encode([
                 'status' => true,
                 'data' => $this->db->like('nama', $this->input->get('search'))
-                    ->get('fakultas')->result()
+                    ->get_where('fakultas', ['is_active' => '1'])->result()
             ]));
     }
 
@@ -152,8 +151,9 @@ class Mahasiswa extends MY_Controller
     /**
      * Keperluan validasi server-side
      */
-    public function validator()
+    private function _validator()
     {
+        $this->form_validation->set_error_delimiters('', '');
         $this->form_validation->set_rules('nim', 'NIM', 'required|trim');
         $this->form_validation->set_rules('nama', 'Nama', 'required|trim');
         $this->form_validation->set_rules('prodi_id', 'Prodi', 'required|trim');
@@ -162,6 +162,16 @@ class Mahasiswa extends MY_Controller
         $this->form_validation->set_rules('latitude', 'Latitude', 'required|trim');
         $this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
         // $this->form_validation->set_rules('foto', 'Foto', 'required');
+        if (!$this->form_validation->run()) {
+            $this->output->set_content_type('application/json')
+                ->set_status_header(422);
+            echo json_encode([
+                'status' => false,
+                'message' => 'Please check your input again!',
+                'errors' => $this->form_validation->error_array()
+            ]);
+            exit;
+        }
     }
 
     /**
@@ -173,16 +183,7 @@ class Mahasiswa extends MY_Controller
     {
         has_permission('create-mahasiswa');
         method('post');
-        $this->validator();
-        if (!$this->form_validation->run()) {
-            return $this->output->set_content_type('application/json')
-                ->set_status_header(422)
-                ->set_output(json_encode([
-                    'status' => false,
-                    'message' => 'Please check your input again!',
-                    'errors' => validation_errors()
-                ]));
-        }
+        $this->_validator();
 
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -196,7 +197,7 @@ class Mahasiswa extends MY_Controller
                 ->set_status_header(404)
                 ->set_output(json_encode([
                     'status' => false,
-                    'message' => $this->upload->display_errors()
+                    'message' => $this->upload->display_errors('', '')
                 ]));
         }
 
@@ -268,16 +269,7 @@ class Mahasiswa extends MY_Controller
     {
         has_permission('update-mahasiswa');
         method('post');
-        $this->validator();
-        if (!$this->form_validation->run()) {
-            return $this->output->set_content_type('application/json')
-                ->set_status_header(422)
-                ->set_output(json_encode([
-                    'status' => false,
-                    'message' => 'Please check your input again!',
-                    'errors' => validation_errors()
-                ]));
-        }
+        $this->_validator();
 
         $config['upload_path'] = './uploads/mahasiswa/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -295,7 +287,7 @@ class Mahasiswa extends MY_Controller
                     ->set_status_header(404)
                     ->set_output(json_encode([
                         'status' => false,
-                        'message' => $this->upload->display_errors()
+                        'message' => $this->upload->display_errors('', '')
                     ]));
             }
         }
@@ -395,7 +387,7 @@ class Mahasiswa extends MY_Controller
      */
     public function export_excel(): void
     {
-        method('get');
+        method('post');
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getActiveSheet()->setTitle('Data Mahasiswa');
         $spreadsheet->getProperties()->setCreator('Mahasiswa')
@@ -506,19 +498,21 @@ class Mahasiswa extends MY_Controller
      */
     public function import_excel()
     {
+        has_permission('create-mahasiswa');
         method('post');
-        if (is_uploaded_file($_FILES['import_file_excel']['tmp_name'])) {
-            if (!in_array(mime_content_type($_FILES['import_file_excel']['tmp_name']), ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+
+        if (is_uploaded_file($_FILES['file_excel']['tmp_name'])) {
+            if (!in_array(mime_content_type($_FILES['file_excel']['tmp_name']), ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
                 return $this->output->set_content_type('application/json')
                     ->set_status_header(404)
                     ->set_output(json_encode([
                         'status' => false,
                         'message' => 'Ekstensi file tidak sesuai! Wajib <b>.xlsx</b>',
-                        'mimetype' => mime_content_type($_FILES['import_file_excel']['tmp_name'])
+                        'mimetype' => mime_content_type($_FILES['file_excel']['tmp_name'])
                     ]));
             }
 
-            $spreadsheet = IOFactory::load($_FILES['import_file_excel']['tmp_name']);
+            $spreadsheet = IOFactory::load($_FILES['file_excel']['tmp_name']);
             $data = $spreadsheet->getActiveSheet()->toArray();
 
             if (
@@ -567,7 +561,7 @@ class Mahasiswa extends MY_Controller
             ->set_status_header(404)
             ->set_output(json_encode([
                 'status' => false,
-                'message' => 'Gagal melakukan import! Ada kesalahan'
+                'message' => 'You did not select a file to upload.',
             ]));
     }
 
@@ -578,7 +572,7 @@ class Mahasiswa extends MY_Controller
      */
     public function download_template_excel()
     {
-        method('get');
+        method('post');
         $spreadsheet = IOFactory::load(FCPATH . 'assets/templates/excel/template_daftar_mahasiswa.xlsx');
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="template_daftar_mahasiswa.xlsx"');
@@ -595,7 +589,7 @@ class Mahasiswa extends MY_Controller
      */
     public function export_word(): void
     {
-        method('get');
+        method('post');
         $templateProcessor = new TemplateProcessor('assets/templates/word/template_word.docx');
         // $templateProcessor->setValue('param', 'value');
 
@@ -613,7 +607,7 @@ class Mahasiswa extends MY_Controller
      */
     public function export_pdf(): void
     {
-        method('get');
+        method('post');
         // instantiate and use the dompdf class
         $dompdf = new Dompdf();
         $dompdf->getOptions()->setChroot('assets/templates/pdf');
