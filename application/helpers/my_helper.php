@@ -55,8 +55,12 @@ function in_role($role)
 
 function role($role)
 {
-    if (!logged_in()) {
-        redirect('auth/login');
+    if ($role === 'guest' && logged_in()) {
+        redirect('backend/dashboard');
+    } elseif ($role !== 'guest' && !logged_in()) {
+        redirect('~/login');
+    } else {
+        return;
     }
 
     $ci = &get_instance();
@@ -78,7 +82,7 @@ function role($role)
 function has_permission($permission_key)
 {
     if (!logged_in()) {
-        redirect('auth/login');
+        redirect('~/login');
     }
 
     $ci = &get_instance();
@@ -94,7 +98,7 @@ function has_permission($permission_key)
                 ]);
                 exit;
             } else {
-                // return redirect('auth/login');
+                // return redirect('~/login');
                 show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
                 // $ci->load->view('errors/html/error_403');
                 // exit();
@@ -152,22 +156,29 @@ function base_auth($link = null)
     return base_url("auth/$link");
 }
 
-function validation_feedback($field, $message)
+function validation_feedback($type, $field)
 {
-    $field = ucwords($field);
     return "
-    <div class=\"invalid-feedback text-danger\">$field $message</div>
-    <div class=\"valid-feedback text-success\">Looks good</div>
+        <div class=\"invalid-feedback text-danger text-left\" style=\"display: none;\" id=\"error_{$type}_{$field}\"></div>
     ";
 }
 
-function validation_tooltip($field, $message)
+function validation_tooltip($type, $field)
 {
-    $field = ucwords($field);
     return "
-    <div class=\"invalid-tooltip\">$field $message</div>
-    <div class=\"valid-tooltip\">Looks good</div>
+        <div class=\"invalid-tooltip text-white text-left\" style=\"display: none;\" id=\"error_{$type}_{$field}\"></div>
     ";
+}
+
+function recaptcha_display()
+{
+    $ci = &get_instance();
+    return $ci->recaptcha->create_box();
+}
+
+function recaptcha_render_js()
+{
+    return "<script src=\"https://www.google.com/recaptcha/api.js\" async defer></script>";
 }
 
 /**

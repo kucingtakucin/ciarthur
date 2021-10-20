@@ -11,13 +11,15 @@
             <div class="form-group">
                 <label for="role_name">Role Name</label>
                 <?php echo form_input($group_name, "", 'class="form-control" id="role_name" required autocomplete="off"'); ?>
-                <?= validation_feedback("Role name", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">Role name wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">
                 <label for="role_description">Role Description</label>
                 <?php echo form_input($description, "", 'class="form-control" id="role_description" required autocomplete="off"'); ?>
-                <?= validation_feedback("Role description", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">Role description wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">

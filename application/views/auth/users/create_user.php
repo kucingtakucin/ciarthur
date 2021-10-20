@@ -8,13 +8,15 @@
             <div class="form-group">
                 <?php echo lang('create_user_fname_label', 'first_name'); ?>
                 <?php echo form_input($first_name, "", 'class="form-control" required autocomplete="off"'); ?>
-                <?= validation_feedback("First name", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">First name wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">
-                <?php echo lang('create_user_lname_label', 'last_name'); ?> <br />
+                <?php echo lang('create_user_lname_label', 'last_name'); ?>
                 <?php echo form_input($last_name, "", 'class="form-control" required autocomplete="off"'); ?>
-                <?= validation_feedback("Last name", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">Last name wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <?php
@@ -23,39 +25,47 @@
                 echo lang('create_user_identity_label', 'identity');
                 echo form_error('identity');
                 echo form_input($identity, "", 'class="form-control" required autocomplete="off"');
-                echo validation_feedback("Identity", "wajib diisi");
+                echo "
+                    <div class=\"invalid-feedback text-danger\">Identity wajib diisi</div>
+                    <div class=\"valid-feedback text-success\">Looks good</div>
+                ";
                 echo '</div>';
             }
             ?>
 
             <div class="form-group">
-                <?php echo lang('create_user_company_label', 'company'); ?> <br />
+                <?php echo lang('create_user_company_label', 'company'); ?>
                 <?php echo form_input($company, "", 'class="form-control" required autocomplete="off"'); ?>
-                <?= validation_feedback("Company", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">Company wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">
-                <?php echo lang('create_user_email_label', 'email'); ?> <br />
+                <?php echo lang('create_user_email_label', 'email'); ?>
                 <?php echo form_input($email, "", 'class="form-control" required autocomplete="off"'); ?>
-                <?= validation_feedback("Email", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">Email wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">
-                <?php echo lang('create_user_phone_label', 'phone'); ?> <br />
+                <?php echo lang('create_user_phone_label', 'phone'); ?>
                 <?php echo form_input($phone, "", 'class="form-control" required autocomplete="off"'); ?>
-                <?= validation_feedback("No Phone", "wajib diisi") ?>
+                <div class="invalid-feedback text-danger">No Phone wajib diisi</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">
-                <?php echo lang('create_user_password_label', 'password'); ?> <br />
+                <?php echo lang('create_user_password_label', 'password'); ?>
                 <?php echo form_input($password, "", 'class="form-control" minlength="8" required autocomplete="off"'); ?>
-                <?= validation_feedback("Password", "wajib diisi dan minimal 8 karakter") ?>
+                <div class="invalid-feedback text-danger">Password wajib diisi dan minimal 8 karakter</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
             <div class="form-group">
-                <?php echo lang('create_user_password_confirm_label', 'password_confirm'); ?> <br />
+                <?php echo lang('create_user_password_confirm_label', 'password_confirm'); ?>
                 <?php echo form_input($password_confirm, "", 'class="form-control" minlength="8" required autocomplete="off"'); ?>
-                <?= validation_feedback("Password Confirmation", "wajib diisi dan minimal 8 karakter") ?>
+                <div class="invalid-feedback text-danger">Password confirmation wajib diisi dan minimal 8 karakter</div>
+                <div class="valid-feedback text-success">Looks good</div>
             </div>
 
 

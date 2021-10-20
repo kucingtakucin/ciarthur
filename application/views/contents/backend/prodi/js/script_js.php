@@ -46,18 +46,13 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    if (!status_crud) {
-                        loading()
-                    }
+                    loading()
                 },
                 complete: () => {
-                    if (status_crud) {
-                        status_crud = false
-                    }
                     setTimeout(async () => {
                         await Swal.hideLoading()
                         await Swal.close()
-                    }, 10);
+                    }, 100);
                 }
             },
             columnDefs: [{
@@ -335,7 +330,6 @@
                 reverseButtons: true,
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    status_crud = true
                     loading()
 
                     let formData = new FormData();

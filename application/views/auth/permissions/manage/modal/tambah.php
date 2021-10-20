@@ -12,14 +12,16 @@
                             <div class="form-group">
                                 <label for="perm_key">Permission Key</label>
                                 <?php echo form_input('perm_key', set_value('perm_key'), 'class="form-control" id="tambah_perm_key" required autocomplete="off"'); ?>
-                                <?= validation_feedback("Permission Key", "wajib diisi") ?>
+                                <div class="invalid-feedback text-danger">Permission key wajib diisi</div>
+                                <div class="valid-feedback text-success">Looks good</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="perm_name">Permission Name</label>
                                 <?php echo form_input('perm_name', set_value('perm_name'), 'class="form-control" id="tambah_perm_key" required autocomplete="off"'); ?>
-                                <?= validation_feedback("Permission Name", "wajib diisi") ?>
+                                <div class="invalid-feedback text-danger">Permission name wajib diisi</div>
+                                <div class="valid-feedback text-success">Looks good</div>
                             </div>
                         </div>
                     </div>

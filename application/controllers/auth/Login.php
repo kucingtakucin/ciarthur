@@ -1,8 +1,4 @@
 <?php
-
-use ReCaptcha\ReCaptcha;
-
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 
@@ -14,25 +10,15 @@ class Login extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('form_validation');
-        $this->form_validation->set_error_delimiters('', '');
     }
-
 
     /**
      * Log the user in
      */
     public function index()
     {
-        $recaptcha = new ReCaptcha('6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o');
-        $response = $recaptcha->setExpectedHostname('appt.demoo.id')
-            ->verify($this->input->post('g-recaptcha-response'));
-
+        role('guest');
         if ($this->input->method() === 'get') {
-            if (logged_in()) {
-                redirect('backend/dashboard');
-            }
-
             // the user is not logging in so display the login page
             return $this->templates->render([
                 'title' => 'Login',
@@ -43,7 +29,34 @@ class Login extends MY_Controller
                 'style' => $this->_path . 'css/style_css',
                 'modal' => [],
             ]);
-        } elseif ($this->input->method() === 'post' && $response->isSuccess()) {
+        } elseif ($this->input->method() === 'post') {
+
+            $response = $this->recaptcha->is_valid(
+                $this->input->post('g-recaptcha-response'),
+                $this->input->ip_address()
+            );
+
+            $this->_validator();
+
+            if (!$this->input->post('g-recaptcha-response')) {
+                return $this->output->set_content_type('application/json')
+                    ->set_status_header(422)
+                    ->set_output(json_encode([
+                        'status' => false,
+                        'message' => "Recaptcha wajib dicentang!",
+                        'data' => null
+                    ]));
+            }
+
+            if (!$response['success'] && $response['error']) {
+                return $this->output->set_content_type('application/json')
+                    ->set_status_header(400)
+                    ->set_output(json_encode([
+                        'status' => false,
+                        'title' => 'Recaptcha error',
+                        'errors' => $response['error_message'],
+                    ]));
+            }
             // check to see if the user is logging in
             // check for "remember me"
             $remember = (bool) $this->input->post('remember');
@@ -67,12 +80,26 @@ class Login extends MY_Controller
                     'message' => $this->ion_auth->errors()
                 ]));
         }
-        return $this->output->set_content_type('application/json')
-            ->set_status_header(422)
-            ->set_output(json_encode([
+    }
+
+    /**
+     * Keperluan validasi server-side
+     */
+    private function _validator()
+    {
+        $this->form_validation->set_error_delimiters('', '');
+        $this->form_validation->set_rules('identity', 'username', 'required|trim');
+        $this->form_validation->set_rules('password', 'password', 'required|trim|min_length[8]');
+        if (!$this->form_validation->run()) {
+            $this->output->set_content_type('application/json')
+                ->set_status_header(422);
+            echo json_encode([
                 'status' => false,
-                'message' => $response->getErrorCodes(),
-            ]));
+                'message' => 'Incorrect Login!',
+                'errors' => $this->form_validation->error_array()
+            ]);
+            exit;
+        }
     }
 
     /**
@@ -86,8 +113,7 @@ class Login extends MY_Controller
 
         // log the user out
         $this->ion_auth->logout();
-
         // redirect them to the login page
-        redirect('auth/login', 'refresh');
+        redirect('~/login', 'refresh');
     }
 }

@@ -8,8 +8,8 @@
             </div>
 
             <div class="col-sm-9">
-                <input type="text" id="input_tambah_nim" name="nim" class="form-control" placeholder="Masukkan NIM" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_nim"></div>
+                <input type="text" id="input_tambah_nim" name="nim" class="form-control" placeholder="Masukkan NIM" autocomplete="off">
+                <?= validation_feedback('tambah', 'nim') ?>
             </div>
 
         </div>
@@ -23,8 +23,8 @@
             </div>
 
             <div class="col-sm-9">
-                <input type="text" id="input_tambah_nama" name="nama" class="form-control" placeholder="Masukkan Nama" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_nama"></div>
+                <input type="text" id="input_tambah_nama" name="nama" class="form-control" placeholder="Masukkan Nama" autocomplete="off">
+                <?= validation_feedback('tambah', 'nama') ?>
             </div>
 
         </div>
@@ -38,8 +38,8 @@
             </div>
 
             <div class="col-sm-9">
-                <input type="number" id="input_tambah_angkatan" name="angkatan" class="form-control" placeholder="Masukkan Tahun Angkatan" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_angkatan"></div>
+                <input type="number" id="input_tambah_angkatan" name="angkatan" class="form-control" placeholder="Masukkan Tahun Angkatan" autocomplete="off">
+                <?= validation_feedback('tambah', 'angkatan') ?>
             </div>
 
         </div>
@@ -53,9 +53,9 @@
             </div>
 
             <div class="col-sm-9 text-left">
-                <select id="select_tambah_fakultas_id" name="fakultas_id" class="form-control" onkeydown="return event.keyCode != 13;">
+                <select id="select_tambah_fakultas_id" name="fakultas_id" class="form-control">
                 </select>
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_fakultas_id"></div>
+                <?= validation_feedback('tambah', 'fakultas_id') ?>
             </div>
 
         </div>
@@ -68,9 +68,9 @@
             </div>
 
             <div class="col-sm-9 text-left">
-                <select id="select_tambah_prodi_id" name="prodi_id" disabled class="form-control" onkeydown="return event.keyCode != 13;">
+                <select id="select_tambah_prodi_id" name="prodi_id" disabled class="form-control">
                 </select>
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_prodi_id"></div>
+                <?= validation_feedback('tambah', 'prodi_id') ?>
             </div>
 
         </div>
@@ -86,13 +86,12 @@
             <div class="col-sm-9">
                 <div class="input-group">
                     <div class="custom-file text-left">
-                        <input type="file" id="input_tambah_foto" name="foto" class="form-control text-left" onkeydown="return event.keyCode != 13;">
+                        <input type="file" id="input_tambah_foto" name="foto" class="form-control text-left">
                         <label class="custom-file-label overflow-hidden" for="input_tambah_foto">Choose file</label>
                     </div>
                 </div>
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_foto"></div>
+                <?= validation_feedback('tambah', 'foto') ?>
             </div>
-
         </div>
     </div>
 
@@ -104,8 +103,8 @@
             </div>
 
             <div class="col-sm-9">
-                <input type="text" id="input_tambah_latitude" name="latitude" class="form-control" placeholder="Masukkan Latitude" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_latitude"></div>
+                <input type="text" id="input_tambah_latitude" name="latitude" class="form-control" placeholder="Masukkan Latitude" autocomplete="off">
+                <?= validation_feedback('tambah', 'latitude') ?>
             </div>
 
         </div>
@@ -119,8 +118,8 @@
             </div>
 
             <div class="col-sm-9">
-                <input type="text" id="input_tambah_longitude" name="longitude" class="form-control" placeholder="Masukkan Latitude" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_longitude"></div>
+                <input type="text" id="input_tambah_longitude" name="longitude" class="form-control" placeholder="Masukkan Latitude" autocomplete="off">
+                <?= validation_feedback('tambah', 'longitude') ?>
             </div>
 
         </div>

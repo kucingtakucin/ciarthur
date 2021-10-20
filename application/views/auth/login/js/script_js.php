@@ -10,15 +10,6 @@
         // ================================================== //
 
         login = async (form) => {
-            if (!grecaptcha.getResponse()) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: "Recaptcha wajib dicentang!",
-                })
-                return;
-            }
-
             loading();
 
             let formData = new FormData(form);
@@ -28,7 +19,9 @@
                 await csrf().then(csrf => csrf.hash)
             )
 
-            axios.post(BASE_URL + 'index', formData)
+            $('.invalid-feedback').fadeOut(500)
+            $('.is-invalid').removeClass('is-invalid')
+            axios.post(BASE_URL, formData)
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
@@ -40,24 +33,37 @@
                         location.replace("<?= base_url() ?>" + res.data.redirect)
                     })
                 }).catch(err => {
-                    let errors = err.response.data.message;
-                    let html = '';
-                    console.log(typeof errors)
+                    console.log(err)
+                    let errors = err.response.data.errors;
+                    let html = err.response.data.message;
+                    let title = err.response.data.title;
+
                     if (typeof errors === 'object') {
+                        Object.entries(errors).map(([key, value]) => {
+                            $(`#input_login_${key}`).addClass('is-invalid')
+                            $(`#error_login_${key}`).html(value).fadeIn(500)
+                        })
+                        Swal.close();
+                    } else if (title) {
                         errors.map(item => {
                             html += `<i class="fa fa-angle-right"></i> ${item.replaceAll('-', ' ')} <br>`
                         });
+                        Swal.fire({
+                            icon: 'error',
+                            // title: err.response.statusText,
+                            title: title ? title : "Oops...",
+                            html: html,
+                        })
                     } else {
-                        html = errors
+                        Swal.fire({
+                            icon: 'error',
+                            // title: err.response.statusText,
+                            title: title ? title : "Oops...",
+                            html: html,
+                        })
                     }
-                    Swal.fire({
-                        icon: 'error',
-                        title: err.response.statusText,
-                        html: html,
-                    })
                 }).then(res => {
                     grecaptcha.reset()
-                    $('#form-login').removeClass('was-validated')
                 })
         }
 

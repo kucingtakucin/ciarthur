@@ -1,6 +1,5 @@
 <script>
-    let datatable_role, status_crud = false,
-        $create_role, $update_role, $delete_role;
+    let datatable_role, $create_role, $update_role, $delete_role;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
 
     // Document ready
@@ -45,18 +44,13 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    if (!status_crud) {
-                        loading()
-                    }
+                    loading()
                 },
                 complete: () => {
-                    if (status_crud) {
-                        status_crud = false
-                    }
                     setTimeout(async () => {
                         await Swal.hideLoading()
                         await Swal.close()
-                    }, 10);
+                    }, 100);
                 }
             },
             columnDefs: [{
@@ -181,7 +175,6 @@
                 if (result.isConfirmed && event.target.checkValidity()) {
                     $('#create_role input[type=submit]').hide();
                     $('#create_role button.loader').show();
-                    status_crud = true
                     loading()
 
                     let formData = new FormData(event.target);
@@ -239,7 +232,6 @@
                 if (result.isConfirmed && event.target.checkValidity()) {
                     $('#update_role input[type=submit]').hide();
                     $('#update_role button.loader').show();
-                    status_crud = true
                     loading()
 
                     let formData = new FormData(event.target);
@@ -293,7 +285,6 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    status_crud = true
                     loading()
 
                     let formData = new FormData();
@@ -311,9 +302,11 @@
                                 text: res.data.message,
                                 showConfirmButton: false,
                                 timer: 1500
+                            }).then(() => {
+                                // socket.emit('auth-crud-role', {})
+                                datatable_role.ajax.reload()
                             })
 
-                            socket.emit('auth-crud-role', {})
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({

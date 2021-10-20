@@ -7,7 +7,7 @@
             </div>
             <div class="col-sm-9">
                 <input type="text" id="input_ubah_nama" name="nama" class="form-control" placeholder="Masukkan nama fakultas" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_ubah_nama"></div>
+                <?= validation_feedback('ubah', 'nama') ?>
             </div>
 
         </div>
@@ -20,7 +20,7 @@
             <div class="col-sm-9">
                 <select id="select_ubah_fakultas_id" name="fakultas_id" class="form-control text-left" onkeydown="return event.keyCode != 13;">
                 </select>
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_ubah_fakultas_id"></div>
+                <?= validation_feedback('ubah', 'fakultas_id') ?>
             </div>
         </div>
     </div>

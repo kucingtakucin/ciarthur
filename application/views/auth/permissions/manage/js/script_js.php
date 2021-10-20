@@ -1,6 +1,5 @@
 <script>
-    let datatable_permission, status_crud = false,
-        $add_permission, $update_permission, $delete;
+    let datatable_permission, $add_permission, $update_permission, $delete;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
 
     // Document ready
@@ -46,18 +45,13 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    if (!status_crud) {
-                        loading()
-                    }
+                    loading()
                 },
                 complete: () => {
-                    if (status_crud) {
-                        status_crud = false
-                    }
                     setTimeout(async () => {
                         await Swal.hideLoading()
                         await Swal.close()
-                    }, 10);
+                    }, 100);
                 }
             },
             columnDefs: [{
@@ -170,7 +164,6 @@
 
         $get = (element) => {
             let row = datatable_permission.row($(element).closest('tr')).data();
-            console.log(row)
             $('#modal_ubah').modal('show');
             $('#form_ubah input#id[name=id]').val(row.id)
             $('#form_ubah input#ubah_perm_name[name=perm_name]').val(row.perm_name);
@@ -178,7 +171,6 @@
         }
 
         $insert = async (form) => {
-            status_crud = true
             loading()
 
             let formData = new FormData(form);
@@ -219,7 +211,6 @@
         }
 
         $update = async (form) => {
-            status_crud = true
             loading()
 
             let formData = new FormData(form);
@@ -273,7 +264,6 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    status_crud = true
                     loading()
 
                     let formData = new FormData();
@@ -314,6 +304,16 @@
          * Keperluan event click tombol, reset, export, validasi dan submit form
          */
         // ================================================== //
+        $('#modal_tambah').on('hidden.bs.modal', function(event) {
+            $('#form_tambah').trigger('reset')
+            $('#form_tambah').removeClass('was-validated')
+        })
+
+        $('#modal_ubah').on('hidden.bs.modal', function(event) {
+            $('#form_ubah').trigger('reset')
+            $('#form_ubah').removeClass('was-validated')
+        })
+
         $('#form_tambah').submit(function(event) {
             event.preventDefault()
             if (this.checkValidity()) {

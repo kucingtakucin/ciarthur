@@ -5,8 +5,8 @@
                 <label class="mt-2" for="input_tambah_nama">Fakultas</label>
             </div>
             <div class="col-sm-9">
-                <input type="text" id="input_tambah_nama" name="nama" class="form-control" placeholder="Masukkan nama fakultas" autocomplete="off" onkeydown="return event.keyCode != 13;">
-                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_tambah_nama"></div>
+                <input type="text" id="input_tambah_nama" name="nama" class="form-control" placeholder="Masukkan nama fakultas" autocomplete="off">
+                <?= validation_feedback('tambah', 'nama') ?>
             </div>
         </div>
     </div>

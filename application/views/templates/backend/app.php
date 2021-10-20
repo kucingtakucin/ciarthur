@@ -218,8 +218,7 @@
     </div>
 
 
-    <!-- latest jquery-->
-    <!-- <script src="<?= $this->config->item('assets_backend') ?>js/jquery-3.5.1.min.js"></script> -->
+    <!-- Latest jquery-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <!-- Bootstrap js-->
@@ -286,10 +285,10 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
 
     <!-- Theme Customizer -->
-    <script src="<?= base_url() ?>assets/cuba/js/theme-customizer/customizer.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/theme-customizer/customizer.js"></script>
 
     <!-- Custom Scripts-->
-    <script src="<?= base_url() ?>assets/cuba/js/script.js"></script>
+    <script src="<?= $this->config->item('assets_backend') ?>js/script.js"></script>
     <script>
         let csrf, loading, $edit_account, pusher, socket, channel, hex2bin, bin2hex;
 

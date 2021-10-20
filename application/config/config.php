@@ -24,7 +24,7 @@ date_default_timezone_set('Asia/Jakarta');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'https://appt.demoo.id/omahan/ciarthur/';
+$config['base_url'] = 'http://app74.arthur.test/ciarthur/';
 
 /** Codeigniter Log Viewer */
 $config["clv_log_folder_path"] = APPPATH . "logs";
@@ -34,6 +34,10 @@ $config["clv_log_file_pattern"] = "log-*.php";
 $config["assets_frontend"] = $config['base_url'] . 'assets/snowlake/';
 $config["assets_auth"] = $config['base_url'] . 'assets/cuba/';
 $config["assets_backend"] = $config['base_url'] . 'assets/cuba/';
+
+/** Recapthca */
+$config["grecaptcha_site_key"] = "6LdJtNgbAAAAAJpRrKl8M71EQeoBJhjfpFSYRdnt";
+$config["grecaptcha_secret_key"] = "6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o";
 
 /*
 |--------------------------------------------------------------------------
@@ -411,9 +415,9 @@ $config['sess_regenerate_destroy'] = true;
 |
 */
 $config['cookie_prefix']    = 'ciarthur_';
-$config['cookie_domain']    = 'demoo.id';
+$config['cookie_domain']    = 'arthur.test';
 $config['cookie_path']        = '/';
-$config['cookie_secure']    = true;
+$config['cookie_secure']    = false;
 $config['cookie_httponly']     = FALSE;
 
 /*

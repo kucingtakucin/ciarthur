@@ -1,7 +1,6 @@
 <script>
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, status_crud = false,
-        $get, $chat
+    let datatable, $get, $chat
 
     $(() => {
         /**
@@ -23,18 +22,13 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    if (!status_crud) {
-                        loading()
-                    }
+                    loading()
                 },
                 complete: () => {
-                    if (status_crud) {
-                        status_crud = false
-                    }
                     setTimeout(() => {
                         Swal.hideLoading()
                         Swal.close()
-                    }, 2000);
+                    }, 100);
                 }
             },
             columnDefs: [{
@@ -189,11 +183,9 @@
         bsCustomFileInput.init()
 
         // channel.bind('kirim-pengaduan-event', function(data) {
-        //     status_crud = true
         //     datatable.ajax.reload()
         // });
         // socket.on('backend-pengaduan-terima', function(data) {
-        //     status_crud = true
         //     datatable.ajax.reload()
         // })
         // ================================================== //

@@ -1,6 +1,5 @@
 <script>
-    let datatable_user, status_crud = false,
-        $create_user, $update_user, $delete_user,
+    let datatable_user, $create_user, $update_user, $delete_user,
         $update_role, $activate_user, $deactivate_user;
     const BASE_URL = "<?= base_url($uri_segment) ?>"
 
@@ -46,18 +45,13 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    if (!status_crud) {
-                        loading()
-                    }
+                    loading()
                 },
                 complete: () => {
-                    if (status_crud) {
-                        status_crud = false
-                    }
                     setTimeout(async () => {
                         await Swal.hideLoading()
                         await Swal.close()
-                    }, 10);
+                    }, 100);
                 }
             },
             columnDefs: [{
@@ -209,7 +203,6 @@
                 if (result.isConfirmed && event.target.checkValidity()) {
                     $('#create_user input[type=submit]').hide();
                     $('#create_user button.loader').show();
-                    status_crud = true
                     loading()
 
                     let formData = new FormData(event.target);
@@ -265,7 +258,6 @@
                 if (result.isConfirmed && event.target.checkValidity()) {
                     $('#update_user input[type=submit]').hide();
                     $('#update_user button.loader').show();
-                    status_crud = true
                     loading()
 
                     let formData = new FormData(event.target);
@@ -318,7 +310,6 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    status_crud = true
                     loading()
 
                     let formData = new FormData();
@@ -336,10 +327,11 @@
                                 text: res.data.message,
                                 showConfirmButton: false,
                                 timer: 1500
+                            }).then(() => {
+                                // socket.emit('auth-crud-user', {})
+                                datatable_user.ajax.reload()
                             })
 
-                            // socket.emit('auth-crud-user', {})
-                            datatable_user.ajax.reload()
                         }).catch(err => {
                             console.error(err);
                             Swal.fire({
@@ -367,7 +359,6 @@
                 if (result.isConfirmed) {
                     $('#activate_user input[type=submit]').hide();
                     $('#activate_user button.loader').show();
-                    status_crud = true
                     loading()
 
                     let formData = new FormData();
@@ -413,7 +404,6 @@
 
             $('#deactivate_user input[type=submit]').hide();
             $('#deactivate_user button.loader').show();
-            status_crud = true
             loading()
 
             let formData = new FormData(event.target);

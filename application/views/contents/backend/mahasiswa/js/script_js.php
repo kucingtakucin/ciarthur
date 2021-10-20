@@ -1,7 +1,6 @@
 <script>
     const BASE_URL = "<?= base_url($uri_segment) ?>"
-    let datatable, status_crud = false,
-        $insert, $update, $delete, $import_excel,
+    let datatable, $insert, $update, $delete, $import_excel,
         $export_excel, $export_pdf, $export_word,
         map, map_modal, marker_modal, legend;
 
@@ -253,18 +252,13 @@
                 dataType: 'JSON',
                 data: {},
                 beforeSend: () => {
-                    if (!status_crud) {
-                        loading()
-                    }
+                    loading()
                 },
                 complete: () => {
-                    if (status_crud) {
-                        status_crud = false
-                    }
                     setTimeout(async () => {
                         await Swal.hideLoading()
                         await Swal.close()
-                    }, 10);
+                    }, 100);
                 }
             },
             columnDefs: [{
@@ -602,6 +596,8 @@
                         await csrf().then(csrf => csrf.hash)
                     )
 
+                    $('#form_tambah .invalid-feedback').fadeOut(500)
+                    $('#form_tambah .is-invalid').removeClass('is-invalid')
                     let response = await axios.post(BASE_URL + 'insert', formData)
                         .then(res => res.data.message)
                         .catch(err => {
@@ -705,6 +701,8 @@
                     formData.append('id', row.id)
                     formData.append('old_foto', row.foto)
 
+                    $('#form_tambah .invalid-feedback').fadeOut(500)
+                    $('#form_tambah .is-invalid').removeClass('is-invalid')
                     let response = await axios.post(BASE_URL + 'update', formData)
                         .then(res => res.data.message)
                         .catch(err => {
@@ -759,7 +757,6 @@
                 reverseButtons: true,
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    status_crud = true
                     loading()
 
                     let formData = new FormData();

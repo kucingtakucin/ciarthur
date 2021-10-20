@@ -22,10 +22,10 @@
 
 	$('.show-hide span').click(function () {
 		if ($(this).hasClass('show')) {
-			$('input#password[name="password"]').prop('type', 'text');
+			$('input[name="password"]').prop('type', 'text');
 			$(this).removeClass('show');
 		} else {
-			$('input#password[name="password"]').prop('type', 'password');
+			$('input[name="password"]').prop('type', 'password');
 			$(this).addClass('show');
 		}
 	});

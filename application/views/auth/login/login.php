@@ -3,22 +3,22 @@
         <div><a class="logo text-left" href="<?= base_url() ?>"><img class="img-fluid for-light" src="<?= base_url() ?>assets/cuba/images/logo/login.png" alt="looginpage"><img class="img-fluid for-dark" src="<?= base_url() ?>assets/cuba/images/logo/logo_dark.png" alt="looginpage"></a></div>
         <div class="login-main">
 
-            <form class="theme-form needs-validation" novalidate id="form-login" method="post" action="<?= base_url('auth/login') ?>">
+            <form class="theme-form" id="form-login" method="post" action="<?= base_url('auth/login') ?>">
                 <h4>Login</h4>
                 <p>Enter your username & password to login</p>
                 <div class="form-group">
                     <label class="col-form-label" for="identity">Username</label>
-                    <input class="form-control" required id="identity" name="identity" type="text">
-                    <?= validation_tooltip('username', 'wajib diisi') ?>
+                    <input class="form-control" id="input_login_identity" name="identity" type="text">
+                    <?= validation_feedback('login', 'identity') ?>
                 </div>
                 <div class="form-group">
                     <label class="col-form-label" for="password">Password</label>
-                    <input class="form-control" required type="password" id="password" name="password">
+                    <input class="form-control" type="password" id="input_login_password" name="password">
                     <div class="show-hide"><span class="show"> </span></div>
-                    <?= validation_tooltip('password', 'wajib diisi') ?>
+                    <?= validation_feedback('login', 'password') ?>
                 </div>
                 <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="6LdJtNgbAAAAAJpRrKl8M71EQeoBJhjfpFSYRdnt"></div>
+                    <?= recaptcha_display() ?>
                 </div>
                 <div class="form-group mb-0">
                     <div class="checkbox p-0">
