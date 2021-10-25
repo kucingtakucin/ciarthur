@@ -28,8 +28,8 @@ class Pengaduan extends MY_Controller
 				'Backend', 'Menu', 'Pengaduan'
 			],
 			'page' => 'contents/' . $this->_path . 'index',
-			'script' => 'contents/' . $this->_path . 'js/script_js',
-			'style' => 'contents/' . $this->_path . 'css/style_css',
+			'script' => 'contents/' . $this->_path . 'js/script.js.php',
+			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => []
 		]);
 	}
@@ -64,8 +64,8 @@ class Pengaduan extends MY_Controller
 				'Backend', 'Menu', 'Pengaduan', 'Chat'
 			],
 			'page' => 'contents/' . $this->_path . 'chat/index',
-			'script' => 'contents/' . $this->_path . 'chat/js/script_js',
-			'style' => 'contents/' . $this->_path . 'chat/css/style_css',
+			'script' => 'contents/' . $this->_path . 'chat/js/script.js.php',
+			'style' => 'contents/' . $this->_path . 'chat/css/style.css.php',
 			'modals' => []
 		]);
 	}

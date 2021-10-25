@@ -23,8 +23,8 @@ class Dashboard extends MY_Controller
 			],
 			'uri_segment' => $this->_path,
 			'page' => 'contents/' . $this->_path . 'index',
-			'script' => 'contents/' . $this->_path . 'js/script_js',
-			'style' => 'contents/' . $this->_path . 'css/style_css',
+			'script' => 'contents/' . $this->_path . 'js/script.js.php',
+			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => []
 		]);
 	}

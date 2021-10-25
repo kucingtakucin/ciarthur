@@ -40,8 +40,8 @@ class Users extends MY_Controller
 			],
 			'uri_segment' => $this->_path,
 			'page' => $this->_path . 'index',
-			'script' => $this->_path . 'js/script_js',
-			'style' => $this->_path . 'css/style_css',
+			'script' => $this->_path . 'js/script.js.php',
+			'style' => $this->_path . 'css/style.css.php',
 			'modals' => []
 		]);
 	}
@@ -206,8 +206,8 @@ class Users extends MY_Controller
 				'message' => $this->data['message'],
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'create_user',
-				'script' => $this->_path . 'js/script_js',
-				'style' => $this->_path . 'css/style_css',
+				'script' => $this->_path . 'js/script.js.php',
+				'style' => $this->_path . 'css/style.css.php',
 				'modals' => []
 			]);
 		}
@@ -350,8 +350,8 @@ class Users extends MY_Controller
 				'currentGroups' => $this->data['currentGroups'],
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'edit_user',
-				'script' => $this->_path . 'js/script_js',
-				'style' => $this->_path . 'css/style_css',
+				'script' => $this->_path . 'js/script.js.php',
+				'style' => $this->_path . 'css/style.css.php',
 				'modals' => []
 			]);
 		}
@@ -672,8 +672,8 @@ class Users extends MY_Controller
 				'identity' => $this->data['identity'],
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'deactivate_user',
-				'script' => $this->_path . 'js/script_js',
-				'style' => $this->_path . 'css/style_css',
+				'script' => $this->_path . 'js/script.js.php',
+				'style' => $this->_path . 'css/style.css.php',
 				'modals' => []
 			]);
 		} elseif ($this->input->method() === 'post') {

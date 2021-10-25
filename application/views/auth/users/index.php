@@ -1,6 +1,6 @@
 <div class="card">
-	<div class="card-header">
-		<h5 class="text-center">Kelola Data User</h5>
+	<div class="card-body">
+		<h3 class="text-center">Kelola Data User</h3>
 		<p class="text-muted text-center mb-0">Sistem Informasi <?= sistem()->nama ?></p>
 	</div>
 </div>

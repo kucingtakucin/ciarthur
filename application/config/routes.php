@@ -49,6 +49,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
+
+// Frontend
 $route['default_controller'] = 'frontend/home';
 $route['pengaduan'] = 'frontend/pengaduan/index';
 
@@ -56,6 +58,11 @@ $route['~/login'] = 'auth/login';
 $route['~/logout'] = 'auth/login/logout';
 $route['~/email'] = 'email/email';
 
+// Backend
+$route['backend/halaman/kategori_halaman'] = 'backend/referensi/kategori/manage/kategori_halaman';
+$route['backend/berita/kategori_berita'] = 'backend/referensi/kategori/manage/kategori_berita';
+
+// Misc
 $route['api'] = 'api/auth/index';
 $route['img/(.+)'] = 'image/show/$1';   // League Glide
 $route['logs'] = "logViewerController/index";
