@@ -51,7 +51,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 // Frontend
-$route['default_controller'] = 'frontend/home';
+$route['default_controller'] = 'frontend/home/index';
 $route['pengaduan'] = 'frontend/pengaduan/index';
 
 $route['~/login'] = 'auth/login';

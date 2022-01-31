@@ -1,4 +1,7 @@
 <?php
+
+use Ramsey\Uuid\Uuid;
+
 function sistem()
 {
 	return (object) [
@@ -55,28 +58,30 @@ function in_role($role)
 
 function role($role)
 {
-	if ($role === 'guest' && logged_in()) {
-		redirect('backend/dashboard');
-	} elseif ($role !== 'guest' && !logged_in()) {
-		redirect('~/login');
-	} else {
-		return;
-	}
+	if ($role === 'guest' && logged_in()) : redirect('backend/dashboard');
+	elseif ($role !== 'guest' && !logged_in()) : redirect('~/login');
+	else : return;
+	endif;
 
 	$ci = &get_instance();
 	if (!$ci->ion_auth_model->in_group($role))
 		if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
-			$ci->output->set_content_type('application/json')
-				->set_status_header(403);
-			echo json_encode([
+			response([
 				'status' => false,
 				'message' => "You must be an $role to access this resource",
 				'data' => null
-			]);
-			exit;
-		} else {
-			show_error("You must be an $role to access this resource", 403, "Forbidden");
-		}
+			], 403);
+		} else show_error("You must be an $role to access this resource", 403, "Forbidden");
+}
+
+function get_role()
+{
+	$ci = &get_instance();
+	$ci->db->select('name');
+	$ci->db->from('roles');
+	$ci->db->where('id = (SELECT role_id FROM role_user WHERE user_id = ' . get_user_id() . ')');
+	$result =  @$ci->db->get()->row()->name;
+	return $result;
 }
 
 function has_permission($permission_key)
@@ -87,36 +92,27 @@ function has_permission($permission_key)
 
 	$ci = &get_instance();
 	if (!$ci->ion_auth_acl->has_permission($permission_key)) {
-		if ($ci->input->method() === 'get') {
+		if ($ci->input->method() === 'get') :
+
 			if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
-				$ci->output->set_content_type('application/json')
-					->set_status_header(403);
-				echo json_encode([
+				response([
 					'status' => false,
 					'message' => "Access Denied. You don't have permission to access this resource",
 					'data' => null
-				]);
-				exit;
-			} else {
-				// return redirect('~/login');
-				show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
-				// $ci->load->view('errors/html/error_403');
-				// exit();
-			}
-		} elseif ($ci->input->method() === 'post') {
+				], 403);
+			} else show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
+
+		elseif ($ci->input->method() === 'post') :
+
 			if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
-				$ci->output->set_content_type('application/json')
-					->set_status_header(403);
-				echo json_encode([
+				response([
 					'status' => false,
 					'message' => "Access Denied. You don't have permission to access this resource",
 					'data' => null
-				]);
-				exit;
-			} else {
-				show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
-			}
-		}
+				], 403);
+			} else show_error("Access Denied. You don't have permission to access this resource", 403, 'Forbidden');
+
+		endif;
 	}
 }
 
@@ -137,18 +133,86 @@ function method($method)
 	$ci = &get_instance();
 	if ($ci->input->method() !== strtolower($method)) {
 		if ($ci->input->is_ajax_request() || $ci->input->is_cli_request()) {
-			$ci->output->set_content_type('application/json')
-				->set_status_header(403);
-			echo json_encode([
+			response([
 				'status' => false,
 				'message' => 'Method Not Allowed',
 				'data' => null
-			]);
-			exit;
-		} else {
-			show_error("Method Not Allowed", 403, 'Forbidden');
-		}
+			], 403);
+		} else show_error("Method Not Allowed", 403, 'Forbidden');
 	}
+}
+
+function response($payload = [], $status = 200)
+{
+	$ci = &get_instance();
+	$ci->output->set_content_type('application/json', 'utf-8');
+	$ci->output->set_status_header($status);
+	$ci->output->set_output(json_encode($payload));
+	$ci->output->_display();
+	exit();
+}
+
+function render($data)
+{
+	$ci = &get_instance();
+	$ci->templates->render($data);
+}
+
+function view($view = '', $data = [], $return = false)
+{
+	$ci = &get_instance();
+	return $ci->load->view($view, $data, $return);
+}
+
+function get($input = null, $xss_clean = true)
+{
+	$ci = &get_instance();
+
+	if (!$input) return $ci->input->get();
+	return $ci->input->get($input, $xss_clean);
+}
+
+function post($input = null, $xss_clean = true)
+{
+	$ci = &get_instance();
+
+	if (!$input) return $ci->input->post();
+	return $ci->input->post($input, $xss_clean);
+}
+
+function session($key = null, $value = null)
+{
+	$ci = &get_instance();
+
+	if (!$key) return $_SESSION;
+	elseif (!$value) return $ci->session->userdata($key);
+
+	return $ci->session->set_userdata($key, $value);
+}
+
+function uuid()
+{
+	return Uuid::uuid4()->toString();
+}
+
+function now()
+{
+	return date('Y-m-d H:i:s');
+}
+
+function dd($var)
+{
+	highlight_string("<?php\n\n" . var_export($var, true) . ";\n\n?>");
+	exit;
+}
+
+function csrf()
+{
+	$ci = &get_instance();
+	return [
+		'token_name' => $ci->security->get_csrf_token_name(),
+		'hash' => $ci->security->get_csrf_hash()
+	];
 }
 
 function base_auth($link = null)

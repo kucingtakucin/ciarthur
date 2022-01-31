@@ -4,12 +4,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Login extends MY_Controller
 {
-	private $_path = 'auth/login/'; // Contoh 'backend/admin/dashboard'
-
-
 	public function __construct()
 	{
 		parent::__construct();
+		// Config
+		$this->_name = 'login';
+		$this->_path = "auth/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+
 	}
 
 	/**
@@ -18,68 +19,67 @@ class Login extends MY_Controller
 	public function index()
 	{
 		role('guest');
-		if ($this->input->method() === 'get') {
+
+		if ($this->input->method() === 'get') :
 			// the user is not logging in so display the login page
-			return $this->templates->render([
-				'title' => 'Login',
+			$config = [
+				'title' => ucwords($this->_name),
 				'type' => 'auth',
 				'uri_segment' => $this->_path,
 				'page' => $this->_path . 'login',
 				'script' => $this->_path . 'js/script.js.php',
 				'style' => $this->_path . 'css/style.css.php',
 				'modal' => [],
-			]);
-		} elseif ($this->input->method() === 'post') {
+			];
+
+			render($config);
+
+		elseif ($this->input->method() === 'post') :
 
 			$response = $this->recaptcha->is_valid(
-				$this->input->post('g-recaptcha-response'),
+				post('g-recaptcha-response'),
 				$this->input->ip_address()
 			);
 
 			$this->_validator();
 
-			if (!$this->input->post('g-recaptcha-response')) {
-				return $this->output->set_content_type('application/json')
-					->set_status_header(422)
-					->set_output(json_encode([
-						'status' => false,
-						'message' => "Recaptcha wajib dicentang!",
-						'data' => null
-					]));
+			if (!post('g-recaptcha-response')) {
+				response([
+					'status' => false,
+					'message' => "Recaptcha wajib dicentang!",
+					'data' => null
+				], 422);
 			}
 
 			if (!$response['success'] && $response['error']) {
-				return $this->output->set_content_type('application/json')
-					->set_status_header(400)
-					->set_output(json_encode([
-						'status' => false,
-						'title' => 'Recaptcha error',
-						'errors' => $response['error_message'],
-					]));
+				response([
+					'status' => false,
+					'title' => 'Recaptcha error',
+					'message' => $response['error_message'],
+				], 400);
 			}
+
 			// check to see if the user is logging in
 			// check for "remember me"
-			$remember = (bool) $this->input->post('remember');
+			$remember = (bool) post('remember');
 
-			if ($this->ion_auth->login($this->input->post('identity'), $this->input->post('password'), $remember)) {
+			if ($this->ion_auth->login(post('identity'), post('password'), $remember)) {
 				//if the login is successful
 				//redirect them back to the home page
-				return $this->output->set_content_type('application/json')
-					->set_output(json_encode([
-						'status' => true,
-						'message' => 'Login Berhasil!',
-						'redirect' => 'backend/dashboard'
-					]));
+				response([
+					'status' => true,
+					'message' => 'Login Berhasil!',
+					'redirect' => 'backend/dashboard'
+				], 200);
 			}
+
 			// if the login was un-successful
 			// redirect them back to the login page
-			return $this->output->set_content_type('application/json')
-				->set_status_header(422)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => $this->ion_auth->errors()
-				]));
-		}
+			response([
+				'status' => false,
+				'message' => $this->ion_auth->errors()
+			], 422);
+		endif;
 	}
 
 	/**
@@ -90,16 +90,12 @@ class Login extends MY_Controller
 		$this->form_validation->set_error_delimiters('', '');
 		$this->form_validation->set_rules('identity', 'username', 'required|trim');
 		$this->form_validation->set_rules('password', 'password', 'required|trim|min_length[8]');
-		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+		if (!$this->form_validation->run())
+			response([
 				'status' => false,
 				'message' => 'Incorrect Login!',
 				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
-		}
+			], 422);
 	}
 
 	/**

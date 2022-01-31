@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="col-sm-8 offset-sm-2 d-flex flex-column align-items-center justify-content-center">
 				<img src="data:image/png;base64,<?= $barcode ?>" class="img-fluid mb-2" alt="Barcode">
-				<h5 class="text-center">Kelola Data Mahasiswa</h5>
+				<h5 class="text-center">Data <?= $title ?></h5>
 				<p class="text-muted text-center mb-0">Sistem Informasi <?= sistem()->nama ?></p>
 			</div>
 			<div class="col-sm-2">

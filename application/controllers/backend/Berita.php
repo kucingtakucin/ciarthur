@@ -2,12 +2,12 @@
 
 use Ozdemir\Datatables\Datatables;
 use Ozdemir\Datatables\DB\CodeigniterAdapter;
+use Ramsey\Uuid\Uuid;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Berita extends MY_Controller
 {
-	private $_path = 'backend/berita/'; // Contoh 'backend/dashboard/ / 'frontend/home/'
 	private $_path_kategori = 'backend/referensi/kategori/';
 
 	/**
@@ -16,11 +16,16 @@ class Berita extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		has_permission('access-berita');
+		// Config
+		$this->_name = 'berita';
+		$this->_path = "backend/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+		$this->_path_kategori = 'backend/referensi/kategori/';
+
+		has_permission("access-{$this->_name}");
 		//=========================================================//
 
-		$this->load->model($this->_path . 'M_Berita');   // Load model
-		$this->load->model($this->_path_kategori . 'M_Kategori');   // Load model
+		$this->load->model($this->_path . 'Crud');   // Load model
+		$this->load->model($this->_path_kategori . 'Crud_kategori');   // Load model
 	}
 
 	/**
@@ -36,112 +41,69 @@ class Berita extends MY_Controller
 	{
 		method('get');
 		//=========================================================//        
-
-		return $this->templates->render([
-			'title' => 'Berita',
+		$config = [
+			'title' => ucwords($this->_name),
 			'type' => 'backend', // auth, frontend, backend
 			'uri_segment' => $this->_path,
 			'breadcrumb' => [
-				'Backend', 'Website', 'Berita'
+				'Backend', 'Website', ucwords($this->_name)
 			],
 			'page' => 'contents/' . $this->_path . 'index',
 			'script' => 'contents/' . $this->_path . 'js/script.js.php',
 			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => [],
-		]);
+		];
+
+		render($config);
 	}
 
-	public function create()
-	{
-		method('get');
-		//=========================================================//        
-
-		return $this->templates->render([
-			'title' => 'Berita',
-			'type' => 'backend', // auth, frontend, backend
-			'uri_segment' => $this->_path,
-			'breadcrumb' => [
-				'Backend', 'Website', 'Berita', 'Create'
-			],
-			'page' => 'contents/' . $this->_path . 'create',
-			'script' => 'contents/' . $this->_path . 'js/script.js.php',
-			'style' => 'contents/' . $this->_path . 'css/style.css.php',
-			'modals' => [],
-		]);
-	}
-
-	public function edit($id)
-	{
-		method('get');
-		//=========================================================//        
-
-		return $this->templates->render([
-			'title' => 'Berita',
-			'type' => 'backend', // auth, frontend, backend
-			'uri_segment' => $this->_path,
-			'breadcrumb' => [
-				'Backend', 'Website', 'Berita', 'Edit'
-			],
-			'page' => 'contents/' . $this->_path . 'edit',
-			'script' => 'contents/' . $this->_path . 'js/script.js.php',
-			'style' => 'contents/' . $this->_path . 'css/style.css.php',
-			'id' => $id,
-			'modals' => [],
-		]);
-	}
+	//=============================================================//
+	//======================== DATATABLES =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan DataTables server-side
 	 *
-	 * @return CI_Output
 	 */
-	public function data(): CI_Output
+	public function data()
 	{
 		method('get');
 		//=========================================================//
-
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.judul, a.gambar, a.slug, a.konten,
-			a.is_published, a.created_at, a.created_by,
-			(SELECT b.nama FROM kategori AS b 
-			WHERE b.id = a.kategori_id) AS nama_kategori 
-			FROM berita AS a
-            WHERE a.is_active = '1'"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		response($this->Crud->datatables());
 	}
+
+	//=============================================================//
+	//======================== VALIDATOR =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan validasi server-side
 	 */
-	private function _validator()
+	private function _validator($status = 'tambah')
 	{
 		$this->form_validation->set_error_delimiters('', '');
-		$this->form_validation->set_rules('judul', 'judul', 'required|trim');
-		// $this->form_validation->set_rules('gambar', 'gambar', 'required|trim');
+
+		if ($status === 'tambah' || $this->Crud->num_rows([
+			'judul' => post('judul'),
+			'is_active' => '1',
+			'id != ' => $status === 'ubah' ? post('id') : 'null'
+		])) {
+			$is_unique = '|is_unique[berita.judul]';
+		} else {
+			$is_unique = '';
+		}
+
+		$this->form_validation->set_rules('judul', 'judul', 'required|trim' . $is_unique);
 		$this->form_validation->set_rules('kategori_id', 'kategori', 'required');
 		$this->form_validation->set_rules('tags[]', 'tags', 'required');
 		$this->form_validation->set_rules('konten', 'konten', 'required|trim');
-		// $this->form_validation->set_rules('is_published', 'is_published', 'required');
 
-		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+		if (!$this->form_validation->run())
+			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
-		}
+			], 422);
 	}
 
 	private function _validator_kategori()
@@ -149,305 +111,333 @@ class Berita extends MY_Controller
 		$this->form_validation->set_error_delimiters('', '');
 		$this->form_validation->set_rules('nama', 'nama', 'required|trim');
 
-		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+		if (!$this->form_validation->run())
+			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
-		}
+			], 422);
 	}
+
+	//=============================================================//
+	//=========================== CRUD ============================//
+	//=============================================================//
 
 	/**
 	 * Keperluan CRUD tambah data
 	 *
-	 * @return CI_Output
 	 */
-	public function insert(): CI_Output
+	public function insert()
 	{
-		has_permission('create-berita');
-		method('post');
-		$this->_validator();
-		//=========================================================//
+		has_permission("create-{$this->_name}");
 
-		$config['upload_path'] = './uploads/berita/';
-		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 2048;
-		$config['encrypt_name'] = true;
-		$config['remove_spaces'] = true;
-		$this->upload->initialize($config);
+		if ($this->input->method() === 'get') :
 
-		if (!$this->upload->do_upload("gambar")) {
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
+			$config = [
+				'title' => ucwords($this->_name),
+				'type' => 'backend', // auth, frontend, backend
+				'uri_segment' => $this->_path,
+				'breadcrumb' => [
+					'Backend', 'Website', ucwords($this->_name), 'Create'
+				],
+				'page' => 'contents/' . $this->_path . 'create/index',
+				'script' => 'contents/' . $this->_path . 'create/js/script.js.php',
+				'style' => 'contents/' . $this->_path . 'create/css/style.css.php',
+				'modals' => [],
+			];
+
+			render($config);
+
+		elseif ($this->input->method() === 'post') :
+
+			$this->_validator();
+
+			$config['upload_path'] = './uploads/berita/';
+			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['max_size'] = 2048;
+			$config['encrypt_name'] = true;
+			$config['remove_spaces'] = true;
+
+			$this->upload->initialize($config);
+
+			if (!$this->upload->do_upload("gambar")) {
+				response([
 					'status' => false,
 					'message' => $this->upload->display_errors('', '')
-				]));
-		}
+				], 404);
+			}
 
-		$this->db->trans_begin();   // Begin transaction
-		$berita_id = $this->M_Berita->insert(
-			[
-				'judul' => $this->input->post('judul', true),
-				'gambar' => $this->upload->data('file_name'),
-				'slug' => $this->input->post('slug', true),
-				'konten' => $this->input->post('konten', true),
-				'kategori_id' => $this->input->post('kategori_id', true),
-				'is_published' => '0',
-				'is_active' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
-				'created_by' => get_user_id(),
-			]
-		);
+			$this->db->trans_start();	// Transaction start
 
-		# Check transaction status for berita
-		if (!$this->db->trans_status()) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
+			$berita_id = $this->Crud->insert(
+				[
+					'uuid' => uuid(),
+					'judul' => post('judul', true),
+					'gambar' => $this->upload->data('file_name'),
+					'slug' => slugify(post('judul', true)),
+					'konten' => post('konten', true),
+					'kategori_id' => post('kategori_id', true),
+					'is_published' => '0',
+					'is_active' => '1',
+					'created_at' => now(),
+					'created_by' => get_user_id(),
+				]
+			);
+
+			if (post('tags[]')) {
+				foreach (post('tags[]') as $tag) {
+					$slug = $this->db->get_where('tags', [
+						'slug' => slugify(strtolower($tag))
+					])->row();
+
+					if (!$slug) {
+						$this->db->insert('tags', [
+							'uuid' => uuid(),
+							'nama' => $tag,
+							'slug' => slugify(strtolower($tag))
+						]);
+						$tag_id = $this->db->insert_id();
+					}
+
+					$this->db->insert('berita_tag', [
+						'berita_id' => $berita_id,
+						'tag_id' => $tag_id
+					]);
+				}
+			}
+
+			$this->db->trans_complete();	// Transaction complete
+
+			if (!$this->db->trans_status()) {	// Check transaction status
+				response([
 					'status' => false,
 					'message' => 'Failed',
 					'errors' => $this->db->error()
-				]));
-		}
-		$this->db->trans_commit();  // Commit transaction
-
-		foreach ($this->input->post('tags') as $tag) {
-			$slug = $this->db->get_where('tags', [
-				'slug' => slugify(strtolower($tag))
-			]);
-
-			if (!$slug) {
-				$this->db->trans_begin();   // Begin transaction
-				$this->db->insert('tags', [
-					'nama' => $tag,
-					'slug' => slugify(strtolower($tag))
-				]);
-				$this->db->trans_commit();  // Commit transaction
-				$tag_id = $this->db->insert_id();
+				], 500);
 			}
 
-			$this->db->trans_begin();   // Begin transaction
-			$this->db->insert('berita_tag', [
-				'berita_id' => $berita_id,
-				'tag_id' => $tag_id
-			]);
-			$this->db->trans_commit();  // Commit transaction
-		}
-
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
+			response([
 				'status' => true,
 				'message' => 'Created successfuly'
-			]));
+			], 200);
+		endif;
 	}
 
-	public function insert_kategori(): CI_Output
+	public function insert_kategori()
 	{
 		has_permission('create-kategori');
 		method('post');
-		$this->_validator_kategori();
 		//=========================================================//
+		$this->_validator_kategori();
 
-		$this->db->trans_begin();   // Begin transaction
-		$this->M_Kategori->insert(
+		$this->db->trans_start();
+
+		$this->Crud_kategori->insert(
 			[
-				'nama' => $this->input->post('nama', true),
-				'slug' => slugify($this->input->post('nama', true)),
+				'uuid' => uuid(),
+				'nama' => post('nama', true),
+				'slug' => slugify(post('nama', true)),
 				'type' => 'berita',
 				'is_active' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
+				'created_at' => now(),
 				'created_by' => get_user_id(),
 			]
 		);
 
-		if (!$this->db->trans_status()) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		$this->db->trans_complete();
+
+		if (!$this->db->trans_status()) {	// Check transaction status
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error()
+			], 500);
 		}
 
-		$this->db->trans_commit();  // Commit transaction
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Created successfuly'
-			]));
+		response([
+			'status' => true,
+			'message' => 'Created successfuly'
+		]);
 	}
 
 	/**
 	 * Keperluan CRUD get where data
 	 *
-	 * @return CI_Output
 	 */
-	public function get_where(): CI_Output
+	public function get_where()
 	{
 		method('get');
 		//=========================================================//
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Found',
-				'data' => $this->M_Berita->get_where(
-					[
-						'a.id' => $this->input->post('id', true),
-						'a.is_active' => '1'
-					]
-				)
-			]));
+		response([
+			'status' => true,
+			'message' => 'Found',
+			'data' => $this->Crud->get_where(
+				[
+					'a.id' => post('id', true),
+					'a.is_active' => '1'
+				]
+			)
+		]);
 	}
 
 	/**
 	 * Keperluan CRUD update data
 	 *
-	 * @return CI_Output
 	 */
-	public function update(): CI_Output
+	public function update($uuid = null)
 	{
-		has_permission('update-berita');
-		method('post');
-		$this->_validator();
-		//=========================================================//
+		has_permission("update-{$this->_name}");
 
-		$config['upload_path'] = './uploads/berita/';
-		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 2048;
-		$config['encrypt_name'] = true;
-		$config['remove_spaces'] = true;
-		$this->upload->initialize($config);
-		if ($_FILES['foto']['error'] !== 4) {
-			if (file_exists("./uploads/berita/{$this->input->post('old_foto')}")) {
-				unlink("./uploads/berita/{$this->input->post('old_foto')}");
-			}
+		if ($this->input->method() === 'get') :
 
-			if (!$this->upload->do_upload("foto")) {
-				return $this->output->set_content_type('application/json')
-					->set_status_header(404)
-					->set_output(json_encode([
+			if (!$uuid) redirect($this->_path, 'refresh');
+
+			$config = [
+				'title' => 'Berita',
+				'type' => 'backend', // auth, frontend, backend
+				'uri_segment' => $this->_path,
+				'breadcrumb' => [
+					'Backend', 'Website', 'Berita', 'Edit'
+				],
+				'page' => 'contents/' . $this->_path . 'edit/index',
+				'script' => 'contents/' . $this->_path . 'edit/js/script.js.php',
+				'style' => 'contents/' . $this->_path . 'edit/css/style.css.php',
+				'uuid' => $uuid,
+				'modals' => [],
+			];
+
+			render($config);
+
+		elseif ($this->input->method() === 'post') :
+
+			$this->_validator();
+			//=========================================================//
+
+			$config['upload_path'] = './uploads/berita/';
+			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['max_size'] = 2048;
+			$config['encrypt_name'] = true;
+			$config['remove_spaces'] = true;
+			$this->upload->initialize($config);
+
+			if ($_FILES['foto']['error'] !== 4) {
+				if (file_exists("./uploads/berita/" . post('old_foto'))) {
+					unlink("./uploads/berita/" . post('old_foto'));
+				}
+
+				if (!$this->upload->do_upload("foto")) {
+					response([
 						'status' => false,
 						'message' => $this->upload->display_errors()
-					]));
+					], 400);
+				}
 			}
-		}
 
-		$this->db->trans_begin();   // Begin transaction
-		$this->M_Berita->update(
-			[
-				'judul' => $this->input->post('judul', true),
-				'gambar' =>  $_FILES['foto']['error'] === 4
-					? $this->input->post('old_gambar') : $this->upload->data('file_name'),
-				'slug' => $this->input->post('slug', true),
-				'konten' => $this->input->post('konten', true),
-				'kategori_id' => $this->input->post('kategori_id', true),
-				'is_published' => $this->input->post('is_published', true),
-				'is_active' => '1',
-				'updated_at' => date('Y-m-d H:i:s'),
-				'updated_by' => get_user_id(),
-			],
-			$this->input->post('id', true)
-		);
+			$this->db->trans_start();
 
-		if (!$this->db->trans_status()) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
+			$this->Crud->update(
+				[
+					'uuid' => uuid(),
+					'judul' => post('judul', true),
+					'gambar' =>  $_FILES['foto']['error'] === 4
+						? post('old_gambar') : $this->upload->data('file_name'),
+					'slug' => post('slug', true),
+					'konten' => post('konten', true),
+					'kategori_id' => post('kategori_id', true),
+					'is_published' => post('is_published', true),
+					'is_active' => '1',
+					'updated_at' => now(),
+					'updated_by' => get_user_id(),
+				],
+				[
+					'uuid' => post('uuid', true)
+				]
+			);
+
+			$this->db->trans_complete();
+
+			if (!$this->db->trans_status()) {	// Check transaction status
+				response([
 					'status' => false,
 					'message' => 'Failed',
 					'errors' => $this->db->error()
-				]));
-		}
-		$this->db->trans_commit();  // Commit transaction
+				], 500);
+			}
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
+			response([
 				'status' => true,
 				'message' => 'Updated successfuly'
-			]));
+			]);
+		endif;
 	}
 
 	/**
 	 * Keperluan CRUD delete data
 	 *
-	 * @return CI_Output
 	 */
-	public function delete(): CI_Output
+	public function delete()
 	{
 		has_permission('delete-berita');
 		method('post');
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$this->M_Berita->update(
+		$this->db->trans_start();
+
+		$this->Crud->update(
 			[
 				'is_active' => '0',
 				'is_published' => '0',
-				'deleted_at' => date('Y-m-d H:i:s'),
+				'deleted_at' => now(),
 				'deleted_by' => get_user_id()
 			],
-			$this->input->post('id', true)
+			[
+				'uuid' => post('uuid')
+			]
 		);
 
-		if (!$this->db->trans_status()) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
-		}
-		$this->db->trans_commit();  // Commit transaction
+		$this->db->trans_complete();
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Deleted successfuly',
-			]));
+		if (!$this->db->trans_status()) {	// Check transaction status
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error()
+			], 500);
+		}
+
+		response([
+			'status' => true,
+			'message' => 'Deleted successfuly',
+		]);
 	}
 
-	// =============================================================================== //
-	// =============================================================================== //
+	//=============================================================//
+	//========================== AJAX =============================//
+	//=============================================================//
 
 	public function ajax_get_kategori()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->like('nama', $this->input->get('search'))
-					->get_where('kategori', ['type' => $this->input->get('type')])->result()
-			]));
+		//=========================================================//
+
+		response([
+			'status' => true,
+			'data' => $this->db->like('nama', get('search'))
+				->get_where('kategori', ['type' => get('type')])->result()
+		]);
 	}
 
 	public function ajax_get_tags()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->like('nama', $this->input->get('search'))
-					->get('tags')->result()
-			]));
+		//=========================================================//
+
+		response([
+			'status' => true,
+			'data' => $this->db->like('nama', get('search'))
+				->get('tags')->result()
+		]);
 	}
 }
 

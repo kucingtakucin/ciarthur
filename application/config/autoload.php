@@ -58,7 +58,10 @@ $autoload['packages'] = array(APPPATH . 'third_party/DevelBar');
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('database', 'templates');
+$autoload['libraries'] = array(
+	'session', 'ion_auth', 'ion_auth_acl', 'encryption', 'form_validation',
+	'upload', 'recaptcha', 'pusher', 'database', 'templates'
+);
 
 /*
 | -------------------------------------------------------------------
@@ -89,7 +92,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url', 'my_helper');
+$autoload['helper'] = array('url', 'my_helper', 'language');
 
 /*
 | -------------------------------------------------------------------
@@ -132,4 +135,4 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array();
+$autoload['model'] = array('ion_auth_model', 'ion_auth_acl_model');

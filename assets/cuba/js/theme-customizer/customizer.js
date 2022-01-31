@@ -222,7 +222,7 @@ $(`
 </div>
 </div>
 `).appendTo($('body'));
-(function () {})();
+(function () { })();
 //live customizer js
 $(document).ready(function () {
 

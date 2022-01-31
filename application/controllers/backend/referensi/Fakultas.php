@@ -1,77 +1,72 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Fakultas extends MY_Controller
 {
-	private $_path = 'backend/referensi/fakultas/'; // Contoh 'backend/dashboard/ / 'frontend/home/'
-
 	/**
-	 * NamaController constructor
+	 * Fakultas constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
-		// Salah satu saja, role atau permission
-		has_permission('access-fakultas');
+		// Config
+		$this->_name = 'fakultas';
+		$this->_path = "backend/referensi/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
 		//=========================================================//
 
+		// Salah satu saja, role atau permission
+		has_permission("access-{$this->_name}");
+		//=========================================================//
 
-		$this->load->model($this->_path . 'M_Fakultas');   // Load model
-		$this->load->library(['upload', 'form_validation']);  // Load library upload
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
+		$this->load->model($this->_path . 'Crud');   // Load CRUD model
 	}
 
 	/**
 	 * Halaman index
 	 *
-	 * @return CI_Loader
 	 */
-	public function index(): CI_Loader
+	public function index()
 	{
 		method('get');
-		//=========================================================//        
+		//=========================================================//
 
-		return $this->templates->render([
-			'title' => 'Fakultas',
+		$config = [
+			'title' => ucwords($this->_name),
 			'type' => 'backend', // auth, frontend, backend
 			'breadcrumb' => [
-				'Backend', 'Referensi', 'Fakultas'
+				'Backend', 'Referensi', ucwords($this->_name)
 			],
 			'uri_segment' => $this->_path,
 			'page' => 'contents/' . $this->_path . 'index',
 			'script' => 'contents/' . $this->_path . 'js/script.js.php',
 			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => [],
-		]);
+		];
+
+		render($config);
 	}
+
+	//=============================================================//
+	//======================== DATATABLES =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan DataTables server-side
 	 *
-	 * @return CI_Output
 	 */
-	public function data(): CI_Output
+	public function data()
 	{
-		method('get');
+		method('post');
 		//=========================================================//
 
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.nama, a.created_at FROM fakultas AS a
-            WHERE a.is_active = '1'"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		response($this->Datatable->list());
 	}
+
+	//=============================================================//
+	//======================== VALIDATOR =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan validasi server-side
@@ -80,167 +75,178 @@ class Fakultas extends MY_Controller
 	{
 		$this->form_validation->set_error_delimiters('', '');
 		$this->form_validation->set_rules('nama', 'nama fakultas', 'required|trim');
-		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+
+		if (!$this->form_validation->run())
+			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
-		}
+				'errors' => $this->form_validation->error_array(),
+				'query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 422);
 	}
+
+	//=============================================================//
+	//=========================== CRUD ============================//
+	//=============================================================//
 
 	/**
 	 * Keperluan CRUD tambah data
 	 *
-	 * @return CI_Output
 	 */
-	public function insert(): CI_Output
+	public function insert()
 	{
-		has_permission('create-fakultas');
+		has_permission("create-{$this->_name}");
 		method('post');
 		$this->_validator();
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$insert = $this->M_Fakultas->insert(
+		$this->db->trans_begin();		// Begin transaction
+
+		$insert = $this->Crud->insert(
 			[
-				'nama' => $this->input->post('nama', true),
+				'uuid' => uuid(),
+				'nama' => post('nama'),
 				'is_active' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
+				'created_at' => now(),
 				'created_by' => get_user_id(),
 			]
 		);
 
-		if (!$this->db->trans_status() || !$insert) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		//=========================================================//
+		if (!$insert || !$this->db->trans_status()) {   // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 404);
 		}
 
-		$this->db->trans_commit();  // Commit transaction
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Created successfuly'
-			]));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Created successfuly',
+			'query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 
 	/**
 	 * Keperluan CRUD get where data
 	 *
-	 * @return CI_Output
 	 */
-	public function get_where(): CI_Output
+	public function get_where()
 	{
 		method('get');
 		//=========================================================//
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Found',
-				'data' => $this->M_Fakultas->get_where(
-					[
-						'a.id' => $this->input->post('id', true),
-						'a.is_active' => '1'
-					]
-				)
-			]));
+		response([
+			'status' => true,
+			'message' => 'Found',
+			'data' => $this->Crud->get_where(
+				[
+					'a.id' => $this->encryption->decrypt(base64_decode(post('id', true))),
+					'a.is_active' => '1'
+				]
+			),
+			'query' => $this->db->last_query(),
+		]);
 	}
 
 	/**
 	 * Keperluan CRUD update data
 	 *
-	 * @return CI_Output
 	 */
-	public function update(): CI_Output
+	public function update()
 	{
-		has_permission('update-fakultas');
+		has_permission("update-{$this->_name}");
 		method('post');
 		$this->_validator();
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$update = $this->M_Fakultas->update(
+		$this->db->trans_begin();		// Begin transaction
+
+		$update = $this->Crud->update(
 			[
-				'nama' => $this->input->post('nama', true),
+				'uuid' => uuid(),
+				'nama' => post('nama'),
 				'is_active' => '1',
-				'updated_at' => date('Y-m-d H:i:s'),
+				'updated_at' => now(),
 				'updated_by' => get_user_id(),
 			],
-			$this->input->post('id', true)
+			[
+				'id' => $this->encryption->decrypt(base64_decode(post('id', true)))
+			]
 		);
 
-		if (!$this->db->trans_status() || !$update) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$update || !$this->db->trans_status()) {    // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 404);
 		}
-		$this->db->trans_commit();  // Commit transaction
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Updated successfuly'
-			]));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Updated successfuly',
+			'query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 
 	/**
 	 * Keperluan CRUD delete data
 	 *
-	 * @return CI_Output
 	 */
-	public function delete(): CI_Output
+	public function delete()
 	{
-		has_permission('delete-fakultas');
+		has_permission("delete-{$this->_name}");
 		method('post');
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$delete = $this->M_Fakultas->update(
+		$this->db->trans_begin();		// Begin transaction
+
+		$delete = $this->Crud->update(
 			[
 				'is_active' => '0',
-				'deleted_at' => date('Y-m-d H:i:s'),
+				'deleted_at' => now(),
 				'deleted_by' => get_user_id()
 			],
-			$this->input->post('id', true)
+			[
+				'id' => $this->encryption->decrypt(urldecode(post('id')))
+			]
 		);
 
-		if (!$this->db->trans_status() || !$delete) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$delete || !$this->db->trans_status()) {   // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 404);
 		}
-		$this->db->trans_commit();  // Commit transaction
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Deleted successfuly',
-			]));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Deleted successfuly',
+			'query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 }
 
-/* End of file NamaController.php */
+/* End of file Fakultas.php */

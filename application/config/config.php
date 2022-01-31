@@ -38,6 +38,7 @@ $config["assets_backend"] = $config['base_url'] . 'assets/cuba/';
 /** Recapthca */
 $config["grecaptcha_site_key"] = "6LdJtNgbAAAAAJpRrKl8M71EQeoBJhjfpFSYRdnt";
 $config["grecaptcha_secret_key"] = "6LdJtNgbAAAAALWNC1uQKmM0TLpE9zY0uaSil-_o";
+$config["grecaptcha_hostname"] = "app74.arthur.test";
 
 /*
 |--------------------------------------------------------------------------
@@ -172,7 +173,7 @@ $config['composer_autoload'] = 'vendor/autoload.php';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-+=';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
 
 /*
 |--------------------------------------------------------------------------

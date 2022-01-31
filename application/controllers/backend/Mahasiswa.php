@@ -5,14 +5,10 @@ use Endroid\QrCode\Color\Color as QrCodeColor;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 use Endroid\QrCode\Label\Label;
-use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
-use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\SvgWriter;
 use GuzzleHttp\Client;
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -27,36 +23,38 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Mahasiswa extends MY_Controller
 {
-	private $_path = 'backend/mahasiswa/'; // Contoh 'backend/admin/dashboard'
-
 	/**
 	 * Mahasiswa constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
-		has_permission('access-mahasiswa');
+		// Config
+		$this->_name = 'mahasiswa';
+		$this->_path = "backend/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+
+		has_permission("access-{$this->_name}");
 		// ================================================ //
 
-		$this->load->model($this->_path . 'M_Mahasiswa');   // Load model M_Mahasisw
+		$this->load->model($this->_path . 'Crud');   // Load CRUD model
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 	}
 
 	/**
 	 * Halaman index
 	 *
-	 * @return CI_Loader
 	 */
-	public function index(): CI_Loader
+	public function index()
 	{
 		method('get');
 		// ================================================ //
 
-		return $this->templates->render([
-			'title' => 'Mahasiswa',
+		$config = [
+			'title' => ucwords($this->_name),
 			'type' => 'backend', // auth, frontend, backend
 			'uri_segment' => $this->_path,
 			'breadcrumb' => [
-				'Backend', 'Menu', 'Mahasiswa'
+				'Backend', 'Menu', ucwords($this->_name)
 			],
 			'page' => 'contents/' . $this->_path . 'index',
 			'script' => 'contents/' . $this->_path . 'js/script.js.php',
@@ -64,72 +62,71 @@ class Mahasiswa extends MY_Controller
 			'modals' => [],
 			'qrcode' => $this->generate_qrcode(),
 			'barcode' => $this->generate_barcode()
-		]);
+		];
+
+		render($config);
 	}
+
+	//=============================================================//
+	//======================== DATATABLES =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan DataTables server-side
 	 *
-	 * @return CI_Output
 	 */
-	public function data(): CI_Output
+	public function data()
 	{
-		method('get');
+		method('post');
 		// ================================================ //
 
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.nim, a.nama, a.angkatan, a.foto,
-            (SELECT b.nama FROM prodi AS b WHERE b.id = a.prodi_id) AS nama_prodi,
-            (SELECT c.nama FROM fakultas AS c WHERE c.id = a.fakultas_id) AS nama_fakultas,
-            a.created_at, a.prodi_id, a.fakultas_id, a.latitude, a.longitude
-            FROM mahasiswa AS a
-            WHERE a.is_active = '1'"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		response($this->Datatable->list());
 	}
+
+	//=============================================================//
+	//======================== VALIDATOR =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan validasi server-side
 	 */
-	private function _validator()
+	private function _validator($status = null)
 	{
 		$this->form_validation->set_error_delimiters('', '');
-		$this->form_validation->set_rules('nim', 'NIM', 'required|trim');
-		$this->form_validation->set_rules('nama', 'Nama', 'required|trim');
-		$this->form_validation->set_rules('prodi_id', 'Prodi', 'required|trim');
-		$this->form_validation->set_rules('fakultas_id', 'Fakultas', 'required|trim');
-		$this->form_validation->set_rules('angkatan', 'Angkatan', 'required|trim');
-		$this->form_validation->set_rules('latitude', 'Latitude', 'required|trim');
-		$this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
-		// $this->form_validation->set_rules('foto', 'Foto', 'required');
+		if ($status === 'inline') $this->form_validation->set_rules('value', post('name'), 'required|trim');
+		else {
+			$this->form_validation->set_rules('nim', 'NIM', 'required|trim');
+			$this->form_validation->set_rules('nama', 'Nama', 'required|trim');
+			$this->form_validation->set_rules('prodi_id', 'Prodi', 'required|trim');
+			$this->form_validation->set_rules('fakultas_id', 'Fakultas', 'required|trim');
+			$this->form_validation->set_rules('angkatan', 'Angkatan', 'required|trim');
+			$this->form_validation->set_rules('latitude', 'Latitude', 'required|trim');
+			$this->form_validation->set_rules('longitude', 'Longitude', 'required|trim');
+			// $this->form_validation->set_rules('foto', 'Foto', 'required');
+		}
+
 		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
+				'errors' => $this->form_validation->error_array(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf(),
+			], 422);
 		}
 	}
+
+	//=============================================================//
+	//=========================== CRUD ============================//
+	//=============================================================//
 
 	/**
 	 * Keperluan CRUD tambah data
 	 *
-	 * @return CI_Output
 	 */
-	public function insert(): CI_Output
+	public function insert()
 	{
-		has_permission('create-mahasiswa');
+		has_permission("create-{$this->_name}");
 		method('post');
 		$this->_validator();
 		// ================================================ //
@@ -142,83 +139,75 @@ class Mahasiswa extends MY_Controller
 		$this->upload->initialize($config);
 
 		if (!$this->upload->do_upload("foto")) {
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => $this->upload->display_errors('', '')
-				]));
+			response([
+				'status' => false,
+				'message' => $this->upload->display_errors('', '')
+			], 404);
 		}
 
-		$this->db->trans_begin();
-		$this->M_Mahasiswa->insert(
+		$insert = $this->Crud->insert(
 			[
-				'nim' => $this->input->post('nim', true),
-				'nama' => $this->input->post('nama', true),
-				'prodi_id' => $this->input->post('prodi_id', true),
-				'fakultas_id' => $this->input->post('fakultas_id', true),
-				'angkatan' => $this->input->post('angkatan', true),
-				'latitude' => $this->input->post('latitude', true),
-				'longitude' => $this->input->post('longitude', true),
+				'uuid' => uuid(),
+				'nim' => post('nim', true),
+				'nama' => post('nama', true),
+				'prodi_id' => post('prodi_id', true),
+				'fakultas_id' => post('fakultas_id', true),
+				'angkatan' => post('angkatan', true),
+				'latitude' => post('latitude', true),
+				'longitude' => post('longitude', true),
 				'foto' => $this->upload->data('file_name'),
 				'is_active' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
+				'created_at' => now(),
 				'created_by' => get_user_id(),
 			]
 		);
 
-		if (!$this->db->trans_status()) {
-			$this->db->trans_rollback();
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$insert) {
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 404);
 		}
 
-		$this->db->trans_commit();
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Created successfuly'
-			]));
+		response([
+			'status' => true,
+			'message' => 'Created successfuly',
+			'last_query' => $this->db->last_query()
+		], 200);
 	}
 
 	/**
 	 * Keperluan CRUD get where data
 	 *
-	 * @return CI_Output
 	 */
-	public function get_where(): CI_Output
+	public function get_where()
 	{
 		method('get');
 		// ================================================ //
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Found',
-				'data' => $this->M_Mahasiswa->get_where(
-					[
-						'a.id' => $this->input->post('id', true),
-						'a.is_active' => '1'
-					]
-				)
-			]));
+		response([
+			'status' => true,
+			'message' => 'Found',
+			'data' => $this->Crud->get_where(
+				[
+					'a.uuid' => post('uuid', true),
+					'a.is_active' => '1'
+				]
+			),
+			'last_query' => $this->db->last_query()
+		], 200);
 	}
 
 	/**
 	 * Keperluan CRUD update data
 	 *
-	 * @return CI_Output
 	 */
-	public function update(): CI_Output
+	public function update()
 	{
-		has_permission('update-mahasiswa');
+		has_permission("update-{$this->_name}");
 		method('post');
 		$this->_validator();
 		// ================================================ //
@@ -229,108 +218,150 @@ class Mahasiswa extends MY_Controller
 		$config['encrypt_name'] = true;
 		$config['remove_spaces'] = true;
 		$this->upload->initialize($config);
+
 		if ($_FILES['foto']['error'] !== 4) {
-			if (file_exists("./uploads/mahasiswa/{$this->input->post('old_foto')}")) {
-				unlink("./uploads/mahasiswa/{$this->input->post('old_foto')}");
+			if (file_exists("./uploads/mahasiswa/" . post('old_foto'))) {
+				unlink("./uploads/mahasiswa/" . post('old_foto'));
 			}
 
 			if (!$this->upload->do_upload("foto")) {
-				return $this->output->set_content_type('application/json')
-					->set_status_header(404)
-					->set_output(json_encode([
-						'status' => false,
-						'message' => $this->upload->display_errors('', '')
-					]));
+				response([
+					'status' => false,
+					'message' => $this->upload->display_errors('', '')
+				], 404);
 			}
 		}
 
-		$this->db->trans_begin();
-		$this->M_Mahasiswa->update(
+		$update = $this->Crud->update(
 			[
-				'nim' => $this->input->post('nim', true),
-				'nama' => $this->input->post('nama', true),
-				'prodi_id' => $this->input->post('prodi_id', true),
-				'fakultas_id' => $this->input->post('fakultas_id', true),
-				'angkatan' => $this->input->post('angkatan', true),
-				'latitude' => $this->input->post('latitude', true),
-				'longitude' => $this->input->post('longitude', true),
+				'uuid' => uuid(),
+				'nim' => post('nim', true),
+				'nama' => post('nama', true),
+				'prodi_id' => post('prodi_id', true),
+				'fakultas_id' => post('fakultas_id', true),
+				'angkatan' => post('angkatan', true),
+				'latitude' => post('latitude', true),
+				'longitude' => post('longitude', true),
 				'foto' => $_FILES['foto']['error'] === 4
-					? $this->input->post('old_foto') : $this->upload->data('file_name'),
+					? post('old_foto') : $this->upload->data('file_name'),
 				'is_active' => '1',
-				'updated_at' => date('Y-m-d H:i:s'),
+				'updated_at' => now(),
 				'updated_by' => get_user_id(),
 			],
-			$this->input->post('id', true)
+			[
+				'uuid' => post('uuid', true)
+			]
 		);
 
-		if (!$this->db->trans_status()) {
-			$this->db->trans_rollback();
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$update) {
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 404);
 		}
 
-		$this->db->trans_commit();
-
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Updated successfuly'
-			]));
+		response([
+			'status' => true,
+			'message' => 'Updated successfuly',
+			'last_query' => $this->db->last_query()
+		], 200);
 	}
 
 	/**
 	 * Keperluan CRUD delete data
 	 *
-	 * @return CI_Output
 	 */
-	public function delete(): CI_Output
+	public function delete()
 	{
-		has_permission('delete-mahasiswa');
+		has_permission("delete-{$this->_name}");
 		method('post');
 		// ================================================ //
 
-		$data = $this->M_Mahasiswa->get_where([
-			'a.id' => $this->input->post('id', true),
+		$data = $this->Crud->get_where([
+			'a.uuid' => post('uuid', true),
 			'a.is_active' => '1'
 		]);
+
 		if (file_exists("./uploads/mahasiswa/{$data->foto}")) {
 			unlink("./uploads/mahasiswa/{$data->foto}");
 		}
 
-		$this->db->trans_begin();
-		$this->M_Mahasiswa->update(
+		$delete = $this->Crud->update(
 			[
 				'is_active' => '0',
-				'deleted_at' => date('Y-m-d H:i:s'),
+				'deleted_at' => now(),
 				'deleted_by' => get_user_id()
 			],
-			$this->input->post('id', true)
+			[
+				'uuid' => post('uuid', true)
+			]
 		);
 
-		if (!$this->db->trans_status()) {
-			$this->db->trans_rollback();
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$delete) {
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 404);
 		}
-		$this->db->trans_commit();
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Deleted successfuly',
-			]));
+		response([
+			'status' => true,
+			'message' => 'Deleted successfuly',
+			'last_query' => $this->db->last_query()
+		]);
+	}
+
+	/**
+	 * Keperluan CRUD ubah data inline
+	 *
+	 */
+	public function inline()
+	{
+		has_permission("update-{$this->_name}");
+		method('post');
+		$this->_validator('inline');
+		//=========================================================//
+
+		$this->db->trans_begin();		// Begin transaction
+
+		$update = $this->Crud->update(
+			[
+				'uuid' => uuid(),
+				post('name') => post('value'),
+				'is_active' => '1',
+				'updated_at' => now(),
+				'updated_by' => get_user_id(),
+			],
+			[
+				'id' => $this->encryption->decrypt(base64_decode(post('id')))
+			]
+		);
+
+		if (!$update || !$this->db->trans_status()) {    // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf(),
+			], 500);
+		}
+
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Updated successfuly',
+			'last_query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 
 	// =============================================================================== //
@@ -339,80 +370,74 @@ class Mahasiswa extends MY_Controller
 	/**
 	 * Keperluan AJAX Select2
 	 *
-	 * @return CI_Output
 	 */
-	public function ajax_get_fakultas(): CI_Output
+	public function ajax_get_fakultas()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->like('nama', $this->input->get('search'))
-					->get_where('fakultas', ['is_active' => '1'])->result()
-			]));
+
+		response([
+			'status' => true,
+			'data' => $this->db->like('nama', get('search'))
+				->get_where('fakultas', ['is_active' => '1'])->result()
+		]);
 	}
 
 	/**
 	 * Keperluan AJAX Select2
 	 *
-	 * @return CI_Output
 	 */
-	public function ajax_get_prodi(): CI_Output
+	public function ajax_get_prodi()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->where('fakultas_id', $this->input->get('fakultas_id'))
-					->like('nama', $this->input->get('search'))
-					->get('prodi')->result()
-			]));
+
+		response([
+			'status' => true,
+			'data' => $this->db->where('fakultas_id', get('fakultas_id'))
+				->like('nama', get('search'))
+				->get('prodi')->result()
+		]);
 	}
 
 	/**
 	 * Keperluan AJAX Leaflet
 	 * 
-	 * @return CI_Output
 	 */
-	public function ajax_get_latlng(): CI_Output
+	public function ajax_get_latlng()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->select('nama, latitude, longitude')
-					->get('mahasiswa')
-					->result()
-			]));
+
+		response([
+			'status' => true,
+			'data' => $this->db->select('nama, latitude, longitude')
+				->get('mahasiswa')
+				->result()
+		]);
 	}
 
 	/**
 	 * Keperluan AJAX Leaflet
 	 *
-	 * @return CI_Output
 	 */
-	public function ajax_get_kecamatan(): CI_Output
+	public function ajax_get_kecamatan()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->get('kecamatan')->result()
-			]));
+
+		response([
+			'status' => true,
+			'data' => $this->db->get('kecamatan')->result()
+		]);
 	}
 
 	public function ajax_get_geojson()
 	{
 		method('get');
+
 		$client = new Client([
 			// Base URI is used with relative requests
 			'base_uri' => 'https://covid19.karanganyarkab.go.id/assets/maps/map-kab-kra.geojson',
 			// You can set any number of default request options.
 		]);
+
 		$response = $client->request('POST', '', [
 			'form_params' => [
 				'field_name' => 'abc',
@@ -423,8 +448,7 @@ class Mahasiswa extends MY_Controller
 			]
 		]);
 
-		return $this->output->set_content_type('application/json')
-			->set_output($response->getBody());
+		echo $response->getBody();
 	}
 
 	// =============================================================================== //
@@ -489,7 +513,7 @@ class Mahasiswa extends MY_Controller
 
 		$spreadsheet->getActiveSheet(0)
 			->setCellValue('F2', 'DATA MAHASISWA')
-			->getStyle('D2')
+			->getStyle('F2')
 			->getFont()->setBold(true);
 
 		$spreadsheet->setActiveSheetIndex(0)
@@ -545,7 +569,7 @@ class Mahasiswa extends MY_Controller
 				->setColor(new Color('000000'));
 		}
 
-		$data = $this->M_Mahasiswa->get();
+		$data = $this->Crud->get();
 
 		$no = 0;
 		$awal = 6;
@@ -568,8 +592,10 @@ class Mahasiswa extends MY_Controller
 			$awal++;
 		}
 
+		header('Access-Control-Expose-Headers: *');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="data_mahasiswa.xlsx"');
+		header('Filename: data_mahasiswa.xlsx');
 		header('Cache-Control: max-age=0');
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save('php://output');
@@ -582,18 +608,16 @@ class Mahasiswa extends MY_Controller
 	 */
 	public function import_excel()
 	{
-		has_permission('create-mahasiswa');
+		has_permission("create-{$this->_name}");
 		method('post');
 
 		if (is_uploaded_file($_FILES['file_excel']['tmp_name'])) {
 			if (!in_array(mime_content_type($_FILES['file_excel']['tmp_name']), ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-				return $this->output->set_content_type('application/json')
-					->set_status_header(404)
-					->set_output(json_encode([
-						'status' => false,
-						'message' => 'Ekstensi file tidak sesuai! Wajib <b>.xlsx</b>',
-						'mimetype' => mime_content_type($_FILES['file_excel']['tmp_name'])
-					]));
+				response([
+					'status' => false,
+					'message' => 'Ekstensi file tidak sesuai! Wajib <b>.xlsx</b>',
+					'mimetype' => mime_content_type($_FILES['file_excel']['tmp_name'])
+				], 404);
 			}
 
 			$spreadsheet = IOFactory::load($_FILES['file_excel']['tmp_name']);
@@ -603,12 +627,10 @@ class Mahasiswa extends MY_Controller
 				!($data[3][1] === 'NO' && $data[3][2] === 'NIM' && $data[3][3] === 'NAMA LENGKAP' && $data[3][4] === 'ANGKATAN'
 					&& $data[3][5] === 'PROGRAM STUDI' && $data[3][6] === 'FAKULTAS' && $data[3][7] === 'LATITUDE' && $data[3][8] === 'LONGITUDE')
 			) {
-				return $this->output->set_content_type('application/json')
-					->set_status_header(404)
-					->set_output(json_encode([
-						'status' => false,
-						'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
-					]));
+				response([
+					'status' => false,
+					'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
+				], 404);
 			}
 
 			for ($i = 4; $i < count($data); $i++) {
@@ -617,7 +639,7 @@ class Mahasiswa extends MY_Controller
 					&& $data[$i][3] !== 'NAMA LENGKAP' && $data[$i][4] !== 'ANGKATAN' && $data[$i][5] !== 'PROGRAM STUDI'
 					&& $data[$i][6] !== 'FAKULTAS' && $data[$i][7] !== 'LATITUDE' && $data[$i][8] !== 'LONGITUDE'
 				) {
-					$this->M_Mahasiswa->insert(
+					$this->Crud->insert(
 						[
 							'nim' => $data[$i][2] ?? null,
 							'nama' => $data[$i][3] ?? null,
@@ -628,25 +650,22 @@ class Mahasiswa extends MY_Controller
 							'longitude' =>  $data[$i][8] ?? null,
 							'foto' => null,
 							'is_active' => '1',
-							'created_at' => date('Y-m-d H:i:s'),
+							'created_at' => now(),
 							'created_by' => get_user_id(),
 						]
 					);
 				}
 			}
 
-			return $this->output->set_content_type('application/json')
-				->set_output(json_encode([
-					'status' => true,
-					'message' => 'Berhasil melakukan import'
-				]));
+			response([
+				'status' => true,
+				'message' => 'Berhasil melakukan import'
+			]);
 		}
-		return $this->output->set_content_type('application/json')
-			->set_status_header(404)
-			->set_output(json_encode([
-				'status' => false,
-				'message' => 'You did not select a file to upload.',
-			]));
+		response([
+			'status' => false,
+			'message' => 'You did not select a file to upload.',
+		]);
 	}
 
 	/**
@@ -657,6 +676,7 @@ class Mahasiswa extends MY_Controller
 	public function download_template_excel()
 	{
 		method('post');
+
 		$spreadsheet = IOFactory::load(FCPATH . 'assets/templates/excel/template_daftar_mahasiswa.xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment; filename="template_daftar_mahasiswa.xlsx"');

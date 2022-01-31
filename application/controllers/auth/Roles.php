@@ -5,50 +5,54 @@ use Ozdemir\Datatables\DB\CodeigniterAdapter;
 
 class Roles extends MY_Controller
 {
-	private $_path = 'auth/roles/'; // Contoh 'backend/admin/dashboard'
-
 	/**
 	 * Roles constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
+		// Config
+		$this->_name = 'roles';
+		$this->_path = "auth/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+
 		role("admin");    // admin, ...
-		$this->load->library(['upload', 'form_validation']);  // Load library upload
+
 		$this->lang->load('auth');
 	}
 
 	/**
 	 * Halaman index
 	 *
-	 * @return CI_Loader
 	 */
-	public function index(): CI_Loader
+	public function index()
 	{
-		return $this->templates->render([
-			'title' => 'Roles',
+		method('get');
+
+		$config = [
+			'title' => ucwords($this->_name),
 			'type' => 'backend', // auth, frontend, backend
 			'breadcrumb' => [
-				'Auth', 'Manajemen', 'Roles'
+				'Auth', 'Manajemen', ucwords($this->_name)
 			],
 			'uri_segment' => $this->_path,
 			'page' => $this->_path . 'index',
 			'script' => $this->_path . 'js/script.js.php',
-			'style' => $this->_path . 'css/style.js.php',
+			'style' => $this->_path . 'css/style.css.php',
 			'modals' => [],
-		]);
+		];
+
+		render($config);
 	}
 
 	/**
 	 * Keperluan DataTables server-side
 	 *
-	 * @return CI_Output
 	 */
-	public function data_role(): CI_Output
+	public function data_role()
 	{
 		$datatables = new Datatables(new CodeigniterAdapter());
 		$datatables->query(
-			"SELECT a.id, a.name, a.description, a.created_at
+			"SELECT a.uuid, a.id, a.name, a.description, a.created_at
 			FROM roles AS a WHERE a.is_active = '1'"
 		);
 
@@ -57,8 +61,11 @@ class Roles extends MY_Controller
 			return 0;
 		});
 
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		$datatables->add('encrypt_id', function ($data) {
+			return urlencode($this->encryption->encrypt($data['id']));
+		});
+
+		response($datatables->generate()->toArray());
 	}
 
 	/**
@@ -66,30 +73,7 @@ class Roles extends MY_Controller
 	 */
 	public function create_role()
 	{
-		if ($this->input->method() === 'post') {
-			$new_group_id = $this->ion_auth->create_group($this->input->post('group_name'), $this->input->post('description'));
-			if ($new_group_id) {
-				// check to see if we are creating the group
-				// redirect them back to the admin page
-				// $this->session->set_flashdata('message', $this->ion_auth->messages());
-				return $this->output->set_content_type('application/json')
-					->set_output(json_encode([
-						'status' => true,
-						'message' => 'Role berhasil ditambahkan',
-						'data' => null
-					]));
-				// redirect("auth", 'refresh');
-			} else {
-				// $this->session->set_flashdata('message', $this->ion_auth->errors());
-				return $this->output->set_content_type('application/json')
-					->set_output(json_encode([
-						'status' => false,
-						'message' => 'Gagal',
-						'data' => null,
-						'errors' => $this->ion_auth->errors()
-					]));
-			}
-		} elseif ($this->input->method() === 'get') {
+		if ($this->input->method() === 'get') :
 			// display the create group form
 			// set the flash data error message if there is one
 
@@ -106,22 +90,45 @@ class Roles extends MY_Controller
 				'value' => $this->form_validation->set_value('description'),
 			];
 
-			// $this->_render_page('auth/create_group', $this->data);
-			$this->templates->render([
+			$config = [
 				'title' => 'Create Role',
 				'type' => 'backend',
 				'breadcrumb' => [
-					'Auth', 'Manajemen', 'Roles', 'Create'
+					'Auth', 'Manajemen', ucwords($this->_name), 'Create'
 				],
 				'group_name' => $this->data['group_name'],
 				'description' => $this->data['description'],
 				'uri_segment' => $this->_path,
-				'page' => $this->_path . 'create_role',
-				'script' => $this->_path . 'js/script.js.php',
-				'style' => $this->_path . 'css/style.js.php',
+				'page' => $this->_path . 'create/index',
+				'script' => $this->_path . 'create/js/script.js.php',
+				'style' => $this->_path . 'create/css/style.css.php',
 				'modals' => []
-			]);
-		}
+			];
+
+			render($config);
+
+		elseif ($this->input->method() === 'post') :
+
+			$new_group_id = $this->ion_auth->create_group(post('group_name'), post('description'));
+			if ($new_group_id) {
+				// check to see if we are creating the group
+				// redirect them back to the admin page
+				response([
+					'status' => true,
+					'message' => 'Role berhasil ditambahkan',
+					'data' => null
+				], 200);
+			} else {
+
+				response([
+					'status' => false,
+					'message' => 'Gagal',
+					'data' => null,
+					'errors' => $this->ion_auth->errors()
+				], 404);
+			}
+
+		endif;
 	}
 
 	/**
@@ -131,46 +138,23 @@ class Roles extends MY_Controller
 	 */
 	public function edit_role($id)
 	{
-		// bail if no group id given
-		if (!$id || empty($id)) {
-			redirect('auth', 'refresh');
-		}
-
-		$this->data['title'] = 'Edit Role';
-
-		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
-			redirect('auth', 'refresh');
-		}
-
-		$group = $this->ion_auth->group($id)->row();
+		$id = $this->encryption->decrypt(urldecode($id));
 
 		// validate form input
-		if ($this->input->method() === 'post') {
-			$group_update = $this->ion_auth->update_group($id, $_POST['group_name'], array(
-				'description' => $_POST['group_description']
-			));
+		if ($this->input->method() === 'get') :
+			// bail if no group id given
+			if (!$id || empty($id)) redirect('auth', 'refresh');
 
-			if ($group_update) {
-				// 	$this->session->set_flashdata('message', $this->lang->line('edit_group_saved'));
-				// 	redirect("auth", 'refresh');
-				return $this->output->set_content_type('application/json')
-					->set_output(json_encode([
-						'status' => true,
-						'message' => 'Role berhasil diupdate',
-						'data' => null,
-					]));
-			} else {
-				// $this->session->set_flashdata('message', $this->ion_auth->errors());
-				return $this->output->set_content_type('application/json')
-					->set_status_header(404)
-					->set_output(json_encode([
-						'status' => false,
-						'message' => 'Gagal',
-						'data' => null,
-						'errors' => $this->ion_auth->errors()
-					]));
+			$this->data['title'] = 'Edit Role';
+
+			if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
+				redirect('auth', 'refresh');
 			}
-		} elseif ($this->input->method() === 'get') {
+
+			$group = $this->ion_auth->group($id)->row();
+
+			if (!$group) redirect($this->_path);
+
 			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
 
@@ -183,6 +167,7 @@ class Roles extends MY_Controller
 				'type'    => 'text',
 				'value'   => $this->form_validation->set_value('group_name', $group->name),
 			];
+
 			if ($this->config->item('admin_group', 'ion_auth') === $group->name) {
 				$this->data['group_name']['readonly'] = 'readonly';
 			}
@@ -194,12 +179,11 @@ class Roles extends MY_Controller
 				'value' => $this->form_validation->set_value('group_description', $group->description),
 			];
 
-			// $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'edit_group', $this->data);
-			$this->templates->render([
+			$config = [
 				'title' => $this->data['title'],
 				'type' => 'backend',
 				'breadcrumb' => [
-					'Auth', 'Manajemen', 'Roles', 'Edit'
+					'Auth', 'Manajemen', ucwords($this->_name), 'Edit'
 				],
 				'message' => $this->data['message'],
 				'group' => $this->data['group'],
@@ -207,34 +191,57 @@ class Roles extends MY_Controller
 				'group_description' => $this->data['group_description'],
 				'group_id' => $id,
 				'uri_segment' => $this->_path,
-				'page' => $this->_path . 'edit_role',
-				'script' => $this->_path . 'js/script.js.php',
-				'style' => $this->_path . 'css/style.js.php',
+				'page' => $this->_path . 'edit/index',
+				'script' => $this->_path . 'edit/js/script.js.php',
+				'style' => $this->_path . 'edit/css/style.css.php',
 				'modals' => []
-			]);
-		}
-	}
+			];
 
-	public function delete_role()
-	{
-		if ($this->input->method() === 'post') {
-			if ($this->ion_auth->delete_group($this->input->post('id'))) {
-				return $this->output->set_content_type('application/json')
-					->set_output(json_encode([
-						'status' => true,
-						'message' => 'Role berhasil dihapus',
-						'data' => null
-					]));
-			}
+			render($config);
 
-			return $this->output->set_content_type('application/json')
-				->set_output(json_encode([
+		elseif ($this->input->method() === 'post') :
+
+			$group_update = $this->ion_auth->update_group($id, $_POST['group_name'], array(
+				'description' => $_POST['group_description']
+			));
+
+			if ($group_update) {
+				response([
+					'status' => true,
+					'message' => 'Role berhasil diupdate',
+					'data' => null,
+				], 200);
+			} else {
+				response([
 					'status' => false,
 					'message' => 'Gagal',
 					'data' => null,
 					'errors' => $this->ion_auth->errors()
-				]));
+				], 404);
+			}
+
+		endif;
+	}
+
+	public function delete_role()
+	{
+		method('post');
+
+		$id = $this->encryption->decrypt(urldecode(post('id')));
+
+		if ($this->ion_auth->delete_group($id)) {
+			response([
+				'status' => true,
+				'message' => 'Role berhasil dihapus',
+				'data' => null
+			], 200);
 		}
-		redirect('auth', 'refresh');
+
+		response([
+			'status' => false,
+			'message' => 'Gagal',
+			'data' => null,
+			'errors' => $this->ion_auth->errors()
+		], 404);
 	}
 }

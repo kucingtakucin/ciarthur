@@ -3,17 +3,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Home extends MY_Controller
 {
-	private $_path = 'frontend/home/';
-	private $_table = '';
-
 	public function __construct()
 	{
 		parent::__construct();
+
+		// Config
+		$this->_name = 'home';
+		$this->_path = "frontend/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+		//=========================================================//
+
 	}
 
 	public function index()
 	{
-		$this->templates->render([
+		$config = [
 			'title' => 'Home',
 			'type' => 'frontend',
 			'uri_segment' => $this->_path,
@@ -22,6 +25,8 @@ class Home extends MY_Controller
 			'script' => 'contents/' . $this->_path . 'js/script.js.php',
 			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => []
-		]);
+		];
+
+		render($config);
 	}
 }

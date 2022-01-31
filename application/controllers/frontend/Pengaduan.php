@@ -6,12 +6,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pengaduan extends MY_Controller
 {
-	private $_path = 'frontend/pengaduan/';
-	private $_table = '';
-
 	public function __construct()
 	{
 		parent::__construct();
+		// Config
+		$this->_name = 'pengaduan';
+		$this->_path = "frontend/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+		//=========================================================//
+
 		$this->load->model($this->_path . 'M_Pengaduan');
 	}
 

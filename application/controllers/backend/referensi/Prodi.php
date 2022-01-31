@@ -1,268 +1,323 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Prodi extends MY_Controller
 {
-	private $_path = 'backend/referensi/prodi/'; // Contoh 'backend/dashboard/ / 'frontend/home/'
-
 	/**
-	 * NamaController constructor
+	 * Prodi constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
+		// Config
+		$this->_name = 'prodi';
+		$this->_path = "backend/referensi/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+		//=========================================================//
+
 		// Salah satu saja, role atau permission
 		has_permission('access-prodi');
 		//=========================================================//
 
-
-		$this->load->model($this->_path . 'M_Prodi');   // Load model
-		$this->load->library(['upload', 'form_validation']);  // Load library upload
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
+		$this->load->model($this->_path . 'Crud');   // Load CRUD model
 	}
 
 	/**
 	 * Halaman index
 	 *
-	 * @return CI_Loader
 	 */
-	public function index(): CI_Loader
+	public function index()
 	{
 		method('get');
 		//=========================================================//        
 
-		return $this->templates->render([
-			'title' => 'Prodi',
+		$config = [
+			'title' => ucwords($this->_name),
 			'type' => 'backend', // auth, frontend, backend
 			'uri_segment' => $this->_path,
 			'breadcrumb' => [
-				'Backend', 'Referensi', 'Program Studi'
+				'Backend', 'Referensi', ucwords($this->_name)
 			],
 			'page' => 'contents/' . $this->_path . 'index',
-			'script' => 'contents/' . $this->_path . 'js/script_js',
-			'style' => 'contents/' . $this->_path . 'css/style_css',
+			'script' => 'contents/' . $this->_path . 'js/script.js.php',
+			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => [],
-		]);
+		];
+
+		render($config);
 	}
+
+	//=============================================================//
+	//======================== DATATABLES =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan DataTables server-side
 	 *
-	 * @return CI_Output
 	 */
-	public function data(): CI_Output
+	public function data()
 	{
-		method('get');
+		method('post');
 		//=========================================================//
 
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.nama, a.fakultas_id,
-            (SELECT b.nama FROM fakultas AS b WHERE b.id = a.fakultas_id) AS nama_fakultas,
-            a.created_at FROM prodi AS a
-            WHERE a.is_active = '1'"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		response($this->Datatable->list());
 	}
+
+	//=============================================================//
+	//=========================== AJAX ============================//
+	//=============================================================//
 
 	/**
 	 * Keperluan AJAX Select2
 	 *
-	 * @return CI_Output
 	 */
-	public function get_fakultas(): CI_Output
+	public function get_fakultas()
 	{
 		method('get');
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'data' => $this->db->like('nama', $this->input->get('search'))
-					->get_where('fakultas', ['is_active' => '1'])->result()
-			]));
+
+		response([
+			'status' => true,
+			'data' => $this->db->like('nama', get('search'))
+				->get_where('fakultas', ['is_active' => '1'])->result(),
+			'last_query' => $this->db->last_query()
+		]);
 	}
+
+	//=============================================================//
+	//======================== VALIDATOR =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan validasi server-side
 	 */
-	private function _validator()
+	private function _validator($status = null)
 	{
 		$this->form_validation->set_error_delimiters('', '');
-		$this->form_validation->set_rules('nama', 'nama prodi', 'required|trim');
-		$this->form_validation->set_rules('fakultas_id', 'fakultas', 'required|trim');
-		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+		if ($status === 'inline') $this->form_validation->set_rules('value', post('name'), 'required|trim');
+		else {
+			$this->form_validation->set_rules('nama', 'nama prodi', 'required|trim');
+			$this->form_validation->set_rules('fakultas_id', 'fakultas', 'required|trim');
+		}
+		if (!$this->form_validation->run())
+			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
-		}
+				'errors' => $this->form_validation->error_array(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf()
+			], 422);
 	}
+
+	//=============================================================//
+	//=========================== CRUD ============================//
+	//=============================================================//
 
 	/**
 	 * Keperluan CRUD tambah data
 	 *
-	 * @return CI_Output
 	 */
-	public function insert(): CI_Output
+	public function insert()
 	{
-		has_permission('create-prodi');
+		has_permission("create-{$this->_name}");
 		method('post');
 		$this->_validator();
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$insert = $this->M_Prodi->insert(
+		$this->db->trans_begin();		// Begin transaction
+
+		$insert = $this->Crud->insert(
 			[
-				'nama' => $this->input->post('nama', true),
-				'fakultas_id' => $this->input->post('fakultas_id', true),
+				'uuid' => uuid(),
+				'nama' => post('nama'),
+				'fakultas_id' => post('fakultas_id'),
 				'is_active' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
+				'created_at' => now(),
 				'created_by' => get_user_id(),
 			]
 		);
 
-		if (!$this->db->trans_status() || !$insert) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$insert || !$this->db->trans_status()) {   // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf(),
+			], 500);
 		}
 
-		$this->db->trans_commit();  // Commit transaction
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Created successfuly'
-			]));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Created successfuly',
+			'last_query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 
 	/**
-	 * Keperluan CRUD get where data
+	 * Keperluan CRUD detail data
 	 *
-	 * @return CI_Output
 	 */
-	public function get_where(): CI_Output
+	public function get_where()
 	{
 		method('get');
 		//=========================================================//
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Found',
-				'data' => $this->M_Prodi->get_where(
-					[
-						'a.id' => $this->input->post('id', true),
-						'a.is_active' => '1'
-					]
-				)
-			]));
+		response([
+			'status' => true,
+			'message' => 'Found',
+			'data' => $this->Crud->get_where(
+				[
+					'a.id' => $this->encryption->decrypt(base64_decode(post('id'))),
+					'a.is_active' => '1'
+				]
+			),
+			'last_query' => $this->db->last_query()
+		]);
 	}
 
 	/**
-	 * Keperluan CRUD update data
+	 * Keperluan CRUD ubah data
 	 *
-	 * @return CI_Output
 	 */
-	public function update(): CI_Output
+	public function update()
 	{
-		has_permission('update-prodi');
+		has_permission("update-{$this->_name}");
 		method('post');
 		$this->_validator();
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$update = $this->M_Prodi->update(
+		$this->db->trans_begin();		// Begin transaction
+
+		$update = $this->Crud->update(
 			[
-				'nama' => $this->input->post('nama', true),
-				'fakultas_id' => $this->input->post('fakultas_id', true),
+				'uuid' => uuid(),
+				'nama' => post('nama'),
+				'fakultas_id' => post('fakultas_id'),
 				'is_active' => '1',
-				'updated_at' => date('Y-m-d H:i:s'),
+				'updated_at' => now(),
 				'updated_by' => get_user_id(),
 			],
-			$this->input->post('id', true)
+			[
+				'id' => $this->encryption->decrypt(base64_decode(post('id')))
+			]
 		);
 
-		if (!$this->db->trans_status() || !$update) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$update || !$this->db->trans_status()) {    // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf(),
+			], 500);
 		}
-		$this->db->trans_commit();  // Commit transaction
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Updated successfuly'
-			]));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Updated successfuly',
+			'last_query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 
 	/**
-	 * Keperluan CRUD delete data
+	 * Keperluan CRUD hapus data
 	 *
-	 * @return CI_Output
 	 */
-	public function delete(): CI_Output
+	public function delete()
 	{
-		has_permission('delete-prodi');
+		has_permission("delete-{$this->_name}");
 		method('post');
 		//=========================================================//
 
-		$this->db->trans_begin();   // Begin transaction
-		$delete = $this->M_Prodi->update(
+		$this->db->trans_begin();		// Begin transaction
+
+		$delete = $this->Crud->update(
 			[
 				'is_active' => '0',
-				'deleted_at' => date('Y-m-d H:i:s'),
+				'deleted_at' => now(),
 				'deleted_by' => get_user_id()
 			],
-			$this->input->post('id', true)
+			[
+				'id' => $this->encryption->decrypt(base64_decode(post('id')))
+			]
 		);
 
-		if (!$this->db->trans_status() || !$delete) {   // Check transaction status
-			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(404)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+		if (!$delete || !$this->db->trans_status()) {   // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf(),
+			], 500);
 		}
-		$this->db->trans_commit();  // Commit transaction
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Deleted successfuly',
-			]));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Deleted successfuly',
+			'last_query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
+	}
+
+	/**
+	 * Keperluan CRUD ubah data inline
+	 *
+	 */
+	public function inline()
+	{
+		has_permission("update-{$this->_name}");
+		method('post');
+		$this->_validator('inline');
+		//=========================================================//
+
+		$this->db->trans_begin();		// Begin transaction
+
+		$update = $this->Crud->update(
+			[
+				'uuid' => uuid(),
+				post('name') => post('value'),
+				'is_active' => '1',
+				'updated_at' => now(),
+				'updated_by' => get_user_id(),
+			],
+			[
+				'id' => $this->encryption->decrypt(base64_decode(post('id')))
+			]
+		);
+
+		if (!$update || !$this->db->trans_status()) {    // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'last_query' => $this->db->last_query(),
+				'csrf' => csrf(),
+			], 500);
+		}
+
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Updated successfuly',
+			'last_query' => $this->db->last_query(),
+			'csrf' => csrf()
+		]);
 	}
 }
 
-/* End of file NamaController.php */
+/* End of file Prodi.php */

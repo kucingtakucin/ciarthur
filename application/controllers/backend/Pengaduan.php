@@ -7,56 +7,51 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pengaduan extends MY_Controller
 {
-	private $_path = 'backend/pengaduan/';
-	private $_table = '';
-
 	public function __construct()
 	{
 		parent::__construct();
-		has_permission('access-pengaduan');
-		$this->load->library('pusher');
+		// Config
+		$this->_name = 'pengaduan';
+		$this->_path = "backend/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+
+		has_permission("access-{$this->_name}");
+
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
+		// $this->load->model($this->_path . 'Crud');   // Load CRUD model
 	}
 
 	public function index()
 	{
 		method('get');
-		$this->templates->render([
-			'title' => 'Pengaduan',
+
+		$config = [
+			'title' => ucwords($this->_name),
 			'type' => 'backend',
 			'uri_segment' => $this->_path,
 			'breadcrumb' => [
-				'Backend', 'Menu', 'Pengaduan'
+				'Backend', 'Menu', ucwords($this->_name)
 			],
 			'page' => 'contents/' . $this->_path . 'index',
 			'script' => 'contents/' . $this->_path . 'js/script.js.php',
 			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'modals' => []
-		]);
+		];
+
+		render($config);
 	}
 
 	public function data()
 	{
-		method('get');
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.name, a.email, a.phone, a.message, a.created_at
-            FROM pengaduan AS a
-            WHERE a.is_active = '1'"
-		);
+		method('post');
 
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		response($this->Datatable->list());
 	}
 
-	public function chat($id)
+	public function chat($uuid = null)
 	{
 		method('get');
-		$this->templates->render([
+
+		$config = [
 			'title' => 'Pengaduan / Chat',
 			'type' => 'backend',
 			'uri_segment' => $this->_path,
@@ -67,6 +62,8 @@ class Pengaduan extends MY_Controller
 			'script' => 'contents/' . $this->_path . 'chat/js/script.js.php',
 			'style' => 'contents/' . $this->_path . 'chat/css/style.css.php',
 			'modals' => []
-		]);
+		];
+
+		render($config);
 	}
 }

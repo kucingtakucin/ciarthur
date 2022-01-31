@@ -6,185 +6,26 @@
 
 	// Document ready
 	$(() => {
-		/**
-		 * Keperluan WebGIS dengan Leaflet
-		 * 
-		 */
-		// ================================================== //
-
-		const initMap = () => {
-			if (map) map.remove()
-			map = L.map("map", {
-				center: [-7.5828, 111.0444],
-				zoom: 12,
-				layers: [
-					/** OpenStreetMap Tile Layer */
-					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-					}),
-				],
-				scrollWheelZoom: false,
-			})
-
-			/** Legend */
-			legend = L.control({
-				position: "bottomleft"
-			})
-
-			legend.onAdd = (map) => {
-				let div = L.DomUtil.create("div", "legend");
-				div.innerHTML += "<h3><b>KABUPATEN KARANGANYAR</b></h3>";
-				return div;
-			}
-
-			legend.addTo(map)
-
-			/** GeoJSON Features */
-			$.getJSON(BASE_URL + 'ajax_get_geojson',
-				response => {
-					let geojson = L.geoJSON(response, {
-						onEachFeature: (feature, layer) => {
-							layer.on({
-								mouseover: (event) => {
-									let layer = event.target;
-									layer.setStyle({
-										weight: 5,
-										dashArray: '',
-										fillOpacity: 0.7
-									});
-									if (!L.Browser.ie && !L.Browser.opera &&
-										!L.Browser.edge) {
-										layer.bringToFront();
-									}
-								},
-								mouseout: (event) => {
-									geojson.resetStyle(event.target)
-								},
-								click: (event) => {
-									map.fitBounds(event
-										.target
-										.getBounds()
-									);
-								}
-							})
-						}
-					}).addTo(map)
-				})
-
-			axios.get(BASE_URL + 'ajax_get_kecamatan')
-				.then(res => {
-					let results = res.data.data
-					results.map(item => {
-						if (item.latitude && item.longitude) {
-							L.marker([item.latitude, item.longitude])
-								.addTo(map)
-								.bindPopup(
-									new L.Popup({
-										autoClose: false,
-										closeOnClick: false
-									})
-									.setContent(`<b>${item.nama}</b>`)
-									.setLatLng([item.latitude, item.longitude])
-								).openPopup();
-						}
-					})
-				})
-
-			axios.get(BASE_URL + 'ajax_get_latlng')
-				.then(res => {
-					let results = res.data.data
-					results.map(item => {
-						if (item.latitude && item.longitude) {
-							L.marker([item.latitude, item.longitude], {
-									icon: L.icon({
-										iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-										iconSize: [
-											40, 40
-										], // size of the icon
-										iconAnchor: [
-											20, 40
-										], // point of the icon which will correspond to marker's location
-										popupAnchor: [
-											0, -30
-										] // point from which the popup should open relative to the iconAnchor
-									})
-								})
-								.addTo(map)
-								.bindPopup(
-									new L.Popup({
-										autoClose: false,
-										closeOnClick: false
-									})
-									.setContent(`<b>${item.nama}</b>`)
-									.setLatLng([
-										item.latitude, item.longitude
-									])
-								).openPopup();
-						}
-					})
-				})
-		}
-
-		const map_in_swal = (status) => {
-
-			if (map_modal) map_modal.remove()
-			map_modal = L.map(`map-${status}`, {
-				center: [-7.5828, 111.0444],
-				zoom: 12,
-				layers: [
-					/** OpenStreetMap Tile Layer */
-					L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-						attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-					}),
-
-				],
-				scrollWheelZoom: false,
-			})
-
-			setTimeout(() => {
-				map_modal.invalidateSize()
-			}, 500);
-
-			map_modal.on('click', (event) => {
-				if (marker_modal) map_modal.removeLayer(marker_modal)
-				marker_modal = L.marker([event.latlng.lat, event.latlng
-					.lng
-				], { //-7.641355, 111.0377783
-					icon: L.icon({
-						iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
-						iconSize: [40, 40], // size of the icon
-						iconAnchor: [
-							20, 40
-						], // point of the icon which will correspond to marker's location
-						popupAnchor: [
-							0, -30
-						] // point from which the popup should open relative to the iconAnchor
-					})
-				})
-				marker_modal.addTo(map_modal)
-				marker_modal.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
-
-				$(`#input_${status}_latitude`).val(event.latlng.lat)
-				$(`#input_${status}_longitude`).val(event.latlng.lng)
-			})
-		}
-
 		initMap() // Init leaflet map
+		load_datatable()
+	});
+</script>
 
-		/**
-		 * Keperluan DataTable, Datepicker, Summernote dan BsCustomFileInput
-		 */
-		// ================================================== //
+<script>
+	/**
+	 * Keperluan DataTable, Datepicker, Summernote dan BsCustomFileInput
+	 */
+	// ================================================== //
+	const load_datatable = () => {
 		datatable = $('#datatable').DataTable({
 			serverSide: true,
 			processing: true,
 			destroy: true,
-			// responsive: true,
-			dom: `<"dt-custom-filter mb-3 d-block">
+			dom: `<"dt-custom-filter mb-2 d-block">
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
-                <"d-flex flex-row justify-content-between"lf>
+                <"d-flex flex-row justify-content-between mb-2"lf>
                 rt
-                <"d-flex flex-row justify-content-between"ip>`,
+                <"d-flex flex-row justify-content-between mt-2"ip>`,
 			buttons: {
 				/** Tombol-tombol Export & Tambah Data */
 				buttons: [{
@@ -248,19 +89,10 @@
 			},
 			ajax: {
 				url: BASE_URL + 'data',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'JSON',
-				data: {},
-				beforeSend: () => {
-					loading()
-				},
-				complete: () => {
-					setTimeout(async () => {
-						await Swal.hideLoading()
-						await Swal.close()
-					}, 100);
-				}
 			},
+			order: [],
 			columnDefs: [{
 					targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Sesuaikan dengan jumlah kolom
 					className: 'text-center'
@@ -270,19 +102,11 @@
 					searchable: false,
 					orderable: false,
 				},
-				{
-					targets: [9],
-					visible: false,
-					searchable: false,
-				}
-			],
-			order: [
-				[9, 'desc']
 			],
 			columns: [{ // 0
 					title: '#',
 					name: '#',
-					data: 'DT_RowIndex',
+					data: 'no',
 				},
 				{ // 1
 					title: 'Foto',
@@ -299,27 +123,25 @@
 					title: 'NIM',
 					name: 'nim',
 					data: 'nim',
+					className: 'input_nim'
 				},
 				{ // 3
 					title: 'Nama',
 					name: 'nama',
 					data: 'nama',
-					render: (nama) => {
-						return $('<span>', {
-							html: nama,
-							class: 'nama'
-						}).prop('outerHTML')
-					}
+					className: 'input_nama'
 				},
 				{ // 4
 					title: 'Program Studi',
 					name: 'nama_prodi',
 					data: 'nama_prodi',
+					className: 'input_prodi_id'
 				},
 				{ // 5
 					title: 'Fakultas',
 					name: 'nama_fakultas',
 					data: 'nama_fakultas',
+					className: 'input_fakultas_id'
 				},
 				{ // 6
 					title: 'Angkatan',
@@ -342,41 +164,9 @@
 				},
 				{ // 8
 					title: 'Aksi',
-					name: 'id',
-					data: 'id',
-					render: (id) => {
-						let btn_edit = $('<button>', {
-							type: 'button',
-							class: "btn btn-success btn_edit <?php if (is_denied('update-mahasiswa')) : ?>d-none<?php endif ?>",
-							'data-id': id,
-							html: $('<i>', {
-								class: 'fa fa-edit'
-							}).prop('outerHTML'),
-							title: 'Ubah Data'
-						})
-
-						let btn_delete = $('<button>', {
-							type: 'button',
-							class: "btn btn-danger btn_delete <?php if (is_denied('delete-mahasiswa')) : ?>d-none<?php endif ?>",
-							'data-id': id,
-							html: $('<i>', {
-								class: 'fa fa-trash'
-							}).prop('outerHTML'),
-							title: 'Hapus Data'
-						})
-
-						return $('<div>', {
-							role: 'group',
-							class: 'btn-group btn-group-sm',
-							html: [btn_edit, btn_delete]
-						}).prop('outerHTML')
-					}
+					name: 'aksi',
+					data: 'aksi'
 				},
-				{ // 9
-					title: 'Created At',
-					name: 'created_at',
-					data: 'created_at',
-				}
 			],
 			initComplete: function(event) {
 				$(this).on('click', '.btn_edit', function(event) {
@@ -388,6 +178,165 @@
 					event.preventDefault()
 					$delete(this);
 				});
+
+				$(this).on('dblclick', 'td.input_fakultas_id:not(.clicked)', function(event) {
+					event.preventDefault()
+					$(this).addClass('clicked')
+					let row = datatable.row($(this).closest('tr')).data();
+
+					let val = $(this).html();
+					let html = $('<select>', {
+						name: 'fakultas_id',
+						id: 'inline_ubah_value',
+						class: 'form-control',
+						html: $('<option>', {
+							html: ''
+						})
+					}).prop('outerHTML')
+
+					$(this).html(html)
+					$(this).find('select').select2({
+						placeholder: 'Pilih Fakultas',
+						width: '100%',
+						ajax: {
+							url: BASE_URL + 'ajax_get_fakultas',
+							dataType: 'JSON',
+							delay: 250,
+							data: function(params) {
+								return {
+									search: params.term, // search term
+								};
+							},
+							processResults: function(response) {
+								let myResults = [];
+								response.data.map(item => {
+									myResults.push({
+										'id': item.id,
+										'text': item.nama
+									});
+								})
+								return {
+									results: myResults
+								};
+							}
+						}
+					})
+
+					$(this).find('select')
+						.append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
+						.trigger('change')
+						.trigger('select2:select');
+
+					$(this).find('select').select2('open')
+				})
+
+				$(this).on('dblclick', 'td.input_prodi_id:not(.clicked)', function(event) {
+					event.preventDefault()
+					$(this).addClass('clicked')
+					let row = datatable.row($(this).closest('tr')).data();
+
+					let val = $(this).html();
+					let html = $('<select>', {
+						name: 'prodi_id',
+						id: 'inline_ubah_value',
+						class: 'form-control',
+						html: $('<option>', {
+							html: ''
+						})
+					}).prop('outerHTML')
+
+					$(this).html(html)
+					$(this).find('select').select2({
+						placeholder: 'Pilih Program Studi',
+						width: '100%',
+						ajax: {
+							url: BASE_URL + 'ajax_get_prodi',
+							dataType: 'JSON',
+							delay: 250,
+							data: function(params) {
+								return {
+									search: params.term, // search term
+									fakultas_id: row.fakultas_id
+								};
+							},
+							processResults: function(response) {
+								let myResults = [];
+								response.data.map(item => {
+									myResults.push({
+										'id': item.id,
+										'text': item.nama
+									});
+								})
+								return {
+									results: myResults
+								};
+							}
+						}
+					})
+
+					$(this).find('select')
+						.append(new Option(row.nama_prodi, row.prodi_id, true, true))
+						.trigger('change')
+						.trigger('select2:select');
+
+					$(this).find('select').select2('open')
+				})
+
+				$(this).on('dblclick', 'td.input_nama:not(.clicked)', function(event) {
+					event.preventDefault()
+					$(this).addClass('clicked')
+
+					let val = $(this).html();
+					let html = $('<input>', {
+						type: 'text',
+						name: 'nama',
+						id: 'inline_ubah_value',
+						class: 'form-control',
+						autocomplete: 'off',
+						value: val
+					}).prop('outerHTML')
+
+					$(this).html(html)
+					$(this).find('input').focus()
+				})
+
+				$(this).on('dblclick', 'td.input_nim:not(.clicked)', function(event) {
+					event.preventDefault()
+					$(this).addClass('clicked')
+
+					let val = $(this).html();
+					let html = $('<input>', {
+						type: 'text',
+						name: 'nama',
+						id: 'inline_ubah_value',
+						class: 'form-control',
+						autocomplete: 'off',
+						value: val
+					}).prop('outerHTML')
+
+					$(this).html(html)
+					$(this).find('input').focus()
+				})
+
+				$(this).on('blur', 'td.input_nama.clicked input', function(event) {
+					event.preventDefault();
+					$inline(this, 'nama');
+				})
+
+				$(this).on('blur', 'td.input_nim.clicked input', function(event) {
+					event.preventDefault();
+					$inline(this, 'nim');
+				})
+
+				$(this).on('select2:close', 'td.input_fakultas_id.clicked select', function(event) {
+					event.preventDefault();
+					$inline(this, 'fakultas_id');
+				})
+
+				$(this).on('select2:close', 'td.input_prodi_id.clicked select', function(event) {
+					event.preventDefault();
+					$inline(this, 'prodi_id');
+				})
 
 				/** Elemen - elemen filter */
 				$('.dt-custom-filter').html((index, currentContent) => {
@@ -404,7 +353,7 @@
 								type: 'text',
 								id: 'filter_tanggal',
 								name: 'filter_tanggal',
-								class: 'form-control datepicker',
+								class: 'form-control datepicker-here',
 								placeholder: 'Pilih Tanggal'
 							})
 						]
@@ -535,487 +484,525 @@
 				})
 				// ================================================== //
 
-				$('.datepicker').datepicker({
-					format: 'yyyy-mm-dd',
-					endDate: 'now',
-					clearBtn: true,
-					todayBtn: 'linked',
-					autoclose: true
+				$('.datepicker-here').datepicker({
+					dateFormat: 'yyyy-mm-dd',
+					todayButton: true,
+					clearButton: false,
+					autoClose: true,
+					language: 'en',
 				})
 
 				bsCustomFileInput.init()
 				$('[title]').tooltip()
 			},
 		})
+	}
+</script>
 
-		datatable.on('draw.dt', () => {
-			let PageInfo = datatable.page.info();
-			datatable.column(0, {
-				page: 'current'
-			}).nodes().each(function(cell, i) {
-				cell.innerHTML = i + 1 + PageInfo.start;
-			});
-		});
-		// socket.on('backend-reload_dt-mahasiswa', () => {
-		//     initMap()
-		//     datatable.ajax.reload();
-		// })
-		// ================================================== //
+<script>
+	/**
+	 * Keperluan CRUD
+	 */
+	// ================================================== //
 
-		/**
-		 * Keperluan CRUD
-		 */
-		// ================================================== //
+	$insert = async () => {
+		Swal.fire({
+			title: 'Form Tambah Data',
+			width: '800px',
+			icon: 'info',
+			html: `<?= $this->load->view("contents/$uri_segment/components/form_tambah", '', true); ?>`,
+			confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
+			showCancelButton: true,
+			focusConfirm: false,
+			showLoaderOnConfirm: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			showCloseButton: true,
+			reverseButtons: true,
+			didOpen: () => {
+				$('.swal2-actions').css('z-index', '0')
+				select2_in_swal('tambah')
+				map_in_swal('tambah')
+				bsCustomFileInput.init()
+			},
+			preConfirm: async () => {
+				let formData = new FormData(document.getElementById('form_tambah'));
 
-		$insert = async () => {
-			Swal.fire({
-				title: 'Form Tambah Data',
-				width: '800px',
-				icon: 'info',
-				html: `<?= $this->load->view("contents/$uri_segment/components/form_tambah", '', true); ?>`,
-				confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
-				showCancelButton: true,
-				focusConfirm: false,
-				showLoaderOnConfirm: true,
-				allowOutsideClick: false,
-				allowEscapeKey: false,
-				allowEnterKey: false,
-				showCloseButton: true,
-				reverseButtons: true,
-				didOpen: () => {
-					$('.swal2-actions').css('z-index', '0')
-					select2_in_swal('tambah')
-					map_in_swal('tambah')
-					bsCustomFileInput.init()
-				},
-				preConfirm: async () => {
-					let formData = new FormData(document.getElementById('form_tambah'));
+				$('#form_tambah .invalid-feedback').fadeOut(500)
+				$('#form_tambah .is-invalid').removeClass('is-invalid')
+				let response = await axios.post(BASE_URL + 'insert', formData)
+					.then(res => res.data.message)
+					.catch(err => {
+						let errors = err.response.data?.errors;
+						if (errors && typeof errors === 'object') {
+							Object.entries(errors).map(([key, value]) => {
+								$(`#input_tambah_${key}`).addClass('is-invalid')
+								$(`#error_tambah_${key}`).html(value).fadeIn(500)
+								$(`.select2-selection[aria-labelledby=select2-select_tambah_${key}-container]`).css('border-color', '#dc3545')
+							})
+						}
+						Swal.showValidationMessage(err.response.data?.message ?? err.response.statusText)
+					})
 
-					formData.append(
-						await csrf().then(csrf => csrf.token_name),
-						await csrf().then(csrf => csrf.hash)
-					)
+				return {
+					data: response
+				}
+			}
+		}).then((result) => {
+			if (result.value) {
+				Swal.fire({
+					title: 'Berhasil',
+					icon: 'success',
+					text: result.value.data,
+					showConfirmButton: false,
+					allowEscapeKey: false,
+					allowOutsideClick: false,
+					timer: 1500
+				}).then(() => {
+					bsCustomFileInput.destroy()
+					datatable.ajax.reload()
+				})
+			}
+		})
+	}
 
-					$('#form_tambah .invalid-feedback').fadeOut(500)
-					$('#form_tambah .is-invalid').removeClass('is-invalid')
-					let response = await axios.post(BASE_URL + 'insert', formData)
-						.then(res => res.data.message)
-						.catch(err => {
-							let errors = err.response.data.errors;
-							if (typeof errors === 'object') {
-								Object.entries(errors).map(([key, value]) => {
-									$(`#input_tambah_${key}`).addClass('is-invalid')
-									$(`#error_tambah_${key}`).html(value).fadeIn(500)
-									$(`.select2-selection[aria-labelledby=select2-select_tambah_${key}-container]`).css('border-color', '#dc3545')
-								})
+	$update = async (element) => {
+		let row = datatable.row($(element).closest('tr')).data();
+
+		Swal.fire({
+			title: 'Form Ubah Data',
+			width: '800px',
+			icon: 'info',
+			html: `<?= $this->load->view("contents/$uri_segment/components/form_ubah", '', true); ?>`,
+			confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
+			showCancelButton: true,
+			focusConfirm: false,
+			showLoaderOnConfirm: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			showCloseButton: true,
+			reverseButtons: true,
+			didOpen: () => {
+				$('.swal2-actions').css('z-index', '0')
+				select2_in_swal('ubah')
+				map_in_swal('ubah')
+
+				$('#form_ubah input#input_ubah_nim[name=nim]').val(row.nim);
+				$('#form_ubah input#input_ubah_nama[name=nama]').val(row.nama);
+				$('#form_ubah input#input_ubah_angkatan[name=angkatan]').val(row.angkatan);
+				$('#form_ubah input#input_ubah_latitude[name=latitude]').val(row.latitude);
+				$('#form_ubah input#input_ubah_longitude[name=longitude]').val(row.longitude);
+
+				$('#form_ubah select#select_ubah_fakultas_id')
+					.append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
+					.trigger('change')
+					.trigger({
+						type: 'select2:select',
+						params: {
+							data: {
+								id: row.fakultas_id,
+								fakultas_id: row.fakultas_id,
+								prodi_id: row.prodi_id
 							}
-							Swal.showValidationMessage(err.response.data.message)
+						}
+					})
+
+				$('#form_ubah select#select_ubah_prodi_id')
+					.append(new Option(row.nama_prodi, row.prodi_id, true, true))
+					.trigger('change')
+					.trigger({
+						type: 'select2:select',
+						params: {
+							data: {
+								fakultas_id: row.fakultas_id,
+								prodi_id: row.prodi_id
+							}
+						}
+					})
+
+				bsCustomFileInput.init()
+			},
+			preConfirm: async () => {
+				let formData = new FormData(document.getElementById('form_ubah'));
+				formData.append('uuid', row.uuid)
+				formData.append('old_foto', row.foto)
+
+				$('#form_tambah .invalid-feedback').fadeOut(500)
+				$('#form_tambah .is-invalid').removeClass('is-invalid')
+				let response = await axios.post(BASE_URL + 'update', formData)
+					.then(res => res.data.message)
+					.catch(err => {
+						let errors = err.response.data?.errors;
+						if (errors && typeof errors === 'object') {
+							Object.entries(errors).map(([key, value]) => {
+								$(`#input_ubah_${key}`).addClass('is-invalid')
+								$(`#error_ubah_${key}`).html(value).fadeIn(500)
+								$(`.select2-selection[aria-labelledby=select2-select_ubah_${key}-container]`).css('border-color', '#dc3545')
+							})
+						}
+						Swal.showValidationMessage(err.response.data?.message && err.response.statusText)
+					})
+
+				return {
+					data: response
+				}
+			}
+		}).then((result) => {
+			if (result.value) {
+				Swal.fire({
+					title: 'Berhasil',
+					icon: 'success',
+					text: result.value.data,
+					showConfirmButton: false,
+					allowEscapeKey: false,
+					allowOutsideClick: false,
+					timer: 1500
+				}).then(() => {
+					bsCustomFileInput.destroy()
+					datatable.ajax.reload()
+				})
+			}
+		})
+	}
+
+	$delete = async (element) => {
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!',
+			showCancelButton: true,
+			showCancelButton: true,
+			showLoaderOnConfirm: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			showCloseButton: true,
+			reverseButtons: true,
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				loading()
+
+				let formData = new FormData();
+				formData.append('uuid', $(element).data('uuid'));
+				axios.post(BASE_URL + 'delete', formData)
+					.then(res => {
+						Swal.fire({
+							icon: 'success',
+							title: 'Success!',
+							text: res.data.message,
+							showConfirmButton: false,
+							timer: 1500
 						})
 
-					return {
-						data: response
-					}
-				}
-			}).then((result) => {
-				if (result.value) {
-					Swal.fire({
-						title: 'Berhasil',
-						icon: 'success',
-						text: result.value.data,
-						showConfirmButton: false,
-						allowEscapeKey: false,
-						allowOutsideClick: false,
-						timer: 1500
-					}).then(() => {
-						bsCustomFileInput.destroy()
+						// socket.emit('backend-crud-mahasiswa', {})
 						datatable.ajax.reload()
+					}).catch(err => {
+						console.error(err);
+						Swal.fire({
+							icon: 'error',
+							title: err.response.statusText,
+							html: err.response.data.message,
+							// text: err.response.
+						})
+					})
+			}
+		})
+	}
+
+	const $inline = (element, name) => {
+		$(element).closest(`td.input_${name}`).removeClass('clicked');
+		let row = datatable.row($(element).closest('tr')).data();
+		let val = $(element).val();
+
+		let formData = new FormData();
+		formData.append('id', row.id)
+		formData.append('name', name)
+		formData.append('value', val)
+
+		axios.post(BASE_URL + 'inline', formData)
+			.then(res => {
+				let option = $(element).find('option:selected').html()
+				if (option) $(element).closest(`td.input_${name}`).html(option)
+				else $(element).closest(`td.input_${name}`).html(val)
+				datatable.ajax.reload()
+				toastr.success('Berhasil mengubah data', 'Sukses')
+			})
+			.catch(err => {
+				if (!err?.response) {
+					_handle_csrf();
+					return;
+				}
+
+				let errors = err.response.data?.errors;
+				if (errors && typeof errors === 'object') {
+					toastr.error('Tidak boleh kosong', 'Gagal')
+					Object.entries(errors).map(([key, value]) => {
+						$(`#inline_ubah_${key}`).addClass('is-invalid')
+					})
+					$(element).focus()
+
+					$(element).on('blur', (event) => {
+						if ($(element).val()) $inline(element, name);
+						else datatable.ajax.reload();
 					})
 				}
 			})
-		}
+	}
 
-		$update = async (element) => {
-			let row = datatable.row($(element).closest('tr')).data();
+	$import_excel = async () => {
+		Swal.fire({
+			title: 'Form Import Excel',
+			width: '800px',
+			icon: 'info',
+			html: `<?= $this->load->view("contents/$uri_segment/components/form_import", '', true); ?>`,
+			confirmButtonText: '<i class="fa fa-check-square-o"></i> Import File',
+			showCancelButton: true,
+			focusConfirm: false,
+			showLoaderOnConfirm: true,
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false,
+			showCloseButton: true,
+			reverseButtons: true,
+			didOpen: () => {
+				$('.swal2-actions').css('z-index', '0')
+				bsCustomFileInput.init()
 
-			Swal.fire({
-				title: 'Form Ubah Data',
-				width: '800px',
-				icon: 'info',
-				html: `<?= $this->load->view("contents/$uri_segment/components/form_ubah", '', true); ?>`,
-				confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
-				showCancelButton: true,
-				focusConfirm: false,
-				showLoaderOnConfirm: true,
-				allowOutsideClick: false,
-				allowEscapeKey: false,
-				allowEnterKey: false,
-				showCloseButton: true,
-				reverseButtons: true,
-				didOpen: () => {
-					$('.swal2-actions').css('z-index', '0')
-					select2_in_swal('ubah')
-					map_in_swal('ubah')
-
-					$('#form_ubah input#input_ubah_nim[name=nim]').val(row.nim);
-					$('#form_ubah input#input_ubah_nama[name=nama]').val(row.nama);
-					$('#form_ubah input#input_ubah_angkatan[name=angkatan]').val(row.angkatan);
-					$('#form_ubah input#input_ubah_latitude[name=latitude]').val(row.latitude);
-					$('#form_ubah input#input_ubah_longitude[name=longitude]').val(row.longitude);
-
-					$('#form_ubah select#select_ubah_fakultas_id')
-						.append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
-						.trigger('change')
-						.trigger({
-							type: 'select2:select',
-							params: {
-								data: {
-									id: row.fakultas_id,
-									fakultas_id: row.fakultas_id,
-									prodi_id: row.prodi_id
-								}
-							}
-						})
-
-					$('#form_ubah select#select_ubah_prodi_id')
-						.append(new Option(row.nama_prodi, row.prodi_id, true, true))
-						.trigger('change')
-						.trigger({
-							type: 'select2:select',
-							params: {
-								data: {
-									fakultas_id: row.fakultas_id,
-									prodi_id: row.prodi_id
-								}
-							}
-						})
-
-					bsCustomFileInput.init()
-				},
-				preConfirm: async () => {
-					let formData = new FormData(document.getElementById('form_ubah'));
-
-					formData.append(
-						await csrf().then(csrf => csrf.token_name),
-						await csrf().then(csrf => csrf.hash)
-					)
-					formData.append('id', row.id)
-					formData.append('old_foto', row.foto)
-
-					$('#form_tambah .invalid-feedback').fadeOut(500)
-					$('#form_tambah .is-invalid').removeClass('is-invalid')
-					let response = await axios.post(BASE_URL + 'update', formData)
-						.then(res => res.data.message)
-						.catch(err => {
-							let errors = err.response.data.errors;
-							if (typeof errors === 'object') {
-								Object.entries(errors).map(([key, value]) => {
-									$(`#input_ubah_${key}`).addClass('is-invalid')
-									$(`#error_ubah_${key}`).html(value).fadeIn(500)
-									$(`.select2-selection[aria-labelledby=select2-select_ubah_${key}-container]`).css('border-color', '#dc3545')
-								})
-							}
-							Swal.showValidationMessage(err.response.data.message)
-						})
-
-					return {
-						data: response
-					}
-				}
-			}).then((result) => {
-				if (result.value) {
-					Swal.fire({
-						title: 'Berhasil',
-						icon: 'success',
-						text: result.value.data,
-						showConfirmButton: false,
-						allowEscapeKey: false,
-						allowOutsideClick: false,
-						timer: 1500
-					}).then(() => {
-						bsCustomFileInput.destroy()
-						datatable.ajax.reload()
-					})
-				}
-			})
-		}
-
-		$delete = async (element) => {
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!',
-				showCancelButton: true,
-				showCancelButton: true,
-				showLoaderOnConfirm: true,
-				allowOutsideClick: false,
-				allowEscapeKey: false,
-				allowEnterKey: false,
-				showCloseButton: true,
-				reverseButtons: true,
-			}).then(async (result) => {
-				if (result.isConfirmed) {
-					loading()
+				$('#form_import #downloadTemplateExcel').click(async () => {
+					$('.tombol-download-template').hide()
+					$('.loader').show()
 
 					let formData = new FormData();
-					formData.append('id', $(element).data('id'));
+
 					formData.append(
 						await csrf().then(csrf => csrf.token_name),
 						await csrf().then(csrf => csrf.hash)
 					)
 
-					axios.post(BASE_URL + 'delete', formData)
-						.then(res => {
-							Swal.fire({
-								icon: 'success',
-								title: 'Success!',
-								text: res.data.message,
-								showConfirmButton: false,
-								timer: 1500
-							})
+					axios.post(BASE_URL + 'download_template_excel', formData, {
+							responseType: 'blob'
+						})
+						.then(blob => {
+							$('.tombol-download-template').show()
+							$('.loader').hide()
 
-							// socket.emit('backend-crud-mahasiswa', {})
-							datatable.ajax.reload()
+							const url = window.URL.createObjectURL(new Blob([blob.data]));
+							const a = document.createElement('a');
+							a.style.display = 'none';
+							a.href = url;
+							a.download = blob.headers.filename;
+							document.body.appendChild(a);
+							a.click();
+							window.URL.revokeObjectURL(url);
 						}).catch(err => {
 							console.error(err);
-							Swal.fire({
-								icon: 'error',
-								title: err.response.statusText,
-								html: err.response.data.message,
-								// text: err.response.
-							})
 						})
-				}
-			})
-		}
+				})
 
-		$import_excel = async () => {
-			Swal.fire({
-				title: 'Form Import Excel',
-				width: '800px',
-				icon: 'info',
-				html: `<?= $this->load->view("contents/$uri_segment/components/form_import", '', true); ?>`,
-				confirmButtonText: '<i class="fa fa-check-square-o"></i> Import File',
-				showCancelButton: true,
-				focusConfirm: false,
-				showLoaderOnConfirm: true,
-				allowOutsideClick: false,
-				allowEscapeKey: false,
-				allowEnterKey: false,
-				showCloseButton: true,
-				reverseButtons: true,
-				didOpen: () => {
-					$('.swal2-actions').css('z-index', '0')
-					bsCustomFileInput.init()
+			},
+			preConfirm: async () => {
+				let formData = new FormData(document.getElementById('form_import'));
 
-					$('#form_import #downloadTemplateExcel').click(async () => {
-						// location.replace(BASE_URL + "download_template_excel")
-						$('.tombol-download-template').hide()
-						$('.loader').show()
+				let response = await axios.post(BASE_URL + 'import_excel', formData)
+					.then(res => res.data.message)
+					.catch(err => {
+						let errors = err.response.data.errors;
 
-						let formData = new FormData();
-
-						formData.append(
-							await csrf().then(csrf => csrf.token_name),
-							await csrf().then(csrf => csrf.hash)
-						)
-
-						axios.post(BASE_URL + 'download_template_excel', formData, {
-								responseType: 'blob'
-							})
-							.then(blob => {
-								$('.tombol-download-template').show()
-								$('.loader').hide()
-
-								const url = window.URL.createObjectURL(new Blob([blob.data]));
-								const a = document.createElement('a');
-								a.style.display = 'none';
-								a.href = url;
-								a.download = 'template_excel.xlsx';
-								document.body.appendChild(a);
-								a.click();
-								window.URL.revokeObjectURL(url);
-							}).catch(err => {
-								console.error(err);
-
-							})
+						Swal.showValidationMessage(err.response.data.message)
 					})
 
-				},
-				preConfirm: async () => {
-					let formData = new FormData(document.getElementById('form_import'));
+				return {
+					data: response
+				}
+			}
+		}).then((result) => {
+			if (result.value) {
+				Swal.fire({
+					title: 'Berhasil',
+					icon: 'success',
+					text: result.value.data,
+					showConfirmButton: false,
+					allowEscapeKey: false,
+					allowOutsideClick: false,
+					timer: 1500
+				}).then(() => {
+					bsCustomFileInput.destroy()
+					datatable.ajax.reload()
+				})
+			}
+		})
+	}
 
-					formData.append(
-						await csrf().then(csrf => csrf.token_name),
-						await csrf().then(csrf => csrf.hash)
-					)
+	$export_excel = async () => {
+		loading()
 
-					let response = await axios.post(BASE_URL + 'import_excel', formData)
-						.then(res => res.data.message)
-						.catch(err => {
-							let errors = err.response.data.errors;
+		let formData = new FormData();
+		formData.append(
+			await csrf().then(csrf => csrf.token_name),
+			await csrf().then(csrf => csrf.hash)
+		)
 
-							Swal.showValidationMessage(err.response.data.message)
-						})
+		axios.post(BASE_URL + 'export_excel', formData, {
+				responseType: 'blob'
+			})
+			.then(blob => {
+				const url = window.URL.createObjectURL(new Blob([blob.data]));
+				const a = document.createElement('a');
+				a.style.display = 'none';
+				a.href = url;
+				a.download = blob.headers.filename;
+				document.body.appendChild(a);
+				a.click();
+				window.URL.revokeObjectURL(url);
+				Swal.fire({
+					icon: 'success',
+					title: 'Success!',
+					text: "Berhasil melakukan export",
+					showConfirmButton: false,
+					timer: 1500
+				})
+			}).catch(err => {
+				console.error(err);
+				Swal.fire({
+					icon: 'error',
+					title: err.response.statusText,
+					html: err.response.data.message,
+					// text: err.response.statusText,
+				})
+			})
+	}
 
+	$export_pdf = async () => {
+		loading()
+
+		let formData = new FormData();
+		formData.append(
+			await csrf().then(csrf => csrf.token_name),
+			await csrf().then(csrf => csrf.hash)
+		)
+
+		axios.post(BASE_URL + 'export_pdf', formData, {
+				responseType: 'blob'
+			})
+			.then(blob => {
+				const url = window.URL.createObjectURL(new Blob([blob.data]));
+				const a = document.createElement('a');
+				a.style.display = 'none';
+				a.href = url;
+				a.download = blob.headers.filename;
+				document.body.appendChild(a);
+				a.click();
+				window.URL.revokeObjectURL(url);
+				Swal.fire({
+					icon: 'success',
+					title: 'Success!',
+					text: "Berhasil melakukan export",
+					showConfirmButton: false,
+					timer: 1500
+				})
+			}).catch(err => {
+				console.error(err);
+				Swal.fire({
+					icon: 'error',
+					title: err.response.statusText,
+					html: err.response.data.message,
+					// text: err.response.statusText,
+				})
+			})
+	}
+
+	$export_word = async () => {
+		loading()
+
+		let formData = new FormData();
+		formData.append(
+			await csrf().then(csrf => csrf.token_name),
+			await csrf().then(csrf => csrf.hash)
+		)
+
+		axios.post(BASE_URL + 'export_docx', formData, {
+				responseType: 'blob'
+			})
+			.then(blob => {
+				const url = window.URL.createObjectURL(new Blob([blob.data]));
+				const a = document.createElement('a');
+				a.style.display = 'none';
+				a.href = url;
+				a.download = blob.headers.filename;
+				document.body.appendChild(a);
+				a.click();
+				window.URL.revokeObjectURL(url);
+				Swal.fire({
+					icon: 'success',
+					title: 'Success!',
+					text: "Berhasil melakukan export",
+					showConfirmButton: false,
+					timer: 1500
+				})
+			}).catch(err => {
+				console.error(err);
+				Swal.fire({
+					icon: 'error',
+					title: err.response.statusText,
+					html: err.response.data.message,
+					// text: err.response.statusText,
+				})
+			})
+	}
+	// ================================================== //
+</script>
+
+<script>
+	/**
+	 * Keperluan input select2 didalam form
+	 */
+	// ================================================== //
+	const select2_in_swal = (status) => {
+		$(`#form_${status} select#select_${status}_fakultas_id`).select2({
+			placeholder: 'Pilih Fakultas',
+			width: '100%',
+			dropdownParent: $(`#swal2-html-container`),
+			ajax: {
+				url: BASE_URL + 'ajax_get_fakultas',
+				dataType: 'JSON',
+				delay: 250,
+				data: function(params) {
 					return {
-						data: response
-					}
+						search: params.term, // search term
+					};
+				},
+				processResults: function(response) {
+					let myResults = [];
+					response.data.map(item => {
+						myResults.push({
+							'id': item.id,
+							'text': item.nama
+						});
+					})
+					return {
+						results: myResults
+					};
 				}
-			}).then((result) => {
-				if (result.value) {
-					Swal.fire({
-						title: 'Berhasil',
-						icon: 'success',
-						text: result.value.data,
-						showConfirmButton: false,
-						allowEscapeKey: false,
-						allowOutsideClick: false,
-						timer: 1500
-					}).then(() => {
-						bsCustomFileInput.destroy()
-						datatable.ajax.reload()
-					})
-				}
-			})
-		}
-
-		$export_excel = async () => {
-			loading()
-
-			let formData = new FormData();
-			formData.append(
-				await csrf().then(csrf => csrf.token_name),
-				await csrf().then(csrf => csrf.hash)
-			)
-
-			axios.post(BASE_URL + 'export_excel', formData, {
-					responseType: 'blob'
-				})
-				.then(blob => {
-					const url = window.URL.createObjectURL(new Blob([blob.data]));
-					const a = document.createElement('a');
-					a.style.display = 'none';
-					a.href = url;
-					a.download = 'export_excel.xlsx';
-					document.body.appendChild(a);
-					a.click();
-					window.URL.revokeObjectURL(url);
-					Swal.fire({
-						icon: 'success',
-						title: 'Success!',
-						text: "Berhasil melakukan export",
-						showConfirmButton: false,
-						timer: 1500
-					})
-				}).catch(err => {
-					console.error(err);
-					Swal.fire({
-						icon: 'error',
-						title: err.response.statusText,
-						html: err.response.data.message,
-						// text: err.response.statusText,
-					})
-				})
-		}
-
-		$export_pdf = async () => {
-			loading()
-
-			let formData = new FormData();
-			formData.append(
-				await csrf().then(csrf => csrf.token_name),
-				await csrf().then(csrf => csrf.hash)
-			)
-
-			axios.post(BASE_URL + 'export_pdf', formData, {
-					responseType: 'blob'
-				})
-				.then(blob => {
-					const url = window.URL.createObjectURL(new Blob([blob.data]));
-					const a = document.createElement('a');
-					a.style.display = 'none';
-					a.href = url;
-					a.download = 'export_pdf.pdf';
-					document.body.appendChild(a);
-					a.click();
-					window.URL.revokeObjectURL(url);
-					Swal.fire({
-						icon: 'success',
-						title: 'Success!',
-						text: "Berhasil melakukan export",
-						showConfirmButton: false,
-						timer: 1500
-					})
-				}).catch(err => {
-					console.error(err);
-					Swal.fire({
-						icon: 'error',
-						title: err.response.statusText,
-						html: err.response.data.message,
-						// text: err.response.statusText,
-					})
-				})
-		}
-
-		$export_word = async () => {
-			loading()
-
-			let formData = new FormData();
-			formData.append(
-				await csrf().then(csrf => csrf.token_name),
-				await csrf().then(csrf => csrf.hash)
-			)
-
-			axios.post(BASE_URL + 'export_docx', formData, {
-					responseType: 'blob'
-				})
-				.then(blob => {
-					const url = window.URL.createObjectURL(new Blob([blob.data]));
-					const a = document.createElement('a');
-					a.style.display = 'none';
-					a.href = url;
-					a.download = 'export_word.docx';
-					document.body.appendChild(a);
-					a.click();
-					window.URL.revokeObjectURL(url);
-					Swal.fire({
-						icon: 'success',
-						title: 'Success!',
-						text: "Berhasil melakukan export",
-						showConfirmButton: false,
-						timer: 1500
-					})
-				}).catch(err => {
-					console.error(err);
-					Swal.fire({
-						icon: 'error',
-						title: err.response.statusText,
-						html: err.response.data.message,
-						// text: err.response.statusText,
-					})
-				})
-		}
-		// ================================================== //
-
-		/**
-		 * Keperluan input select2 didalam form
-		 */
-		// ================================================== //
-		const select2_in_swal = (status) => {
-			$(`#form_${status} select#select_${status}_fakultas_id`).select2({
-				placeholder: 'Pilih Fakultas',
+			}
+		}).on('select2:select', function(event) {
+			$(`#form_${status} #select_${status}_prodi_id`).prop('disabled', false)
+			$(`#form_${status} #select_${status}_prodi_id`).select2({
+				placeholder: 'Pilih Program Studi',
 				width: '100%',
 				dropdownParent: $(`#swal2-html-container`),
 				ajax: {
-					url: BASE_URL + 'ajax_get_fakultas',
+					url: BASE_URL + 'ajax_get_prodi',
 					dataType: 'JSON',
 					delay: 250,
 					data: function(params) {
 						return {
 							search: params.term, // search term
+							fakultas_id: event.params.data.id
 						};
 					},
 					processResults: function(response) {
@@ -1031,38 +1018,173 @@
 						};
 					}
 				}
-			}).on('select2:select', function(event) {
-				$(`#form_${status} #select_${status}_prodi_id`).prop('disabled', false)
-				$(`#form_${status} #select_${status}_prodi_id`).select2({
-					placeholder: 'Pilih Program Studi',
-					width: '100%',
-					dropdownParent: $(`#swal2-html-container`),
-					ajax: {
-						url: BASE_URL + 'ajax_get_prodi',
-						dataType: 'JSON',
-						delay: 250,
-						data: function(params) {
-							return {
-								search: params.term, // search term
-								fakultas_id: event.params.data.id
-							};
-						},
-						processResults: function(response) {
-							let myResults = [];
-							response.data.map(item => {
-								myResults.push({
-									'id': item.id,
-									'text': item.nama
+			})
+		})
+	}
+	// ================================================== //
+</script>
+
+<script>
+	/**
+	 * Keperluan WebGIS dengan Leaflet
+	 * 
+	 */
+	// ================================================== //
+
+	const initMap = () => {
+		if (map) map.remove()
+		map = L.map("map", {
+			center: [-7.5828, 111.0444],
+			zoom: 12,
+			layers: [
+				/** OpenStreetMap Tile Layer */
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+				}),
+			],
+			scrollWheelZoom: false,
+		})
+
+		/** Legend */
+		legend = L.control({
+			position: "bottomleft"
+		})
+
+		legend.onAdd = (map) => {
+			let div = L.DomUtil.create("div", "legend");
+			div.innerHTML += "<h3><b>KABUPATEN KARANGANYAR</b></h3>";
+			return div;
+		}
+
+		legend.addTo(map)
+
+		/** GeoJSON Features */
+		$.getJSON(BASE_URL + 'ajax_get_geojson',
+			response => {
+				let geojson = L.geoJSON(response, {
+					onEachFeature: (feature, layer) => {
+						layer.on({
+							mouseover: (event) => {
+								let layer = event.target;
+								layer.setStyle({
+									weight: 5,
+									dashArray: '',
+									fillOpacity: 0.7
 								});
-							})
-							return {
-								results: myResults
-							};
-						}
+								if (!L.Browser.ie && !L.Browser.opera &&
+									!L.Browser.edge) {
+									layer.bringToFront();
+								}
+							},
+							mouseout: (event) => {
+								geojson.resetStyle(event.target)
+							},
+							click: (event) => {
+								map.fitBounds(event
+									.target
+									.getBounds()
+								);
+							}
+						})
+					}
+				}).addTo(map)
+			})
+
+		axios.get(BASE_URL + 'ajax_get_kecamatan')
+			.then(res => {
+				let results = res.data.data
+				results.map(item => {
+					if (item.latitude && item.longitude) {
+						L.marker([item.latitude, item.longitude])
+							.addTo(map)
+							.bindPopup(
+								new L.Popup({
+									autoClose: false,
+									closeOnClick: false
+								})
+								.setContent(`<b>${item.nama}</b>`)
+								.setLatLng([item.latitude, item.longitude])
+							).openPopup();
 					}
 				})
 			})
-		}
-		// ================================================== //
-	})
+
+		axios.get(BASE_URL + 'ajax_get_latlng')
+			.then(res => {
+				let results = res.data.data
+				results.map(item => {
+					if (item.latitude && item.longitude) {
+						L.marker([item.latitude, item.longitude], {
+								icon: L.icon({
+									iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
+									iconSize: [
+										40, 40
+									], // size of the icon
+									iconAnchor: [
+										20, 40
+									], // point of the icon which will correspond to marker's location
+									popupAnchor: [
+										0, -30
+									] // point from which the popup should open relative to the iconAnchor
+								})
+							})
+							.addTo(map)
+							.bindPopup(
+								new L.Popup({
+									autoClose: false,
+									closeOnClick: false
+								})
+								.setContent(`<b>${item.nama}</b>`)
+								.setLatLng([
+									item.latitude, item.longitude
+								])
+							).openPopup();
+					}
+				})
+			})
+	}
+
+	const map_in_swal = (status) => {
+
+		if (map_modal) map_modal.remove()
+		map_modal = L.map(`map-${status}`, {
+			center: [-7.5828, 111.0444],
+			zoom: 12,
+			layers: [
+				/** OpenStreetMap Tile Layer */
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+				}),
+
+			],
+			scrollWheelZoom: false,
+		})
+
+		setTimeout(() => {
+			map_modal.invalidateSize()
+		}, 500);
+
+		map_modal.on('click', (event) => {
+			if (marker_modal) map_modal.removeLayer(marker_modal)
+			marker_modal = L.marker([event.latlng.lat, event.latlng
+				.lng
+			], { //-7.641355, 111.0377783
+				icon: L.icon({
+					iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/678111-map-marker-512.png',
+					iconSize: [40, 40], // size of the icon
+					iconAnchor: [
+						20, 40
+					], // point of the icon which will correspond to marker's location
+					popupAnchor: [
+						0, -30
+					] // point from which the popup should open relative to the iconAnchor
+				})
+			})
+			marker_modal.addTo(map_modal)
+			marker_modal.bindPopup(`${event.latlng.lat}, ${event.latlng.lng}`).openPopup()
+
+			$(`#input_${status}_latitude`).val(event.latlng.lat)
+			$(`#input_${status}_longitude`).val(event.latlng.lng)
+		})
+	}
 </script>

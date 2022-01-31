@@ -1,24 +1,26 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
+use Ramsey\Uuid\Uuid;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Kategori extends MY_Controller
 {
-	private $_path = 'backend/referensi/kategori/'; // Contoh 'backend/dashboard/ / 'frontend/home/'
-
 	/**
 	 * Kategori constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
+		// Config
+		$this->_name = 'kategori';
+		$this->_path = "backend/referensi/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
+		//=========================================================//
+
 		has_permission('access-kategori');
 		//=========================================================//
 
-		$this->load->model($this->_path . 'M_Kategori');   // Load model
+		$this->load->model($this->_path . 'Crud');   // Load CRUD model
 	}
 
 	/**
@@ -28,13 +30,14 @@ class Kategori extends MY_Controller
 	public function index($type)
 	{
 		method('get');
-		//=========================================================//        
+		//=========================================================// 
+
 		redirect($this->_path . "manage/$type");
 	}
 
-	public function manage($type): CI_Loader
+	public function manage($type)
 	{
-		return $this->templates->render([
+		$config = [
 			'title' => ucwords(str_replace('_', ' ', $type)),
 			'type' => 'backend', // auth, frontend, backend
 			'uri_segment' => $this->_path,
@@ -46,34 +49,30 @@ class Kategori extends MY_Controller
 			'style' => 'contents/' . $this->_path . 'css/style.css.php',
 			'type_kategori' => ucwords(str_replace('_', ' ', $type)),
 			'modals' => [],
-		]);
+		];
+
+		render($config);
 	}
+
+	//=============================================================//
+	//======================== DATATABLES =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan DataTables server-side
 	 *
-	 * @return CI_Output
 	 */
-	public function data(): CI_Output
+	public function data()
 	{
 		method('get');
 		//=========================================================//
 
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.nama, a.type, a.created_at FROM kategori AS a
-            WHERE a.is_active = '1' AND a.type = '"
-				. strtolower(explode(" ", $this->input->get('type'))[1]) . "'"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		return $this->output->set_content_type('application/json')
-			->set_output($datatables->generate());
+		response($this->Crud->datatables());
 	}
+
+	//=============================================================//
+	//======================== VALIDATOR =========================//
+	//=============================================================//
 
 	/**
 	 * Keperluan validasi server-side
@@ -83,171 +82,160 @@ class Kategori extends MY_Controller
 		$this->form_validation->set_error_delimiters('', '');
 		$this->form_validation->set_rules('nama', 'nama', 'required|trim');
 
-		if (!$this->form_validation->run()) {
-			$this->output->set_content_type('application/json')
-				->set_status_header(422);
-			echo json_encode([
+		if (!$this->form_validation->run())
+			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array()
-			]);
-			exit;
-		}
+			], 422);
 	}
+
+	//=============================================================//
+	//=========================== CRUD ============================//
+	//=============================================================//
 
 	/**
 	 * Keperluan CRUD tambah data
 	 *
-	 * @return CI_Output
 	 */
-	public function insert(): CI_Output
+	public function insert()
 	{
-		has_permission('create-kategori');
+		has_permission("create-{$this->_name}");
 		method('post');
 		$this->_validator();
 		//=========================================================//
 
 		$this->db->trans_begin();   // Begin transaction
-		$this->M_Kategori->insert(
+		$this->Crud->insert(
 			[
-				'nama' => $this->input->post('nama', true),
-				'slug' => slugify($this->input->post('nama', true)),
-				'type' => strtolower(explode(" ", $this->input->post('type'))[1]),
+				'uuid' => Uuid::uuid4()->toString(),
+				'nama' => post('nama'),
+				'slug' => slugify(post('nama')),
+				'type' => strtolower(explode(" ", post('type'))[1]),
 				'is_active' => '1',
 				'created_at' => date('Y-m-d H:i:s'),
 				'created_by' => get_user_id(),
 			]
 		);
 
-		if (!$this->db->trans_status()) {   // Check transaction status
+		if (!$this->db->trans_status()) {  // Check transaction status
 			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error()
+			], 500);
 		}
 
 		$this->db->trans_commit();  // Commit transaction
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Created successfuly'
-			]));
+		response([
+			'status' => true,
+			'message' => 'Created successfuly'
+		]);
 	}
 
 	/**
-	 * Keperluan CRUD get where data
+	 * Keperluan CRUD detail data
 	 *
-	 * @return CI_Output
 	 */
-	public function get_where(): CI_Output
+	public function get_where()
 	{
 		method('get');
 		//=========================================================//
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Found',
-				'data' => $this->M_Kategori->get_where(
-					[
-						'a.id' => $this->input->post('id', true),
-						'a.is_active' => '1',
-						'type' => strtolower(explode(" ", $this->input->post('type'))[1]),
-					]
-				)
-			]));
+		response([
+			'status' => true,
+			'message' => 'Found',
+			'data' => $this->Crud->get_where(
+				[
+					'a.id' => post('id'),
+					'a.is_active' => '1',
+					'type' => strtolower(explode(" ", post('type'))[1]),
+				]
+			)
+		]);
 	}
 
 	/**
-	 * Keperluan CRUD update data
+	 * Keperluan CRUD ubah data
 	 *
-	 * @return CI_Output
 	 */
-	public function update(): CI_Output
+	public function update()
 	{
-		has_permission('update-kategori');
+		has_permission("update-{$this->_name}");
 		method('post');
 		$this->_validator();
 		//=========================================================//
 
 		$this->db->trans_begin();   // Begin transaction
-		$this->M_Kategori->update(
+		$this->Crud->update(
 			[
-				'nama' => $this->input->post('nama', true),
-				'slug' => slugify($this->input->post('nama', true)),
-				'type' => strtolower(explode(" ", $this->input->post('type'))[1]),
+				'uuid' => Uuid::uuid4()->toString(),
+				'nama' => post('nama'),
+				'slug' => slugify(post('nama')),
+				'type' => strtolower(explode(" ", post('type'))[1]),
 				'is_active' => '1',
 				'updated_at' => date('Y-m-d H:i:s'),
 				'updated_by' => get_user_id(),
 			],
-			$this->input->post('id', true)
+			[
+				'id' => post('id')
+			]
 		);
 
 		if (!$this->db->trans_status()) {   // Check transaction status
 			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error()
+			], 500);
 		}
 		$this->db->trans_commit();  // Commit transaction
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Updated successfuly'
-			]));
+		response([
+			'status' => true,
+			'message' => 'Updated successfuly'
+		], 200);
 	}
 
 	/**
-	 * Keperluan CRUD delete data
+	 * Keperluan CRUD hapus data
 	 *
-	 * @return CI_Output
 	 */
-	public function delete(): CI_Output
+	public function delete()
 	{
-		has_permission('delete-kategori');
+		has_permission("delete-{$this->_name}");
 		method('post');
 		//=========================================================//
 
 		$this->db->trans_begin();   // Begin transaction
-		$this->M_Kategori->update(
+		$this->Crud->update(
 			[
+				'uuid' => Uuid::uuid4()->toString(),
 				'is_active' => '0',
 				'deleted_at' => date('Y-m-d H:i:s'),
 				'deleted_by' => get_user_id()
 			],
-			$this->input->post('id', true)
+			[
+				'id' => post('id')
+			]
 		);
 
 		if (!$this->db->trans_status()) {   // Check transaction status
 			$this->db->trans_rollback();    // Rollback transaction
-			return $this->output->set_content_type('application/json')
-				->set_status_header(500)
-				->set_output(json_encode([
-					'status' => false,
-					'message' => 'Failed',
-					'errors' => $this->db->error()
-				]));
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error()
+			], 500);
 		}
 		$this->db->trans_commit();  // Commit transaction
 
-		return $this->output->set_content_type('application/json')
-			->set_status_header(200)
-			->set_output(json_encode([
-				'status' => true,
-				'message' => 'Deleted successfuly',
-			]));
+		response([
+			'status' => true,
+			'message' => 'Deleted successfuly',
+		]);
 	}
 }
 

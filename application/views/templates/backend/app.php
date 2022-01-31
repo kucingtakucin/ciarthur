@@ -34,6 +34,9 @@
 	<!-- Feather icon-->
 	<link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/feather-icon.css">
 
+	<!-- DataTables -->
+	<link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/datatables.css">
+
 	<!-- Bootstrap css-->
 	<link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/bootstrap.css">
 
@@ -51,11 +54,9 @@
 	<!-- Animate.css -->
 	<link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/animate.css">
 
-	<!-- DataTables -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.css" />
-
 	<!-- Bootstrap Datepicker -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+	<link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_backend') ?>css/vendors/date-picker.css">
 
 	<!-- Leaflet -->
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
@@ -66,6 +67,9 @@
 
 	<!-- Summernote -->
 	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+	<!-- Toastr -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 	<!-- Custom Stylesheets -->
 	<link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
@@ -109,7 +113,7 @@
 							</div>
 						</li>
 						<li>
-							<div class="settings" id="c-pills-home-tab" title="Settings"><i class="icon-settings"></i></div>
+							<div class="settings" id="c-pills-home-tab" title="Settings"><i class="fa fa-gear"></i></div>
 						</li>
 						<li>
 							<div class="mode"><i class="fa fa-moon-o" title="Mode"></i></div>
@@ -223,7 +227,8 @@
 
 
 	<!-- Latest jquery-->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
+	<script src="<?= $this->config->item('assets_backend') ?>js/jquery-3.5.1.min.js"></script>
 
 	<!-- Bootstrap js-->
 	<script src="<?= $this->config->item('assets_backend') ?>js/bootstrap/popper.min.js"></script>
@@ -247,21 +252,20 @@
 	<script src="<?= $this->config->item('assets_backend') ?>js/tooltip-init.js"></script>
 
 	<!-- Select2 -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
 	<script src="<?= $this->config->item('assets_backend') ?>js/select2/select2.full.min.js"></script>
-	<script src="<?= $this->config->item('assets_backend') ?>js/select2/select2-custom.js"></script>
 
 	<!-- DataTables -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.0/b-2.0.0/b-colvis-2.0.0/b-html5-2.0.0/b-print-2.0.0/fh-3.1.9/r-2.2.9/datatables.min.js">
-	</script>
+	<!-- <script src="<?= $this->config->item('assets_backend') ?>js/datatable/datatables/jquery.dataTables.min.js"></script> -->
+	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.4/b-2.2.2/b-colvis-2.2.2/datatables.min.js"></script>
 
 	<!-- JQuery Validation -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
-	<!-- Bootstrap Datepicker -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- Datepicker -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+	<script src="<?= $this->config->item('assets_backend') ?>js/datepicker/date-picker/datepicker.js"></script>
+	<script src="<?= $this->config->item('assets_backend') ?>js/datepicker/date-picker/datepicker.en.js"></script>
+	<script src="<?= $this->config->item('assets_backend') ?>js/datepicker/date-picker/datepicker.custom.js"></script>
 
 	<!-- SweetAlert2 -->
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -297,17 +301,131 @@
 	<script src="https://cdn.tiny.cloud/1/g63i2rcs560dviwqecgsz7kitie6ynyiut84jt5lph6j72rz/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
 	<!-- Theme Customizer -->
-	<script src="<?= $this->config->item('assets_backend') ?>js/theme-customizer/customizer.js"></script>
+	<script src="<?= base_url() ?>assets/cuba/js/theme-customizer/customizer.js"></script>
+
+	<!-- Loading Overlay -->
+	<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+
+	<!-- Toastr -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 	<!-- Custom Scripts-->
 	<script src="<?= $this->config->item('assets_backend') ?>js/script.js"></script>
+
 	<script>
-		let csrf, loading, $edit_account, pusher, socket, channel, hex2bin, bin2hex;
+		/**
+		 * Keperluan generate csrf
+		 */
+		// ================================================== //
+
+		const csrf = {
+			token_name: '<?= $this->security->get_csrf_token_name() ?>',
+			hash: '<?= $this->security->get_csrf_hash() ?>'
+		}
+
+		// JQuery AJAX Interceptor 
+		$.ajaxSetup({
+			beforeSend: function(xhr, settings) {
+				xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+				if (typeof settings?.data !== 'undefined') {
+					if (typeof settings.data?.append !== 'undefined') {
+						settings.data.append(csrf.token_name, csrf.hash)
+					} else {
+						if (typeof settings.data === 'string') {
+							settings.data = settings.data + `&${csrf.token_name}=${csrf.hash}`
+						} else if (typeof settings.data === 'object') {
+							let formdata = new FormData;
+							for (let key in settings.data) {
+								formdata.append(key, settings.data[key]);
+							}
+							formdata.append(csrf.token_name, csrf.hash)
+							settings.data = formdata;
+						}
+					}
+				} else {
+					let formdata = new FormData;
+					formdata.append(csrf.token_name, csrf.hash)
+					settings.data = formdata
+				}
+			}
+		});
+
+		$(document).ajaxSuccess(function(event, jqxhr, settings) {
+			if (typeof jqxhr.responseJSON !== 'undefined') {
+				let res = jqxhr.responseJSON
+				if (typeof res.csrf !== 'undefined') {
+					csrf.token_name = res.csrf.token_name
+					csrf.hash = res.csrf.hash
+				}
+			}
+		});
+
+		$(document).ajaxError(function(event, jqxhr, settings) {
+			if (typeof jqxhr.responseJSON !== 'undefined') {
+				let res = jqxhr.responseJSON
+				if (typeof res.csrf !== 'undefined') {
+					csrf.token_name = res.csrf.token_name
+					csrf.hash = res.csrf.hash
+				}
+			}
+		});
+
+		$(document).ajaxStart((event, jqxhr, settings) => $.LoadingOverlay("show"));
+		$(document).ajaxStop((event, jqxhr, settings) => $.LoadingOverlay("hide"));
 
 		/** Set default AJAX headers */
 		axios.defaults.headers.common = {
 			"X-Requested-With": "XMLHttpRequest",
 		};
+
+		// Add a request interceptor
+		axios.interceptors.request.use(function(config) {
+			// Do something before request is sent
+			if (config?.data) config.data.append(csrf.token_name, csrf.hash)
+			return config;
+		}, function(error) {
+			// Do something with request error
+			return Promise.reject(error);
+		});
+
+		// Add a response interceptor
+		axios.interceptors.response.use(function(response) {
+			// Any status code that lie within the range of 2xx cause this function to trigger
+			// Do something with response data
+			if (response?.data?.csrf) {
+				csrf.token_name = response.data?.csrf.token_name;
+				csrf.hash = response.data?.csrf.hash;
+			}
+
+			return response;
+		}, function(error) {
+			if (error?.response) {
+				csrf.token_name = error.response.data?.csrf.token_name;
+				csrf.hash = error.response.data?.csrf.hash;
+			}
+			// Any status codes that falls outside the range of 2xx cause this function to trigger
+			// Do something with response error
+			return Promise.reject(error);
+		});
+
+		// Handle csrf error 403
+		const _handle_csrf = () => {
+			Swal.fire({
+				title: 'Terjadi aksi yang tidak diperbolehkan',
+				text: "Silakan refresh browser anda",
+				icon: 'info',
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Oke',
+				showCancelButton: false,
+				showLoaderOnConfirm: true,
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				allowEnterKey: false,
+			}).then(async (result) => {
+				if (result.isConfirmed) location.reload()
+			})
+		}
 
 		/**
 		 * Keperluan disable inspect element
@@ -315,236 +433,178 @@
 		// ================================================== //
 
 		// Disable right click
-		$(document).contextmenu(function(event) {
-			event.preventDefault()
-		})
+		$(document).contextmenu((event) => event.preventDefault())
 
 		$(document).keydown(function(event) {
 			// Disable F12
 			if (event.keyCode == 123) return false;
 
 			// Disable Ctrl + Shift + I
-			if (event.ctrlKey && event.shiftKey && event.keyCode == 'I'.charCodeAt(0)) {
-				return false;
-			}
+			if (event.ctrlKey &&
+				event.shiftKey &&
+				event.keyCode == 'I'.charCodeAt(0)) return false;
+
 
 			// Disable Ctrl + Shift + J
-			if (event.ctrlKey && event.shiftKey && event.keyCode == 'J'.charCodeAt(0)) {
-				return false;
-			}
+			if (event.ctrlKey &&
+				event.shiftKey &&
+				event.keyCode == 'J'.charCodeAt(0)) return false;
 
 			// Disable Ctrl + U
-			if (event.ctrlKey && event.keyCode == 'U'.charCodeAt(0)) {
-				return false;
-			}
+			if (event.ctrlKey &&
+				event.keyCode == 'U'.charCodeAt(0)) return false;
 		})
 
 		/**
-		 * Keperluan socket.io pengaduan
+		 * Keperluan pusher 
 		 */
 		// ================================================== //
-		// socket = io("ws://localhost:3021")
+		// Pusher.logToConsole = true;
 
-		/* Handle event dari node.js server */
-		// socket.on('backend-pengaduan-terima', (data) => {
+		// pusher = new Pusher('21a14c9bc94b57c3db03', {
+		//     cluster: 'ap1'
+		// });
+
+		// channel = pusher.subscribe('kirim-pengaduan-channel');
+		// channel.bind('kirim-pengaduan-event', function(data) {
 		//     Swal.fire({
 		//         title: data.title,
 		//         icon: 'info',
-		//         text: data.message,
-		//         showConfirmButton: false,
-		//         allowEscapeKey: false,
-		//         timer: 1500
+		//         text: data.message
 		//     })
 		// })
 
 		/**
-		 * Keperluan generate csrf
+		 * Keperluan show preloader
 		 */
 		// ================================================== //
-		// csrf = () => {
-		//     socket.emit('minta-csrf', {
-		//         token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
-		//         url: "<?= base_url('csrf/generate') ?>",
-		//         cookie: Cookies.get('ciarthur_csrf_cookie'),
-		//         session: Cookies.get('ciarthur_session'),
-		//     })
+		$('.preloader-container').fadeOut(500)
 
-		//     return new Promise((resolve, reject) => {
-		//         socket.on('terima-csrf', data => {
-		//             resolve({
-		//                 token_name: data.csrf_token_name,
-		//                 hash: data.csrf_hash,
-		//             })
-		//         })
-		//     })
-		// }
+		/**
+		 * Keperluan resize Google Recaptchaa
+		 */
+		// ================================================== //
 
-		csrf = async () => {
-			let formData = new FormData()
-
-			let res = await axios.post("<?= base_url('csrf/generate') ?>", formData, {
-				headers: {
-					'Authorization': `Bearer <?= $this->encryption->encrypt(bin2hex('csrf')) ?>`
-				}
-			})
-			return {
-				token_name: res.data.csrf_token_name,
-				hash: res.data.csrf_hash
-			}
+		let width = $('.g-recaptcha').parent().width();
+		if (width < 302) {
+			let scale = width / 302;
+			$('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+			$('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+			$('.g-recaptcha').css('transform-origin', '0 0');
+			$('.g-recaptcha').css('-webkit-transform-origin', '0 0');
 		}
 
+		/**
+		 * Keperluan show sweet alert loading
+		 */
+		// ================================================== //
+		const loading = () => {
+			Swal.fire({
+				title: 'Loading...',
+				allowEscapeKey: false,
+				allowOutsideClick: false,
+				showConfirmButton: false,
+				didOpen: () => {
+					Swal.showLoading();
+				}
+			})
+		}
 
+		/**
+		 * Keperluan edit account
+		 */
+		// ================================================== //
+		$('#edit-account').click(function() {
+			// $('#modal_account').modal('show')
+			Swal.fire({
+				title: 'Form Edit Account',
+				width: '800px',
+				icon: 'info',
+				html: `<?= $this->load->view("templates/backend/components/form_edit_account", '', true); ?>`,
+				confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
+				showCancelButton: true,
+				focusConfirm: false,
+				showLoaderOnConfirm: true,
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				allowEnterKey: false,
+				showCloseButton: true,
+				reverseButtons: true,
+				didOpen: () => {
+					$('.swal2-actions').css('z-index', '0')
 
-		$(document).ready(function() {
-			$('[title]').tooltip()
-			/**
-			 * Keperluan pusher pengaduan
-			 */
-			// ================================================== //
-			// Pusher.logToConsole = true;
+					$('#input_ubah_username')
+						.val('<?= user()->username ?>')
+						.prop('readonly', true)
 
-			// pusher = new Pusher('21a14c9bc94b57c3db03', {
-			//     cluster: 'ap1'
-			// });
+				},
+				preConfirm: async () => {
+					let formData = new FormData(document.getElementById('form_edit_account'));
 
-			// channel = pusher.subscribe('kirim-pengaduan-channel');
-			// channel.bind('kirim-pengaduan-event', function(data) {
-			//     Swal.fire({
-			//         title: data.title,
-			//         icon: 'info',
-			//         text: data.message
-			//     })
-			// })
+					formData.append(
+						await csrf().then(csrf => csrf.token_name),
+						await csrf().then(csrf => csrf.hash)
+					)
 
-			/**
-			 * Keperluan show preloader
-			 */
-			// ================================================== //
-			$('.preloader-container').fadeOut(500)
-
-			/**
-			 * Keperluan resize Google Recaptchaa
-			 */
-			// ================================================== //
-
-			let width = $('.g-recaptcha').parent().width();
-			if (width < 302) {
-				let scale = width / 302;
-				$('.g-recaptcha').css('transform', 'scale(' + scale + ')');
-				$('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
-				$('.g-recaptcha').css('transform-origin', '0 0');
-				$('.g-recaptcha').css('-webkit-transform-origin', '0 0');
-			}
-
-			/**
-			 * Keperluan show loading
-			 */
-			// ================================================== //
-			loading = () => {
-				Swal.fire({
-					title: 'Loading...',
-					allowEscapeKey: false,
-					allowOutsideClick: false,
-					showConfirmButton: false,
-					didOpen: () => {
-						Swal.showLoading();
-					}
-				})
-			}
-
-			/**
-			 * Keperluan edit account
-			 */
-			// ================================================== //
-			$('#edit-account').click(function() {
-				// $('#modal_account').modal('show')
-				Swal.fire({
-					title: 'Form Edit Account',
-					width: '800px',
-					icon: 'info',
-					html: `<?= $this->load->view("templates/backend/components/form_edit_account", '', true); ?>`,
-					confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
-					showCancelButton: true,
-					focusConfirm: false,
-					showLoaderOnConfirm: true,
-					allowOutsideClick: false,
-					allowEscapeKey: false,
-					allowEnterKey: false,
-					showCloseButton: true,
-					reverseButtons: true,
-					didOpen: () => {
-						$('.swal2-actions').css('z-index', '0')
-
-						$('#input_ubah_username')
-							.val('<?= user()->username ?>')
-							.prop('readonly', true)
-
-					},
-					preConfirm: async () => {
-						let formData = new FormData(document.getElementById('form_edit_account'));
-
-						formData.append(
-							await csrf().then(csrf => csrf.token_name),
-							await csrf().then(csrf => csrf.hash)
-						)
-
-						let response = await axios.post("<?= base_url('auth/users/edit_account') ?>", formData)
-							.then(res => res.data.message)
-							.catch(err => {
-								let errors = err.response.data.errors;
-								if (typeof errors === 'object') {
-									Object.entries(errors).map(([key, value]) => {
-										$(`#input_ubah_${key}`).addClass('is-invalid')
-										$(`#error_ubah_${key}`).html(value).fadeIn(500)
-									})
-								}
-								Swal.showValidationMessage(err.response.data.message)
-							})
-
-						return {
-							data: response
-						}
-					}
-				}).then((result) => {
-					if (result.value) {
-						Swal.fire({
-							title: 'Berhasil',
-							icon: 'success',
-							text: result.value.data,
-							showConfirmButton: false,
-							allowEscapeKey: false,
-							allowOutsideClick: false,
-							timer: 1500
-						}).then(() => {
-							datatable.ajax.reload()
+					let response = await axios.post("<?= base_url('auth/users/edit_account') ?>", formData)
+						.then(res => res.data.message)
+						.catch(err => {
+							let errors = err.response.data?.errors;
+							if (errors && typeof errors === 'object') {
+								Object.entries(errors).map(([key, value]) => {
+									$(`#input_ubah_${key}`).addClass('is-invalid')
+									$(`#error_ubah_${key}`).html(value).fadeIn(500)
+								})
+							}
+							Swal.showValidationMessage(err.response.data.message)
 						})
+
+					return {
+						data: response
 					}
-				})
+				}
+			}).then((result) => {
+				if (result.value) {
+					Swal.fire({
+						title: 'Berhasil',
+						icon: 'success',
+						text: result.value.data,
+						showConfirmButton: false,
+						allowEscapeKey: false,
+						allowOutsideClick: false,
+						timer: 1500
+					}).then(() => {
+						datatable.ajax.reload()
+					})
+				}
 			})
-
-			$('#logout').click(async () => {
-				$('#form_logout').prop('action', "<?= base_url('~/logout') ?>")
-				$('#form_logout').prop('method', 'POST')
-				$('#form_logout #csrf-logout').prop('name', await csrf().then(csrf => csrf.token_name))
-				$('#form_logout #csrf-logout').val(await csrf().then(csrf => csrf.hash))
-				$('#form_logout').submit()
-			})
-
-			// ================================================//
-			/**
-			 * Implement hex2bin and bin2hex in JavaScript
-			 * https://gist.github.com/jasperck
-			 *
-			 * Copyright 2017, JasperChang <jasperc8@gmail.com>
-			 * Licensed under The MIT License
-			 * http://www.opensource.org/licenses/mit-license
-			 */
-
-			hex2bin = str => str.match(/.{1,2}/g).reduce((str, hex) => str += String.fromCharCode(parseInt(hex, 16)), '');
-
-			bin2hex = str => str.split('').reduce((str, glyph) => str += glyph.charCodeAt().toString(16).length < 2 ? `0${glyph.charCodeAt().toString(16)}` :
-				glyph.charCodeAt().toString(16), '');
 		})
+
+		$('#logout').click(async () => {
+			$('#form_logout').prop('action', "<?= base_url('~/logout') ?>")
+			$('#form_logout').prop('method', 'POST')
+			$('#form_logout #csrf-logout').prop('name', await csrf().then(csrf => csrf.token_name))
+			$('#form_logout #csrf-logout').val(await csrf().then(csrf => csrf.hash))
+			$('#form_logout').submit()
+		})
+
+		// ================================================//
+		/**
+		 * Implement hex2bin and bin2hex in JavaScript
+		 * https://gist.github.com/jasperck
+		 *
+		 * Copyright 2017, JasperChang <jasperc8@gmail.com>
+		 * Licensed under The MIT License
+		 * http://www.opensource.org/licenses/mit-license
+		 */
+
+		const hex2bin = str => str.match(/.{1,2}/g).reduce((str, hex) => str += String.fromCharCode(parseInt(hex, 16)), '');
+
+		const bin2hex = str => str.split('').reduce((str, glyph) => str += glyph.charCodeAt().toString(16).length < 2 ? `0${glyph.charCodeAt().toString(16)}` :
+			glyph.charCodeAt().toString(16), '');
+
+		// base64 encode = btoa()
+		// base64 decode = atob()
 	</script>
 	<?= $this->load->view($script, '', true) ?>
 </body>

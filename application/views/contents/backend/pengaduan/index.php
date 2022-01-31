@@ -1,6 +1,6 @@
 <div class="card">
 	<div class="card-body">
-		<h3 class="text-center">Kelola Data Pengaduan</h3>
+		<h3 class="text-center">Data <?= $title ?></h3>
 		<p class="text-muted text-center mb-0">Sistem Informasi <?= sistem()->nama ?></p>
 	</div>
 </div>

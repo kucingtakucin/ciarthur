@@ -12,7 +12,7 @@
 				<div class="col-md-8">
 					<div class="form-group">
 						<label for="input_tambah_judul">Judul</label>
-						<input type="text" name="judul" id="input_tambah_judul" class="form-control">
+						<input type="text" name="judul" id="input_tambah_judul" autocomplete="off" class="form-control">
 						<?= validation_feedback('tambah', 'judul') ?>
 					</div>
 

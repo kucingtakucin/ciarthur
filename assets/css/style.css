@@ -185,3 +185,8 @@ body.swal2-shown>[aria-hidden="true"] {
 	0% { transform: rotate(0deg); transform: rotate(0deg); }
 	100% { transform: rotate(360deg); transform: rotate(360deg); }
 }
+
+div.dataTables_filter,
+div.dataTables_length {
+	margin: 0 !important;
+}
