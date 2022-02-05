@@ -865,7 +865,7 @@ class Ion_auth_model extends CI_Model
 
 		$this->trigger_events('extra_where');
 
-		$query = $this->db->select($this->identity_column . ', email, id, password, active, last_login')
+		$query = $this->db->select($this->identity_column . ', email, id, password, active, last_login, sidebar, dark_mode')
 			->where($this->identity_column, $identity)
 			->limit(1)
 			->order_by('id', 'desc')
@@ -1440,7 +1440,7 @@ class Ion_auth_model extends CI_Model
 		// if no id was passed use the current users id
 		$id || $id = $this->session->userdata('user_id');
 
-		return $this->db->select($this->tables['users_groups'] . '.' . $this->join['groups'] . ' as id, ' . $this->tables['groups'] . '.name, ' . $this->tables['groups'] . '.description, ' . $this->tables['groups'] . '.is_active, ' . $this->tables['groups'] . '.created_at, ' . $this->tables['groups'] . '.updated_at, ' . $this->tables['groups'] . '.deleted_at')
+		return $this->db->select($this->tables['users_groups'] . '.' . $this->join['groups'] . ' as id, ' . $this->tables['groups'] . '.uuid, ' . $this->tables['groups'] . '.name, ' . $this->tables['groups'] . '.description, ' . $this->tables['groups'] . '.is_active, ' . $this->tables['groups'] . '.created_at, ' . $this->tables['groups'] . '.updated_at, ' . $this->tables['groups'] . '.deleted_at')
 			->where($this->tables['users_groups'] . '.' . $this->join['users'], $id)
 			->join($this->tables['groups'], $this->tables['users_groups'] . '.' . $this->join['groups'] . '=' . $this->tables['groups'] . '.id')
 			->get($this->tables['users_groups']);
@@ -1818,19 +1818,24 @@ class Ion_auth_model extends CI_Model
 	{
 		$this->trigger_events('pre_set_session');
 
+		$this->db->select('id, name');
+		$this->db->from('roles');
+		$this->db->where("id = (SELECT role_id FROM role_user WHERE user_id = {$user->id})");
+		$role = $this->db->get()->row();
+
 		$session_data = [
 			'identity' => $user->{$this->identity_column},
-			'role' => @$this->db->select('name')
-				->from('roles')
-				->where("id = (SELECT role_id FROM role_user WHERE user_id = {$user->id})")
-				->get()
-				->row()->name,
+			'role' => @$role->name,
 			$this->identity_column => $user->{$this->identity_column},
 			'email' => $user->email,
 			'user_id' => $user->id, //everyone likes to overwrite id so we'll use user_id
+			'role_id' => @$role->id,
 			'old_last_login' => $user->last_login,
 			'last_check' => time(),
 			'ion_auth_session_hash' => $this->config->item('session_hash', 'ion_auth'),
+			'dark_mode' => @$user->dark_mode ?? (@$role->name === 'admin' ? 'dark-sidebar' : 'light-only'),
+			'sidebar' => @$user->sidebar ?? (@$role->name === 'admin' ? 'vertical' : 'horizontal'),
+			'csrf' => csrf(),
 		];
 
 		$this->session->set_userdata($session_data);
@@ -1921,7 +1926,7 @@ class Ion_auth_model extends CI_Model
 
 		// get the user with the selector
 		$this->trigger_events('extra_where');
-		$query = $this->db->select($this->identity_column . ', id, email, remember_code, last_login')
+		$query = $this->db->select($this->identity_column . ', id, email, remember_code, last_login, sidebar, dark_mode')
 			->where('remember_selector', $token->selector)
 			->where('active', 1)
 			->limit(1)

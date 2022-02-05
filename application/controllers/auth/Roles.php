@@ -1,8 +1,5 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
-
 class Roles extends MY_Controller
 {
 	/**
@@ -16,6 +13,8 @@ class Roles extends MY_Controller
 		$this->_path = "auth/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
 
 		role("admin");    // admin, ...
+
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 
 		$this->lang->load('auth');
 	}
@@ -48,24 +47,12 @@ class Roles extends MY_Controller
 	 * Keperluan DataTables server-side
 	 *
 	 */
-	public function data_role()
+	public function data_roles()
 	{
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.uuid, a.id, a.name, a.description, a.created_at
-			FROM roles AS a WHERE a.is_active = '1'"
-		);
+		method('post');
+		// ================================================ //
 
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		$datatables->add('encrypt_id', function ($data) {
-			return urlencode($this->encryption->encrypt($data['id']));
-		});
-
-		response($datatables->generate()->toArray());
+		response($this->Datatable->list());
 	}
 
 	/**
@@ -125,7 +112,7 @@ class Roles extends MY_Controller
 					'message' => 'Gagal',
 					'data' => null,
 					'errors' => $this->ion_auth->errors()
-				], 404);
+				], 400);
 			}
 
 		endif;
@@ -138,7 +125,7 @@ class Roles extends MY_Controller
 	 */
 	public function edit_role($id)
 	{
-		$id = $this->encryption->decrypt(urldecode($id));
+		$id = (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
 
 		// validate form input
 		if ($this->input->method() === 'get') :
@@ -217,7 +204,7 @@ class Roles extends MY_Controller
 					'message' => 'Gagal',
 					'data' => null,
 					'errors' => $this->ion_auth->errors()
-				], 404);
+				], 400);
 			}
 
 		endif;
@@ -227,7 +214,7 @@ class Roles extends MY_Controller
 	{
 		method('post');
 
-		$id = $this->encryption->decrypt(urldecode(post('id')));
+		$id = (ctype_xdigit(post('id')) && strlen(post('id')) % 2 === 0) ? $this->encryption->decrypt(hex2bin(post('id'))) : null;
 
 		if ($this->ion_auth->delete_group($id)) {
 			response([
@@ -242,6 +229,6 @@ class Roles extends MY_Controller
 			'message' => 'Gagal',
 			'data' => null,
 			'errors' => $this->ion_auth->errors()
-		], 404);
+		], 400);
 	}
 }

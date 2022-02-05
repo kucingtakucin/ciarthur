@@ -6,7 +6,7 @@
 	 */
 	// ================================================== //
 
-	let $create_role = async (event) => {
+	const $create_role = async (event) => {
 		event.preventDefault()
 
 		Swal.fire({
@@ -25,10 +25,6 @@
 				loading()
 
 				let formData = new FormData(event.target);
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
 
 				axios.post(BASE_URL + 'create_role', formData)
 					.then(res => {

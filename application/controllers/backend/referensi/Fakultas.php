@@ -82,7 +82,6 @@ class Fakultas extends MY_Controller
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array(),
 				'query' => $this->db->last_query(),
-				'csrf' => csrf()
 			], 422);
 	}
 
@@ -121,7 +120,6 @@ class Fakultas extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'query' => $this->db->last_query(),
-				'csrf' => csrf()
 			], 404);
 		}
 
@@ -131,7 +129,6 @@ class Fakultas extends MY_Controller
 			'status' => true,
 			'message' => 'Created successfuly',
 			'query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 
@@ -190,7 +187,6 @@ class Fakultas extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'query' => $this->db->last_query(),
-				'csrf' => csrf()
 			], 404);
 		}
 
@@ -200,7 +196,6 @@ class Fakultas extends MY_Controller
 			'status' => true,
 			'message' => 'Updated successfuly',
 			'query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 
@@ -234,7 +229,6 @@ class Fakultas extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'query' => $this->db->last_query(),
-				'csrf' => csrf()
 			], 404);
 		}
 
@@ -244,7 +238,6 @@ class Fakultas extends MY_Controller
 			'status' => true,
 			'message' => 'Deleted successfuly',
 			'query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 }

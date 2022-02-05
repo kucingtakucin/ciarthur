@@ -47,7 +47,8 @@ class Login extends MY_Controller
 				response([
 					'status' => false,
 					'message' => "Recaptcha wajib dicentang!",
-					'data' => null
+					'data' => null,
+					'csrf' => csrf(),
 				], 422);
 			}
 
@@ -56,6 +57,7 @@ class Login extends MY_Controller
 					'status' => false,
 					'title' => 'Recaptcha error',
 					'message' => $response['error_message'],
+					'csrf' => csrf(),
 				], 400);
 			}
 
@@ -69,7 +71,8 @@ class Login extends MY_Controller
 				response([
 					'status' => true,
 					'message' => 'Login Berhasil!',
-					'redirect' => 'backend/dashboard'
+					'redirect' => 'backend/dashboard',
+					'csrf' => csrf(),
 				], 200);
 			}
 
@@ -77,7 +80,8 @@ class Login extends MY_Controller
 			// redirect them back to the login page
 			response([
 				'status' => false,
-				'message' => $this->ion_auth->errors()
+				'message' => $this->ion_auth->errors(),
+				'csrf' => csrf(),
 			], 422);
 		endif;
 	}
@@ -94,7 +98,8 @@ class Login extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Incorrect Login!',
-				'errors' => $this->form_validation->error_array()
+				'errors' => $this->form_validation->error_array(),
+				'csrf' => csrf()
 			], 422);
 	}
 

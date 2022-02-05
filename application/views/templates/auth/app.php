@@ -6,14 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= sistem()->nama ?> | <?= $title ?></title>
+    <title><?= sistem()->nama ?> | <?= @$title ?></title>
 
     <!-- Meta description, keywords, author, icon -->
     <meta name="description" content="Cuba admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Cuba admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="<?= $this->config->item('assets_auth') ?>images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="<?= $this->config->item('assets_auth') ?>images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="<?= config_item('assets_auth') ?>images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= config_item('assets_auth') ?>images/favicon.png" type="image/x-icon">
 
     <!-- Google re-Captcha  -->
     <?= recaptcha_render_js() ?>
@@ -23,33 +23,33 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/fontawesome.css">
 
     <!-- ico-font-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/vendors/icofont.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/vendors/icofont.css">
 
     <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/vendors/themify.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/vendors/themify.css">
 
     <!-- Flag icon-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/vendors/flag-icon.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/vendors/flag-icon.css">
 
     <!-- Feather icon-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/vendors/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/vendors/feather-icon.css">
 
     <!-- Bootstrap css-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/vendors/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/vendors/bootstrap.css">
 
     <!-- App css-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/style.css">
-    <link id="color" rel="stylesheet" href="<?= $this->config->item('assets_auth') ?>css/color-1.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/style.css">
+    <link id="color" rel="stylesheet" href="<?= config_item('assets_auth') ?>css/color-1.css" media="screen">
 
     <!-- Pace -->
     <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
 
     <!-- Responsive css-->
-    <link rel="stylesheet" type="text/css" href="<?= $this->config->item('assets_auth') ?>css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/responsive.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
 </head>
 
@@ -66,7 +66,7 @@
     <!-- Login Page -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-7"><img class="bg-img-cover bg-center" src="<?= $this->config->item('assets_auth') ?>images/login/2.jpg" alt="looginpage">
+            <div class="col-xl-7"><img class="bg-img-cover bg-center" src="<?= config_item('assets_auth') ?>images/login/2.jpg" alt="looginpage">
             </div>
             <div class="col-xl-5 p-0">
                 <?= $this->load->view($page, '', true) ?>
@@ -81,21 +81,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <!-- Bootstrap js-->
-    <script src="<?= $this->config->item('assets_auth') ?>js/bootstrap/popper.min.js"></script>
-    <script src="<?= $this->config->item('assets_auth') ?>js/bootstrap/bootstrap.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/bootstrap/popper.min.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/bootstrap/bootstrap.js"></script>
 
     <!-- feather icon js-->
-    <script src="<?= $this->config->item('assets_auth') ?>js/icons/feather-icon/feather.min.js"></script>
-    <script src="<?= $this->config->item('assets_auth') ?>js/icons/feather-icon/feather-icon.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/icons/feather-icon/feather.min.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/icons/feather-icon/feather-icon.js"></script>
 
     <!-- Sidebar jquery-->
-    <script src="<?= $this->config->item('assets_auth') ?>js/config.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/config.js"></script>
 
     <!-- Sweet Alert 2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Form Validation Custom  -->
-    <script src="<?= $this->config->item('assets_auth') ?>js/assets/js/form-validation-custom.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/form-validation-custom.js"></script>
 
     <!-- Cookie js -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js" integrity="sha256-0H3Nuz3aug3afVbUlsu12Puxva3CP4EhJtPExqs54Vg=" crossorigin="anonymous"></script>
@@ -104,16 +104,74 @@
     <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 
     <!-- Theme js-->
-    <script src="<?= $this->config->item('assets_auth') ?>js/script.js"></script>
+    <script src="<?= config_item('assets_auth') ?>js/script.js"></script>
+
+    <!-- Loading Overlay -->
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
     <!-- Custom Javascripts -->
     <script>
-        let csrf, loading;
+        /**
+         * Keperluan generate csrf
+         */
+        // ================================================== //
+
+        // JQuery AJAX Interceptor 
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+                xhr.setRequestHeader("X-XSRF-TOKEN", JSON.stringify({
+                    '<?= bin2hex('token_name') ?>': '<?= base64_encode($this->security->get_csrf_token_name()) ?>',
+                    '<?= bin2hex('hash') ?>': btoa(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
+                }))
+            }
+        });
+
+        $(document).ajaxSuccess(function(event, jqxhr, settings) {});
+
+        $(document).ajaxError(function(event, jqxhr, settings) {
+            $.LoadingOverlay("hide")
+        });
+
+        $(document).ajaxStart((event, jqxhr, settings) => $.LoadingOverlay("show"));
+        $(document).ajaxStop((event, jqxhr, settings) => $.LoadingOverlay("hide"));
 
         /** Set default AJAX headers */
         axios.defaults.headers.common = {
             "X-Requested-With": "XMLHttpRequest",
         };
+
+        // Add a request interceptor
+        axios.interceptors.request.use(function(config) {
+            $.LoadingOverlay("show")
+            // Do something before request is sent
+            if (config?.headers) config.headers['X-XSRF-TOKEN'] = JSON.stringify({
+                '<?= bin2hex('token_name') ?>': '<?= base64_encode($this->security->get_csrf_token_name()) ?>',
+                '<?= bin2hex('hash') ?>': btoa(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
+            });
+            return config;
+        }, function(error) {
+            $.LoadingOverlay("hide")
+            // Do something with request error
+            return Promise.reject(error);
+        });
+
+        // Add a response interceptor
+        axios.interceptors.response.use(function(response) {
+            $.LoadingOverlay("hide")
+            // Any status code that lie within the range of 2xx cause this function to trigger
+            // Do something with response data
+            return response;
+        }, function(error) {
+            $.LoadingOverlay("hide")
+            // Any status codes that falls outside the range of 2xx cause this function to trigger
+            // Do something with response error
+            return Promise.reject(error);
+        });
 
         /**
          * Keperluan disable inspect element
@@ -144,85 +202,25 @@
                 return false;
             }
         })
-
         /**
-         * Keperluan socket.io
+         * Keperluan show preloader
          */
         // ================================================== //
-        // socket = io("ws://localhost:3021")
+        $('.preloader-container').fadeOut(500)
 
-        // csrf = () => {
-        //     socket.emit('minta-csrf', {
-        //         token: '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>',
-        //         url: "<?= base_url('csrf/generate') ?>",
-        //         cookie: Cookies.get('ciarthur_csrf_cookie'),
-        //         session: Cookies.get('ciarthur_session')
-        //     })
+        /**
+         * Keperluan resize Google Recaptchaa
+         */
+        // ================================================== //
 
-        //     return new Promise((resolve, reject) => {
-        //         socket.on('terima-csrf', data => {
-        //             resolve({
-        //                 token_name: data.csrf_token_name,
-        //                 hash: data.csrf_hash,
-        //             })
-        //         })
-        //     })
-        // }
-
-        csrf = async () => {
-            let formData = new FormData()
-            // formData.append('key', '<?= $this->encryption->encrypt(bin2hex('csrf')) ?>')
-
-            let res = await axios.post("<?= base_url('csrf/generate') ?>", formData, {
-                headers: {
-                    'Authorization': `Bearer <?= $this->encryption->encrypt(bin2hex('csrf')) ?>`
-                }
-            })
-
-            return {
-                token_name: res.data.csrf_token_name,
-                hash: res.data.csrf_hash
-            }
+        let width = $('.g-recaptcha').parent().width();
+        if (width < 302) {
+            let scale = width / 302;
+            $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+            $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+            $('.g-recaptcha').css('transform-origin', '0 0');
+            $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
         }
-
-        $(document).ready(function() {
-
-            /**
-             * Keperluan show preloader
-             */
-            // ================================================== //
-            $('.preloader-container').fadeOut(500)
-
-            /**
-             * Keperluan resize Google Recaptchaa
-             */
-            // ================================================== //
-
-            let width = $('.g-recaptcha').parent().width();
-            if (width < 302) {
-                let scale = width / 302;
-                $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
-                $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
-                $('.g-recaptcha').css('transform-origin', '0 0');
-                $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
-            }
-
-            /**
-             * Keperluan show loading
-             */
-            // ================================================== //
-            loading = () => {
-                Swal.fire({
-                    title: 'Loading...',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                })
-            }
-        })
     </script>
 
     <?= $this->load->view($script, '', true) ?>

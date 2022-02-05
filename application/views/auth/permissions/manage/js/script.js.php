@@ -1,5 +1,5 @@
 <script>
-	let datatable_permission, $insert, $update, $delete;
+	let datatable_permission;
 	const BASE_URL = "<?= base_url($uri_segment) ?>"
 
 	// Document ready
@@ -16,13 +16,13 @@
 	const load_datatable_permission = async () => {
 		datatable_permission = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			dom: `
 				<"d-flex flex-row justify-content-end flex-wrap mb-2"B>
-				<"d-flex flex-row justify-content-between"lf>
-				rt
-				<"d-flex flex-row justify-content-between"ip>`,
+                <"d-flex flex-row justify-content-between mb-2"lf>
+                rt
+                <"d-flex flex-row justify-content-between mt-2"ip>`,
 			buttons: {
 				/** Tombol-tombol Export & Tambah Data */
 				buttons: [{
@@ -45,18 +45,8 @@
 			},
 			ajax: {
 				url: BASE_URL + 'data_permission',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'JSON',
-				data: (data) => {},
-				beforeSend: () => {
-					loading()
-				},
-				complete: () => {
-					setTimeout(async () => {
-						await Swal.hideLoading()
-						await Swal.close()
-					}, 100);
-				},
 			},
 			columnDefs: [{
 					targets: [0, 1, 2, 3], // Sesuaikan dengan jumlah kolom
@@ -67,19 +57,12 @@
 					searchable: false,
 					orderable: false,
 				},
-				{
-					targets: [4],
-					visible: false,
-					searchable: false,
-				}
 			],
-			order: [
-				[4, 'desc']
-			],
+			order: [],
 			columns: [{ // 0
 					title: '#',
 					name: '#',
-					data: 'DT_RowIndex',
+					data: 'no',
 				},
 				{ // 1
 					title: 'Permission Key',
@@ -93,41 +76,10 @@
 				},
 				{ // 3
 					title: 'Aksi',
-					name: 'encrypt_id',
-					data: 'encrypt_id',
-					render: (encrypt_id) => {
-						let btn_edit = $('<button>', {
-							type: 'button',
-							class: 'btn btn-success btn_edit',
-							'data-id': encrypt_id,
-							html: $('<i>', {
-								class: 'fa fa-edit'
-							}).prop('outerHTML'),
-							title: 'Ubah Permission'
-						})
+					name: 'aksi',
+					data: 'aksi',
 
-						let btn_delete = $('<button>', {
-							type: 'button',
-							class: 'btn btn-danger btn_delete',
-							'data-id': encrypt_id,
-							html: $('<i>', {
-								class: 'fa fa-trash'
-							}).prop('outerHTML'),
-							title: 'Hapus Permission'
-						})
-
-						return $('<div>', {
-							role: 'group',
-							class: 'btn-group btn-group-sm',
-							html: [btn_edit, btn_delete]
-						}).prop('outerHTML')
-					}
 				},
-				{ // 4
-					title: 'Created At',
-					name: 'created_at',
-					data: 'created_at',
-				}
 			],
 			initComplete: function(event) {
 				$(this).on('click', '.btn_edit', function(event) {
@@ -144,20 +96,8 @@
 				// ================================================== //
 			},
 		})
-
-		datatable_permission.on('draw.dt', function() {
-			let PageInfo = datatable_permission.page.info();
-			datatable_permission.column(0, {
-				page: 'current'
-			}).nodes().each(function(cell, i) {
-				cell.innerHTML = i + 1 + PageInfo.start;
-			});
-		});
 	}
 
-	// socket.on('auth-reload_dt-permission', () => {
-	//     datatable_permission.ajax.reload();
-	// })
 	// ================================================== //
 </script>
 
@@ -167,22 +107,18 @@
 	 */
 	// ================================================== //
 
-	$get = (element) => {
+	const $get = (element) => {
 		let row = datatable_permission.row($(element).closest('tr')).data();
 		$('#modal_ubah').modal('show');
-		$('#form_ubah input#id[name=id]').val(row.encrypt_id)
+		$('#form_ubah input#id[name=id]').val(row.id)
 		$('#form_ubah input#ubah_perm_name[name=perm_name]').val(row.perm_name);
 		$('#form_ubah input#ubah_perm_key[name=perm_key]').val(row.perm_key);
 	}
 
-	$insert = async (form) => {
+	const $insert = async (form) => {
 		loading()
 
 		let formData = new FormData(form);
-		formData.append(
-			await csrf().then(csrf => csrf.token_name),
-			await csrf().then(csrf => csrf.hash)
-		)
 
 		axios.post(BASE_URL + 'add_permission', formData)
 			.then(res => {
@@ -215,14 +151,10 @@
 			})
 	}
 
-	$update = async (form) => {
+	const $update = async (form) => {
 		loading()
 
 		let formData = new FormData(form);
-		formData.append(
-			await csrf().then(csrf => csrf.token_name),
-			await csrf().then(csrf => csrf.hash)
-		)
 
 		axios.post(BASE_URL + 'update_permission', formData)
 			.then(res => {
@@ -258,7 +190,7 @@
 			})
 	}
 
-	$delete = async (element) => {
+	const $delete = async (element) => {
 		Swal.fire({
 			title: 'Are you sure?',
 			text: "You won't be able to revert this!",
@@ -274,10 +206,6 @@
 
 				let formData = new FormData();
 				formData.append('id', $(element).data('id'));
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
 
 				axios.post(BASE_URL + 'delete_permission', formData)
 					.then(res => {

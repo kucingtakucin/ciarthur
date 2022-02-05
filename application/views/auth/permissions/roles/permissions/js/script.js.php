@@ -16,18 +16,18 @@
 	// ================================================== //
 	const load_datatable_role_permission = () => {
 		datatable_role_permission = $('#datatable-role-permissions').DataTable({
-			processing: true,
+			processing: false,
 			destroy: true,
 			ordering: false,
 			paging: false,
 			dom: `
-                <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
-                <"d-flex flex-row justify-content-between"lf>
+				<"d-flex flex-row justify-content-end flex-wrap mb-2"B>
+                <"d-flex flex-row justify-content-between mb-2"lf>
                 rt
-                <"d-flex flex-row justify-content-between"ip>`,
+                <"d-flex flex-row justify-content-between mt-2"ip>`,
 			buttons: {
 				/** Tombol-tombol Export & Tambah Data */
-				buttons: [{}, ],
+				buttons: [{}],
 				dom: {
 					button: {
 						className: 'btn'
@@ -70,10 +70,6 @@
 				loading()
 
 				let formData = new FormData(event.target);
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
 
 				axios.post(BASE_URL + 'role_permissions/' + id, formData)
 					.then(res => {

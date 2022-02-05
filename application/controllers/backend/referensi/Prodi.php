@@ -105,7 +105,6 @@ class Prodi extends MY_Controller
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf()
 			], 422);
 	}
 
@@ -144,7 +143,6 @@ class Prodi extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf(),
 			], 500);
 		}
 
@@ -154,7 +152,6 @@ class Prodi extends MY_Controller
 			'status' => true,
 			'message' => 'Created successfuly',
 			'last_query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 
@@ -214,7 +211,6 @@ class Prodi extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf(),
 			], 500);
 		}
 
@@ -224,7 +220,6 @@ class Prodi extends MY_Controller
 			'status' => true,
 			'message' => 'Updated successfuly',
 			'last_query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 
@@ -258,7 +253,6 @@ class Prodi extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf(),
 			], 500);
 		}
 
@@ -268,7 +262,6 @@ class Prodi extends MY_Controller
 			'status' => true,
 			'message' => 'Deleted successfuly',
 			'last_query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 
@@ -305,7 +298,6 @@ class Prodi extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf(),
 			], 500);
 		}
 
@@ -315,7 +307,6 @@ class Prodi extends MY_Controller
 			'status' => true,
 			'message' => 'Updated successfuly',
 			'last_query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 }

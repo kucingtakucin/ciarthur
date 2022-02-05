@@ -211,7 +211,8 @@ function csrf()
 	$ci = &get_instance();
 	return [
 		'token_name' => $ci->security->get_csrf_token_name(),
-		'hash' => $ci->security->get_csrf_hash()
+		'hash' => $ci->security->get_csrf_hash(),
+		'cookie' => @$_COOKIE[config_item('cookie_prefix') . config_item('csrf_cookie_name')]
 	];
 }
 

@@ -2,16 +2,16 @@
 
 class Datatable extends CI_Model
 {
-	private $_table = 'pengaduan';
-	private $_column_order = [null, 'a.name', 'a.email', 'a.phone', null];
-	private $_column_search = [null, 'a.name', 'a.email', 'a.phone', null];
+	private $_table = 'roles';
+	private $_column_order = [null, 'a.name', null];
+	private $_column_search = [null, 'a.name', null];
 	private $_default_order = ['id ' => 'DESC'];
 
 	private function _query()
 	{
 		// Query
 		$q =
-			"SELECT a.uuid, a.id, a.name, a.email, a.phone, a.message, a.created_at
+			"SELECT a.uuid, a.id, a.name, a.description, a.created_at 
             FROM {$this->_table} AS a
             WHERE 1=1
 			AND a.is_active = '1'
@@ -52,7 +52,7 @@ class Datatable extends CI_Model
 			}
 		}
 
-		if (post('start') && post('length'))
+		if (!is_null(post('start')) && post('length'))
 			$q .= " LIMIT " . post('start') . ", " . post('length');
 
 		// Data
@@ -74,17 +74,17 @@ class Datatable extends CI_Model
 			$row = [];
 			$row['no'] = $no++;
 			$row['uuid'] = $v->uuid;
+			$row['id'] = bin2hex($this->encryption->encrypt($v->id));
 			$row['name'] = $v->name;
-			$row['email'] = $v->email;
-			$row['phone'] = $v->phone;
-			$row['message'] = $v->message;
+			$row['description'] = $v->description;
+			$row['created_at'] = $v->created_at;
 			$row['aksi'] = "
 				<div role=\"group\" class=\"btn-group btn-group-sm\">
-					<button type=\"button\" class=\"btn btn-danger btn_detail\" title=\"Detail Pengaduan\">
-						<i class=\"fa fa-eye\"></i>
+					<button type=\"button\" class=\"btn btn-success btn_edit\" data-uuid=\"{$v->uuid}\" data-id=\"" . bin2hex($this->encryption->encrypt($v->id)) . "\" title=\"Ubah Data\">
+						<i class=\"fa fa-edit\"></i>
 					</button>
-					<button type=\"button\" class=\"btn btn-success btn_chat\" title=\"Respon Pengaduan\">
-						<i class=\"fa fa-reply\"></i>
+					<button type=\"button\" class=\"btn btn-danger btn_delete\" data-uuid=\"{$v->uuid}\" data-id=\"" . bin2hex($this->encryption->encrypt($v->id)) . "\" title=\"Hapus Data\">
+						<i class=\"fa fa-trash\"></i>
 					</button>
 				</div>
 			";
@@ -97,7 +97,7 @@ class Datatable extends CI_Model
 			"recordsTotal" => $result['recordsTotal'],
 			"recordsFiltered" => $result['recordsFiltered'],
 			"data" => $data,
-			"query" => $result['query'],
+			"query" => $result['query']
 		];
 	}
 }
