@@ -25,10 +25,6 @@
 				loading()
 
 				let formData = new FormData(event.target);
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
 
 				axios.post(BASE_URL + 'edit_role/' + id, formData)
 					.then(res => {
@@ -40,8 +36,7 @@
 							showConfirmButton: false,
 							timer: 1500
 						}).then(() => {
-							// socket.emit('auth-crud-role')
-							location.replace(BASE_URL)
+							location.href = BASE_URL
 						})
 
 					}).catch(err => {
@@ -49,8 +44,8 @@
 						Swal.fire({
 							icon: 'error',
 							title: 'Oops...',
-							html: err.response.data.message,
-							// text: err.response.statusText
+							// html: err.response.data.message,
+							text: err.response.statusText
 						})
 					}).then(() => {
 						$('#update_role input[type=submit]').show();

@@ -55,7 +55,7 @@ class Datatable extends CI_Model
 			}
 		}
 
-		if (post('start') && post('length'))
+		if (!is_null(post('start')) && post('length'))
 			$q .= " LIMIT " . post('start') . ", " . post('length');
 
 		// Data
@@ -81,11 +81,17 @@ class Datatable extends CI_Model
 			$row['nim'] = $v->nim;
 			$row['nama'] = $v->nama;
 			$row['angkatan'] = $v->angkatan;
-			$row['foto'] = $v->foto;
+			$row['foto'] = "
+				<img src=\"" . base_url("img/mahasiswa/{$v->foto}?w=100&h=200&fit=crop") . "\" alt=\"Foto {$v->nama}\">
+			";
 			$row['nama_prodi'] = $v->nama_prodi;
 			$row['nama_fakultas'] = $v->nama_fakultas;
 			$row['latitude'] = $v->latitude;
 			$row['longitude'] = $v->longitude;
+			$row['latlng'] = "
+				<span class=\"badge badge-primary\">{$v->latitude}</span><br>
+				<span class=\"badge badge-primary\">{$v->longitude}</span>
+			";
 			$row['aksi'] = "
 				<div role=\"group\" class=\"btn-group btn-group-sm\">
 					<button type=\"button\" class=\"btn btn-success btn_edit\" data-uuid=\"{$v->uuid}\" data-id=\"" . base64_encode($this->encryption->encrypt($v->id)) . "\" title=\"Ubah Data\">
@@ -108,7 +114,6 @@ class Datatable extends CI_Model
 			"recordsFiltered" => $result['recordsFiltered'],
 			"data" => $data,
 			"query" => $result['query'],
-			"csrf" => csrf()
 		];
 	}
 }

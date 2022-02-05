@@ -21,10 +21,6 @@
 				url: BASE_URL + 'data',
 				type: 'POST',
 				dataType: 'JSON',
-				error: (err) => {
-					if (!err?.responseJSON &&
-						err.status === 403) _handle_csrf()
-				}
 			},
 			columnDefs: [{
 					targets: [0, 1, 2, 3, 4, 5], // Sesuaikan dengan jumlah kolom

@@ -2,20 +2,18 @@
 
 class Datatable extends CI_Model
 {
-	private $_table = 'pengaduan';
-	private $_column_order = [null, 'a.name', 'a.email', 'a.phone', null];
-	private $_column_search = [null, 'a.name', 'a.email', 'a.phone', null];
+	private $_table = 'permissions';
+	private $_column_order = [null, 'a.perm_key', 'a.perm_name', null];
+	private $_column_search = [null, 'a.perm_key', 'a.perm_name', null];
 	private $_default_order = ['id ' => 'DESC'];
 
 	private function _query()
 	{
 		// Query
 		$q =
-			"SELECT a.uuid, a.id, a.name, a.email, a.phone, a.message, a.created_at
+			"SELECT a.id, a.perm_key, a.perm_name, a.created_at
             FROM {$this->_table} AS a
-            WHERE 1=1
-			AND a.is_active = '1'
-			AND a.deleted_at IS NULL";
+            WHERE 1=1 ";
 
 		if (session('tahun')) $q .= " AND YEAR(a.created_at) = " . session('tahun');
 
@@ -26,10 +24,10 @@ class Datatable extends CI_Model
 		$q .= " HAVING 1=1 AND (1=0";
 		$search_value = false;
 		foreach ($this->_column_search as $k => $v) {
-			if ($v && post('columns')[$k]['search']['value']) {
+			if ($v and post('columns')[$k]['search']['value']) {
 				$search_value = true;
 				$q .= " OR {$v} LIKE '%" . post('columns')[$k]['search']['value'] . "%'";
-			} elseif ($v && post('search')['value']) {
+			} elseif ($v and post('search')['value']) {
 				$search_value = true;
 				$q .= " OR {$v} LIKE '%" . post('search')['value'] . "%'";
 			}
@@ -52,7 +50,7 @@ class Datatable extends CI_Model
 			}
 		}
 
-		if (post('start') && post('length'))
+		if (!is_null(post('start')) and post('length'))
 			$q .= " LIMIT " . post('start') . ", " . post('length');
 
 		// Data
@@ -73,18 +71,16 @@ class Datatable extends CI_Model
 		foreach ($result['data'] as  $k => $v) {
 			$row = [];
 			$row['no'] = $no++;
-			$row['uuid'] = $v->uuid;
-			$row['name'] = $v->name;
-			$row['email'] = $v->email;
-			$row['phone'] = $v->phone;
-			$row['message'] = $v->message;
+			$row['id'] = base64_encode($this->encryption->encrypt($v->id));
+			$row['perm_key'] = $v->perm_key;
+			$row['perm_name'] = $v->perm_name;
 			$row['aksi'] = "
 				<div role=\"group\" class=\"btn-group btn-group-sm\">
-					<button type=\"button\" class=\"btn btn-danger btn_detail\" title=\"Detail Pengaduan\">
-						<i class=\"fa fa-eye\"></i>
+					<button type=\"button\" class=\"btn btn-success btn_edit\" data-id=\"" . base64_encode($this->encryption->encrypt($v->id)) . "\" title=\"Ubah Data\">
+						<i class=\"fa fa-edit\"></i>
 					</button>
-					<button type=\"button\" class=\"btn btn-success btn_chat\" title=\"Respon Pengaduan\">
-						<i class=\"fa fa-reply\"></i>
+					<button type=\"button\" class=\"btn btn-danger btn_delete\" data-id=\"" . base64_encode($this->encryption->encrypt($v->id)) . "\" title=\"Hapus Data\">
+						<i class=\"fa fa-trash\"></i>
 					</button>
 				</div>
 			";

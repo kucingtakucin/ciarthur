@@ -2,22 +2,20 @@
 
 class Datatable extends CI_Model
 {
-	private $_table = 'pengaduan';
-	private $_column_order = [null, 'a.name', 'a.email', 'a.phone', null];
-	private $_column_search = [null, 'a.name', 'a.email', 'a.phone', null];
+	private $_table = 'users';
+	private $_column_order = [null, 'username', 'email', 'nama_role', null, null];
+	private $_column_search = [null, 'username', 'email', 'nama_role', null, null];
 	private $_default_order = ['id ' => 'DESC'];
 
 	private function _query()
 	{
 		// Query
 		$q =
-			"SELECT a.uuid, a.id, a.name, a.email, a.phone, a.message, a.created_at
+			"SELECT a.id, a.uuid, a.username, a.email, a.active, a.created_on,
+			(SELECT b.role_id FROM role_user AS b WHERE b.user_id = a.id) AS role_id,
+			(SELECT c.name FROM roles AS c WHERE c.id = role_id) AS nama_role
             FROM {$this->_table} AS a
-            WHERE 1=1
-			AND a.is_active = '1'
-			AND a.deleted_at IS NULL";
-
-		if (session('tahun')) $q .= " AND YEAR(a.created_at) = " . session('tahun');
+            WHERE 1=1";
 
 		// Records Total
 		$return['recordsTotal'] = $this->db->query($q)->num_rows();
@@ -52,7 +50,7 @@ class Datatable extends CI_Model
 			}
 		}
 
-		if (post('start') && post('length'))
+		if (!is_null(post('start')) && post('length'))
 			$q .= " LIMIT " . post('start') . ", " . post('length');
 
 		// Data
@@ -74,21 +72,23 @@ class Datatable extends CI_Model
 			$row = [];
 			$row['no'] = $no++;
 			$row['uuid'] = $v->uuid;
-			$row['name'] = $v->name;
+			$row['id'] = bin2hex($this->encryption->encrypt($v->id));
+			$row['username'] = $v->username;
 			$row['email'] = $v->email;
-			$row['phone'] = $v->phone;
-			$row['message'] = $v->message;
+			$row['nama_role'] = $v->nama_role;
 			$row['aksi'] = "
 				<div role=\"group\" class=\"btn-group btn-group-sm\">
-					<button type=\"button\" class=\"btn btn-danger btn_detail\" title=\"Detail Pengaduan\">
-						<i class=\"fa fa-eye\"></i>
+					<button type=\"button\" class=\"btn btn-success btn_edit\" data-uuid=\"{$v->uuid}\" data-id=\"" . bin2hex($this->encryption->encrypt($v->id)) . "\" title=\"Ubah Data\">
+						<i class=\"fa fa-edit\"></i>
 					</button>
-					<button type=\"button\" class=\"btn btn-success btn_chat\" title=\"Respon Pengaduan\">
-						<i class=\"fa fa-reply\"></i>
+					<button type=\"button\" class=\"btn btn-danger btn_delete\" data-uuid=\"{$v->uuid}\" data-id=\"" . bin2hex($this->encryption->encrypt($v->id)) . "\" title=\"Hapus Data\">
+						<i class=\"fa fa-trash\"></i>
 					</button>
 				</div>
 			";
-			$row['created_at'] = $v->created_at;
+			$row['active'] = $v->active;
+			$row['created_on'] = $v->created_on;
+			$row['role_id'] = $v->role_id;
 			$data[$k] = $row;
 		}
 
@@ -98,6 +98,7 @@ class Datatable extends CI_Model
 			"recordsFiltered" => $result['recordsFiltered'],
 			"data" => $data,
 			"query" => $result['query'],
+			"csrf" => csrf()
 		];
 	}
 }

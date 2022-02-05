@@ -24,10 +24,6 @@
 				loading()
 
 				let formData = new FormData(event.target);
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
 
 				axios.post(BASE_URL + 'create_user', formData)
 					.then(res => {
@@ -38,7 +34,6 @@
 							showConfirmButton: false,
 							timer: 1500
 						}).then(() => {
-							// socket.emit('auth-crud-user', {})
 							datatable_user.ajax.reload()
 							location.replace(BASE_URL)
 						})

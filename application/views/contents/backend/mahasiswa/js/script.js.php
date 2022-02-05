@@ -1,8 +1,6 @@
 <script>
 	const BASE_URL = "<?= base_url($uri_segment) ?>"
-	let datatable, $insert, $update, $delete, $import_excel,
-		$export_excel, $export_pdf, $export_word,
-		map, map_modal, marker_modal, legend;
+	let datatable, map, map_modal, marker_modal, legend;
 
 	// Document ready
 	$(() => {
@@ -19,7 +17,7 @@
 	const load_datatable = () => {
 		datatable = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			dom: `<"dt-custom-filter mb-2 d-block">
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
@@ -94,7 +92,7 @@
 			},
 			order: [],
 			columnDefs: [{
-					targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], // Sesuaikan dengan jumlah kolom
+					targets: [0, 8], // Sesuaikan dengan jumlah kolom
 					className: 'text-center'
 				},
 				{
@@ -112,12 +110,6 @@
 					title: 'Foto',
 					name: 'foto',
 					data: 'foto',
-					render: (foto) => {
-						return $('<img>', {
-							src: `<?= base_url() ?>img/mahasiswa/${foto}?w=100&h=200&fit=crop`,
-							alt: 'Foto'
-						}).prop('outerHTML')
-					}
 				},
 				{ // 2
 					title: 'NIM',
@@ -147,20 +139,12 @@
 					title: 'Angkatan',
 					name: 'angkatan',
 					data: 'angkatan',
+					className: 'input_angkatan',
 				},
 				{ // 7
 					title: 'LatLng',
 					name: 'latlng',
-					data: (data) => {
-						return $('<span>', {
-								class: 'badge badge-primary',
-								html: data.latitude ? data.latitude : '-'
-							}).prop('outerHTML') + '<br>' +
-							$('<span>', {
-								class: 'badge badge-primary',
-								html: data.longitude ? data.longitude : '-'
-							}).prop('outerHTML')
-					}
+					data: 'latlng',
 				},
 				{ // 8
 					title: 'Aksi',
@@ -307,7 +291,25 @@
 					let val = $(this).html();
 					let html = $('<input>', {
 						type: 'text',
-						name: 'nama',
+						name: 'nim',
+						id: 'inline_ubah_value',
+						class: 'form-control',
+						autocomplete: 'off',
+						value: val
+					}).prop('outerHTML')
+
+					$(this).html(html)
+					$(this).find('input').focus()
+				})
+
+				$(this).on('dblclick', 'td.input_angkatan:not(.clicked)', function(event) {
+					event.preventDefault()
+					$(this).addClass('clicked')
+
+					let val = $(this).html();
+					let html = $('<input>', {
+						type: 'text',
+						name: 'angkatan',
 						id: 'inline_ubah_value',
 						class: 'form-control',
 						autocomplete: 'off',
@@ -326,6 +328,11 @@
 				$(this).on('blur', 'td.input_nim.clicked input', function(event) {
 					event.preventDefault();
 					$inline(this, 'nim');
+				})
+
+				$(this).on('blur', 'td.input_angkatan.clicked input', function(event) {
+					event.preventDefault();
+					$inline(this, 'angkatan');
 				})
 
 				$(this).on('select2:close', 'td.input_fakultas_id.clicked select', function(event) {
@@ -505,7 +512,7 @@
 	 */
 	// ================================================== //
 
-	$insert = async () => {
+	const $insert = async () => {
 		Swal.fire({
 			title: 'Form Tambah Data',
 			width: '800px',
@@ -567,7 +574,7 @@
 		})
 	}
 
-	$update = async (element) => {
+	const $update = async (element) => {
 		let row = datatable.row($(element).closest('tr')).data();
 
 		Swal.fire({
@@ -667,7 +674,7 @@
 		})
 	}
 
-	$delete = async (element) => {
+	const $delete = async (element) => {
 		Swal.fire({
 			title: 'Are you sure?',
 			text: "You won't be able to revert this!",
@@ -720,7 +727,7 @@
 		let val = $(element).val();
 
 		let formData = new FormData();
-		formData.append('id', row.id)
+		formData.append('uuid', row.uuid)
 		formData.append('name', name)
 		formData.append('value', val)
 
@@ -729,15 +736,10 @@
 				let option = $(element).find('option:selected').html()
 				if (option) $(element).closest(`td.input_${name}`).html(option)
 				else $(element).closest(`td.input_${name}`).html(val)
-				datatable.ajax.reload()
+				datatable.ajax.reload(null, false)
 				toastr.success('Berhasil mengubah data', 'Sukses')
 			})
 			.catch(err => {
-				if (!err?.response) {
-					_handle_csrf();
-					return;
-				}
-
 				let errors = err.response.data?.errors;
 				if (errors && typeof errors === 'object') {
 					toastr.error('Tidak boleh kosong', 'Gagal')
@@ -748,13 +750,13 @@
 
 					$(element).on('blur', (event) => {
 						if ($(element).val()) $inline(element, name);
-						else datatable.ajax.reload();
+						else datatable.ajax.reload(null, false);
 					})
 				}
 			})
 	}
 
-	$import_excel = async () => {
+	const $import_excel = async () => {
 		Swal.fire({
 			title: 'Form Import Excel',
 			width: '800px',
@@ -778,11 +780,6 @@
 					$('.loader').show()
 
 					let formData = new FormData();
-
-					formData.append(
-						await csrf().then(csrf => csrf.token_name),
-						await csrf().then(csrf => csrf.hash)
-					)
 
 					axios.post(BASE_URL + 'download_template_excel', formData, {
 							responseType: 'blob'
@@ -838,14 +835,10 @@
 		})
 	}
 
-	$export_excel = async () => {
+	const $export_excel = async () => {
 		loading()
 
 		let formData = new FormData();
-		formData.append(
-			await csrf().then(csrf => csrf.token_name),
-			await csrf().then(csrf => csrf.hash)
-		)
 
 		axios.post(BASE_URL + 'export_excel', formData, {
 				responseType: 'blob'
@@ -877,14 +870,10 @@
 			})
 	}
 
-	$export_pdf = async () => {
+	const $export_pdf = async () => {
 		loading()
 
 		let formData = new FormData();
-		formData.append(
-			await csrf().then(csrf => csrf.token_name),
-			await csrf().then(csrf => csrf.hash)
-		)
 
 		axios.post(BASE_URL + 'export_pdf', formData, {
 				responseType: 'blob'
@@ -916,14 +905,10 @@
 			})
 	}
 
-	$export_word = async () => {
+	const $export_word = async () => {
 		loading()
 
 		let formData = new FormData();
-		formData.append(
-			await csrf().then(csrf => csrf.token_name),
-			await csrf().then(csrf => csrf.hash)
-		)
 
 		axios.post(BASE_URL + 'export_docx', formData, {
 				responseType: 'blob'

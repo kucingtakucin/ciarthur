@@ -22,6 +22,9 @@ class Permissions extends MY_Controller
 		$this->_name = 'permissions';
 		$this->_path = "auth/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
 
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
+		$this->load->model('auth/roles/' . 'Datatable', 'Datatable_roles');   // Load Datatable model
+
 		role('admin');
 	}
 
@@ -56,53 +59,21 @@ class Permissions extends MY_Controller
 
 	public function data_permission()
 	{
-		method('get');
-
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.perm_key, a.perm_name, a.created_at
-			FROM `permissions` AS a"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		$datatables->add('encrypt_id', function ($data) {
-			return urlencode($this->encryption->encrypt($data['id']));
-		});
-
-		response($datatables->generate()->toArray());
+		method('post');
+		response($this->Datatable->list());
 	}
 
 	public function data_roles()
 	{
-		method('get');
-
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.name, a.description, a.created_at
-			FROM roles AS a WHERE a.is_active = '1'"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
-
-		$datatables->add('encrypt_id', function ($data) {
-			return urlencode($this->encryption->encrypt($data['id']));
-		});
-
-		response($datatables->generate()->toArray());
+		method('post');
+		response($this->Datatable_roles->list());
 	}
 
 	public function add_permission()
 	{
 		method('post');
 
-		$new_permission_id = $this->ion_auth_acl->create_permission($this->input->post('perm_key'), $this->input->post('perm_name'));
+		$new_permission_id = $this->ion_auth_acl->create_permission(post('perm_key'), post('perm_name'));
 		if ($new_permission_id) {
 			// check to see if we are creating the permission
 			// redirect them back to the admin page
@@ -126,13 +97,13 @@ class Permissions extends MY_Controller
 	{
 		method('post');
 
-		$permission_id = $this->encryption->decrypt(urldecode($this->input->post('id')));
+		$permission_id = $this->encryption->decrypt(base64_decode(post('id')));
 
 		$additional_data    =   array(
-			'perm_name' =>  $this->input->post('perm_name')
+			'perm_name' =>  post('perm_name')
 		);
 
-		$update_permission = $this->ion_auth_acl->update_permission($permission_id, $this->input->post('perm_key'), $additional_data);
+		$update_permission = $this->ion_auth_acl->update_permission($permission_id, post('perm_key'), $additional_data);
 		if ($update_permission) {
 			// check to see if we are creating the permission
 			// redirect them back to the admin page
@@ -154,7 +125,7 @@ class Permissions extends MY_Controller
 	{
 		method('post');
 
-		$permission_id = $this->encryption->decrypt(urldecode($this->input->post('id')));
+		$permission_id = $this->encryption->decrypt(base64_decode(post('id')));
 
 		if ($this->ion_auth_acl->remove_permission($permission_id)) {
 			$this->session->set_flashdata('message', $this->ion_auth->messages());
@@ -196,7 +167,7 @@ class Permissions extends MY_Controller
 
 	public function role_permissions($id)
 	{
-		$group_id = $this->encryption->decrypt(urldecode($id));
+		$group_id = $this->encryption->decrypt(base64_decode($id));
 
 		if (!$group_id) redirect($this->_path . 'role');
 

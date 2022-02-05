@@ -51,7 +51,7 @@ class Datatable extends CI_Model
 			}
 		}
 
-		if (post('start') && post('length'))
+		if (!is_null(post('start')) && post('length'))
 			$q .= " LIMIT " . post('start') . ", " . post('length');
 
 		// Data
@@ -94,7 +94,6 @@ class Datatable extends CI_Model
 			"recordsFiltered" => $result['recordsFiltered'],
 			"data" => $data,
 			"query" => $result['query'],
-			"csrf" => csrf()
 		];
 	}
 }

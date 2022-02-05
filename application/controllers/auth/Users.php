@@ -1,8 +1,5 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
@@ -23,6 +20,8 @@ class Users extends MY_Controller
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
 		$this->lang->load('auth');
+
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 
 		role('admin');
 	}
@@ -67,7 +66,7 @@ class Users extends MY_Controller
 		$this->db->update('users', [
 			'username' => post('username'),
 			'password' => $this->ion_auth->hash_password(post('password'))
-		], ['id' => post('id')]);
+		], ['id' => get_user_id()]);
 
 		response([
 			'status' => true,
@@ -77,26 +76,9 @@ class Users extends MY_Controller
 
 	public function data_user()
 	{
-		method('get');
+		method('post');
 
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.username, a.email, a.active, a.created_on,
-			(SELECT b.role_id FROM role_user AS b WHERE b.user_id = a.id) AS role_id,
-			(SELECT c.name FROM roles AS c WHERE c.id = role_id) AS nama_role
-			FROM users AS a"
-		);
-
-		// Add row index
-		$datatables->add('DT_RowIndex', function ($data) {
-			return 0;
-		});
-
-		$datatables->add('encrypt_id', function ($data) {
-			return urlencode($this->encryption->encrypt($data['id']));
-		});
-
-		response($datatables->generate()->toArray());
+		response($this->Datatable->list());
 	}
 
 	/**
@@ -210,7 +192,7 @@ class Users extends MY_Controller
 				response([
 					'status' => true,
 					'message' => 'User berhasil ditambahkan',
-					'data' => null
+					'data' => null,
 				], 200);
 			}
 			response([
@@ -218,7 +200,7 @@ class Users extends MY_Controller
 				'message' => 'Gagal',
 				'data' => null,
 				'errors' => $this->ion_auth->messages(),
-			], 404);
+			], 400);
 		endif;
 	}
 
@@ -228,19 +210,16 @@ class Users extends MY_Controller
 	 *
 	 * @param int|string $id
 	 */
-	public function edit_user($id)
+	public function edit_user($id = null)
 	{
-		$id = $this->encryption->decrypt(urldecode($id));
+		$id = (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
 		$this->data['title'] = $this->lang->line('edit_user_heading');
 
-		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id))) {
-			redirect('auth', 'refresh');
-		}
-
 		$user = $this->ion_auth->user($id)->row();
+		if (!$user || !$id) show_404();
+
 		$groups = $this->ion_auth->groups()->result_array();
 		$currentGroups = $this->ion_auth->get_users_groups($id)->result_array();
-
 		//USAGE NOTE - you can do more complicated queries like this
 
 		if ($this->input->method() === 'get') :
@@ -345,7 +324,7 @@ class Users extends MY_Controller
 				response([
 					'status' => true,
 					'message' => 'User berhasil diubah',
-					'data' => null
+					'data' => null,
 				], 200);
 			}
 			// redirect them back to the admin page if admin, or to the base url if non admin
@@ -355,8 +334,8 @@ class Users extends MY_Controller
 				'status' => true,
 				'message' => "Gagal",
 				'data' => null,
-				'errors' => $this->ion_auth->errors()
-			], 404);
+				'errors' => $this->ion_auth->errors(),
+			], 400);
 		endif;
 	}
 
@@ -364,13 +343,16 @@ class Users extends MY_Controller
 	{
 		method('post');
 
-		$id = $this->encryption->decrypt(urldecode(post('id')));
+		$id = (ctype_xdigit(post('id')) && strlen(post('id')) % 2 === 0) ? $this->encryption->decrypt(hex2bin(post('id'))) : null;
+
+		$user = $this->ion_auth->user($id)->row();
+		if (!$user || !$id) show_404();
 
 		if ($this->ion_auth->delete_user($id)) {
 			response([
 				'status' => true,
 				'message' => 'User berhasil dihapus',
-				'data' => null
+				'data' => null,
 			], 200);
 		}
 
@@ -378,8 +360,8 @@ class Users extends MY_Controller
 			'status' => false,
 			'message' => 'Gagal',
 			'data' => null,
-			'errors' => $this->ion_auth->errors()
-		], 404);
+			'errors' => $this->ion_auth->errors(),
+		], 400);
 	}
 
 	/**
@@ -388,11 +370,14 @@ class Users extends MY_Controller
 	 * @param int         $id   The user ID
 	 * @param string|bool $code The activation code
 	 */
-	public function activate($id, $code = FALSE)
+	public function activate($id = null, $code = FALSE)
 	{
 		method('post');
 
-		$id = $this->encryption->decrypt(urldecode($id));
+		$id = (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
+
+		$user = $this->ion_auth->user($id)->row();
+		if (!$user || !$id) show_404();
 
 		if ($code !== FALSE) {
 			$this->ion_auth->activate($id, $code);
@@ -416,7 +401,10 @@ class Users extends MY_Controller
 	{
 		method('post');
 
-		$id = $this->encryption->decrypt(urldecode($id));
+		$id = (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
+
+		$user = $this->ion_auth->user($id)->row();
+		if (!$user || !$id) show_404();
 
 		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
 			// redirect them to the home page because they must be an administrator to view this
@@ -438,6 +426,64 @@ class Users extends MY_Controller
 			'status' => true,
 			'message' => 'Status berhasil diubah',
 			'data' => null,
+		], 200);
+	}
+
+	public function dark_mode()
+	{
+		method('post');
+
+		$this->db->trans_begin();
+
+		$update = $this->db->update('users', [
+			'dark_mode' => post('dark_mode'),
+		], ['id' => get_user_id()]);
+
+		if (!$update || !$this->db->trans_status()) {    // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+			], 404);
+		}
+
+		session('dark_mode', post('dark_mode'));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Berhasil mengubah mode',
+		], 200);
+	}
+
+	public function sidebar()
+	{
+		method('post');
+
+		$this->db->trans_begin();
+
+		$update = $this->db->update('users', [
+			'sidebar' => post('sidebar'),
+		], ['id' => get_user_id()]);
+
+		if (!$update || !$this->db->trans_status()) {    // Check transaction status
+			$this->db->trans_rollback();		// Rollback transaction
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+			], 404);
+		}
+
+		session('sidebar', post('sidebar'));
+		$this->db->trans_commit();		// Commit transaction
+
+		response([
+			'status' => true,
+			'message' => 'Berhasil mengubah sidebar',
 		], 200);
 	}
 }

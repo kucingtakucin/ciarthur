@@ -39,18 +39,8 @@
 			},
 			ajax: {
 				url: BASE_URL + 'data_roles',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'JSON',
-				data: {},
-				beforeSend: () => {
-					loading()
-				},
-				complete: () => {
-					setTimeout(async () => {
-						await Swal.hideLoading()
-						await Swal.close()
-					}, 100);
-				}
 			},
 			columnDefs: [{
 					targets: [0, 1, 2], // Sesuaikan dengan jumlah kolom
@@ -61,58 +51,23 @@
 					searchable: false,
 					orderable: false,
 				},
-				{
-					targets: [3],
-					visible: false,
-					searchable: false,
-				}
 			],
-			order: [
-				[3, 'desc']
-			],
+			order: [],
 			columns: [{ // 0
 					title: '#',
 					name: '#',
-					data: 'DT_RowIndex',
+					data: 'no',
 				},
 				{ // 1
 					title: 'Role',
-					name: 'name',
-					data: 'name',
-					render: (name) => {
-						return $('<span>', {
-							html: name.charAt(0).toUpperCase() + name.slice(1),
-							class: 'badge badge-primary',
-						}).prop('outerHTML')
-					}
+					name: 'nama',
+					data: 'nama',
 				},
 				{ // 2
 					title: 'Aksi',
-					name: 'encrypt_id',
-					data: 'encrypt_id',
-					render: (encrypt_id) => {
-						let btn_manage = $('<button>', {
-							type: 'button',
-							class: 'btn btn-dark text-white btn_manage',
-							'data-id': encrypt_id,
-							html: $('<i>', {
-								class: 'fa fa-cog'
-							}).prop('outerHTML'),
-							title: 'Manage Permission'
-						})
-
-						return $('<div>', {
-							role: 'group',
-							class: 'btn-group btn-group-sm',
-							html: [btn_manage]
-						}).prop('outerHTML')
-					}
+					name: 'aksi',
+					data: 'aksi',
 				},
-				{ // 3
-					title: 'Created At',
-					name: 'created_at',
-					data: 'created_at',
-				}
 			],
 			initComplete: function(event) {
 				$(this).on('click', '.btn_manage', function(event) {
@@ -124,15 +79,6 @@
 				// ================================================== //
 			},
 		})
-
-		datatable_permission.on('draw.dt', function() {
-			let PageInfo = datatable_permission.page.info();
-			datatable_permission.column(0, {
-				page: 'current'
-			}).nodes().each(function(cell, i) {
-				cell.innerHTML = i + 1 + PageInfo.start;
-			});
-		});
 	}
 
 	// socket.on('auth-reload_dt-permission', () => {

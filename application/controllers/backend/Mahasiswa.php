@@ -111,7 +111,6 @@ class Mahasiswa extends MY_Controller
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf(),
 			], 422);
 		}
 	}
@@ -145,6 +144,8 @@ class Mahasiswa extends MY_Controller
 			], 404);
 		}
 
+		$this->db->trans_begin();
+
 		$insert = $this->Crud->insert(
 			[
 				'uuid' => uuid(),
@@ -162,20 +163,22 @@ class Mahasiswa extends MY_Controller
 			]
 		);
 
-		if (!$insert) {
+		if (!$insert || !$this->db->trans_status()) {
+			$this->db->trans_rollback();
 			response([
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf()
-			], 404);
+			], 500);
 		}
+
+		$this->db->trans_commit();
 
 		response([
 			'status' => true,
 			'message' => 'Created successfuly',
-			'last_query' => $this->db->last_query()
+			'last_query' => $this->db->last_query(),
 		], 200);
 	}
 
@@ -227,10 +230,12 @@ class Mahasiswa extends MY_Controller
 			if (!$this->upload->do_upload("foto")) {
 				response([
 					'status' => false,
-					'message' => $this->upload->display_errors('', '')
-				], 404);
+					'message' => $this->upload->display_errors('', ''),
+				], 500);
 			}
 		}
+
+		$this->db->trans_begin();
 
 		$update = $this->Crud->update(
 			[
@@ -253,20 +258,22 @@ class Mahasiswa extends MY_Controller
 			]
 		);
 
-		if (!$update) {
+		if (!$update || !$this->db->trans_status()) {
+			$this->db->trans_rollback();
 			response([
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf()
-			], 404);
+			], 500);
 		}
+
+		$this->db->trans_commit();
 
 		response([
 			'status' => true,
 			'message' => 'Updated successfuly',
-			'last_query' => $this->db->last_query()
+			'last_query' => $this->db->last_query(),
 		], 200);
 	}
 
@@ -289,6 +296,8 @@ class Mahasiswa extends MY_Controller
 			unlink("./uploads/mahasiswa/{$data->foto}");
 		}
 
+		$this->db->trans_begin();
+
 		$delete = $this->Crud->update(
 			[
 				'is_active' => '0',
@@ -300,20 +309,22 @@ class Mahasiswa extends MY_Controller
 			]
 		);
 
-		if (!$delete) {
+		if (!$delete || !$this->db->trans_status()) {
+			$this->db->trans_rollback();
 			response([
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf()
-			], 404);
+			], 500);
 		}
+
+		$this->db->trans_commit();
 
 		response([
 			'status' => true,
 			'message' => 'Deleted successfuly',
-			'last_query' => $this->db->last_query()
+			'last_query' => $this->db->last_query(),
 		]);
 	}
 
@@ -339,7 +350,7 @@ class Mahasiswa extends MY_Controller
 				'updated_by' => get_user_id(),
 			],
 			[
-				'id' => $this->encryption->decrypt(base64_decode(post('id')))
+				'uuid' => post('uuid')
 			]
 		);
 
@@ -350,7 +361,6 @@ class Mahasiswa extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'last_query' => $this->db->last_query(),
-				'csrf' => csrf(),
 			], 500);
 		}
 
@@ -360,7 +370,6 @@ class Mahasiswa extends MY_Controller
 			'status' => true,
 			'message' => 'Updated successfuly',
 			'last_query' => $this->db->last_query(),
-			'csrf' => csrf()
 		]);
 	}
 
@@ -592,7 +601,6 @@ class Mahasiswa extends MY_Controller
 			$awal++;
 		}
 
-		header('Access-Control-Expose-Headers: *');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="data_mahasiswa.xlsx"');
 		header('Filename: data_mahasiswa.xlsx');
@@ -630,7 +638,7 @@ class Mahasiswa extends MY_Controller
 				response([
 					'status' => false,
 					'message' => 'Format tidak sesuai! mohon disesuaikan dengan template',
-				], 404);
+				], 500);
 			}
 
 			for ($i = 4; $i < count($data); $i++) {
@@ -641,6 +649,7 @@ class Mahasiswa extends MY_Controller
 				) {
 					$this->Crud->insert(
 						[
+							'uuid' => uuid(),
 							'nim' => $data[$i][2] ?? null,
 							'nama' => $data[$i][3] ?? null,
 							'prodi_id' => $this->db->get_where('prodi', ['nama' => strtoupper($data[$i][5])])->row()->id ?? null,
@@ -665,7 +674,7 @@ class Mahasiswa extends MY_Controller
 		response([
 			'status' => false,
 			'message' => 'You did not select a file to upload.',
-		]);
+		], 500);
 	}
 
 	/**
@@ -680,6 +689,7 @@ class Mahasiswa extends MY_Controller
 		$spreadsheet = IOFactory::load(FCPATH . 'assets/templates/excel/template_daftar_mahasiswa.xlsx');
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment; filename="template_daftar_mahasiswa.xlsx"');
+		header('Filename: template_daftar_mahasiswa.xlsx');
 		header('Cache-Control: max-age=0');
 		$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 		$writer->save('php://output');
@@ -699,6 +709,7 @@ class Mahasiswa extends MY_Controller
 
 		header('Content-Type: application/octet-stream');
 		header("Content-Disposition: attachment; filename=data_mahasiswa.docx");
+		header('Filename: data_mahasiswa.docx');
 		header('Cache-Control: max-age=0');
 		$templateProcessor->save('php://output');
 		exit;

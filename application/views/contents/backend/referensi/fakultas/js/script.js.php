@@ -20,7 +20,7 @@
 	const load_datatable = () => {
 		datatable = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			dom: `<"dt-custom-filter mb-2 d-block">
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
@@ -50,10 +50,6 @@
 				url: BASE_URL + 'data',
 				type: 'POST',
 				dataType: 'JSON',
-				error: (err) => {
-					if (!err?.responseJSON &&
-						err.status === 403) _handle_csrf()
-				}
 			},
 			order: [],
 			columnDefs: [{
@@ -160,11 +156,6 @@
 				let response = await axios.post(BASE_URL + 'insert', formData)
 					.then(res => res.data.message)
 					.catch(err => {
-						if (!err?.response) {
-							Swal.showValidationMessage('Not Allowed');
-							_handle_csrf();
-						}
-
 						let errors = err?.response.data?.errors;
 						if (errors && typeof errors === 'object') {
 							Object.entries(errors).map(([key, value]) => {
@@ -223,11 +214,6 @@
 				let response = await axios.post(BASE_URL + 'update', formData)
 					.then(res => res.data.message)
 					.catch(err => {
-						if (!err?.response) {
-							Swal.showValidationMessage('Not Allowed');
-							_handle_csrf();
-						}
-
 						let errors = err.response.data?.errors;
 						if (errors && typeof errors === 'object') {
 							Object.entries(errors).map(([key, value]) => {
@@ -293,8 +279,6 @@
 						})
 
 					}).catch(err => {
-						if (!err?.response) _handle_csrf();
-
 						console.error(err);
 						Swal.fire({
 							icon: 'error',
@@ -318,15 +302,10 @@
 		axios.post(BASE_URL + 'update', formData)
 			.then(res => {
 				$(element).closest(`td.input_${name}`).html(val)
-				datatable.ajax.reload()
+				datatable.ajax.reload(null, false)
 				toastr.success('Berhasil mengubah data', 'Sukses')
 			})
 			.catch(err => {
-				if (!err?.response) {
-					_handle_csrf();
-					return;
-				}
-
 				let errors = err.response.data?.errors;
 				if (errors && typeof errors === 'object') {
 					toastr.error('Tidak boleh kosong', 'Gagal')
@@ -337,7 +316,7 @@
 
 					$(element).on('blur', (event) => {
 						if ($(element).val()) $inline(element, name);
-						else datatable.ajax.reload();
+						else datatable.ajax.reload(null, false);
 					})
 				}
 			})

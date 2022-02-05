@@ -1,13 +1,15 @@
 .DS_Store
 
 application/cache/*
-application/config/*
-uploads/*
-assets/*
 !application/cache/index.html
+
+application/config/*
+!application/config/index.html
 
 application/logs/*
 !application/logs/index.html
+uploads/*
+assets/*
 
 !application/*/.htaccess
 
