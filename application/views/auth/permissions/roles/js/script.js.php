@@ -18,13 +18,13 @@
 	const load_datatable_permission = () => {
 		datatable_permission = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			dom: `
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
-                <"d-flex flex-row justify-content-between"lf>
+                <"d-flex flex-row mb-2 justify-content-between"lf>
                 rt
-                <"d-flex flex-row justify-content-between"ip>`,
+                <"d-flex flex-row mt-2 justify-content-between"ip>`,
 			buttons: {
 				/** Tombol-tombol Export & Tambah Data */
 				buttons: [{}, ],
@@ -60,19 +60,36 @@
 				},
 				{ // 1
 					title: 'Role',
-					name: 'nama',
-					data: 'nama',
+					name: 'name',
+					data: 'name',
 				},
 				{ // 2
 					title: 'Aksi',
-					name: 'aksi',
-					data: 'aksi',
+					name: 'id',
+					data: 'id',
+					render: (id) => {
+						let btn_manage = $('<button>', {
+							type: 'button',
+							class: 'btn btn-dark text-white btn_manage',
+							'data-id': id,
+							html: $('<i>', {
+								class: 'fa fa-cog'
+							}).prop('outerHTML'),
+							title: 'Manage Permission'
+						})
+
+						return $('<div>', {
+							role: 'group',
+							class: 'btn-group btn-group-sm',
+							html: [btn_manage]
+						}).prop('outerHTML')
+					}
 				},
 			],
 			initComplete: function(event) {
 				$(this).on('click', '.btn_manage', function(event) {
 					event.preventDefault()
-					location.replace(BASE_URL + `role_permissions/${$(this).data('id')}`)
+					location.href = (BASE_URL + `role_permissions/${$(this).data('id')}`)
 				});
 
 				$('[title]').tooltip()

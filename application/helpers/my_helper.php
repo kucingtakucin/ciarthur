@@ -1,11 +1,12 @@
 <?php
 
+use Nullix\CryptoJsAes\CryptoJsAes;
 use Ramsey\Uuid\Uuid;
 
 function sistem()
 {
 	return (object) [
-		"nama" => "Omahan CIARTHUR"
+		"nama" => config_item('sistem')
 	];
 }
 
@@ -169,7 +170,10 @@ function get($input = null, $xss_clean = true)
 	$ci = &get_instance();
 
 	if (!$input) return $ci->input->get();
-	return $ci->input->get($input, $xss_clean);
+
+	$get = $ci->input->get($input, $xss_clean);
+	if (!$get) return null;
+	return $get;
 }
 
 function post($input = null, $xss_clean = true)
@@ -177,7 +181,10 @@ function post($input = null, $xss_clean = true)
 	$ci = &get_instance();
 
 	if (!$input) return $ci->input->post();
-	return $ci->input->post($input, $xss_clean);
+
+	$post = $ci->input->post($input, $xss_clean);
+	if (!$post) return null;
+	return $post;
 }
 
 function session($key = null, $value = null)
@@ -246,37 +253,18 @@ function recaptcha_render_js()
 	return "<script src=\"https://www.google.com/recaptcha/api.js\" async defer></script>";
 }
 
-/**
- * Simple method to encrypt or decrypt a plain text string
- * initialization vector(IV) has to be the same when encrypting and decrypting
- * 
- * @param string $action: can be 'encrypt' or 'decrypt'
- * @param string $string: string to encrypt or decrypt
- *
- * @return string
- */
-function encrypt_decrypt($action, $string)
+function cryptojs_aes_encrypt($original_value)
 {
-	$output = false;
+	$password = config_item('cryptojs_aes_password');
+	$encrypted = CryptoJsAes::encrypt($original_value, $password);
+	return $encrypted;
+}
 
-	$encrypt_method = "AES-256-CBC";
-	$secret_key = bin2hex('secret_key');
-	$secret_iv = bin2hex('secret_iv');
-
-	// hash
-	$key = hash('sha256', $secret_key);
-
-	// iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-	$iv = substr(hash('sha256', $secret_iv), 0, 16);
-
-	if ($action === 'encrypt') {
-		$output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-		$output = base64_encode($output);
-	} else if ($action === 'decrypt') {
-		$output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
-	}
-
-	return $output;
+function cryptojs_aes_decrypt($encrypted)
+{
+	$password = config_item('cryptojs_aes_password');
+	$decrypted = CryptoJsAes::decrypt($encrypted, $password);
+	return $decrypted;
 }
 
 function slugify($string)
@@ -294,4 +282,73 @@ function slugify($string)
 
 	// Slugify and return the string
 	return url_title(convert_accented_characters($string), 'dash', true);
+}
+
+function http_request($method = 'GET', $url = '', $body = [], $headers = [])
+{
+
+	$curl = curl_init();
+
+	curl_setopt_array($curl, [
+		CURLOPT_URL => $url,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_ENCODING => '',
+		CURLOPT_MAXREDIRS => 10,
+		CURLOPT_TIMEOUT => 0,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		CURLOPT_CUSTOMREQUEST => $method,
+		CURLOPT_POSTFIELDS => $body,
+		CURLOPT_HTTPHEADER => count($headers) ? $headers : [
+			'Accept: application/json'
+		],
+	]);
+
+	$response = curl_exec($curl);
+
+	curl_close($curl);
+	return $response;
+}
+
+function upload($name = 'foto', $path = './uploads/', $type = 'single', Closure $callback = null)
+{
+	$ci = &get_instance();
+
+	$config['upload_path'] = $path;
+	$config['allowed_types'] = 'jpg|jpeg|png';
+	$config['max_size'] = 2048;
+	$config['encrypt_name'] = true;
+	$config['remove_spaces'] = true;
+	$ci->upload->initialize($config);
+
+	if ($type === 'single') :
+
+		if (!$ci->upload->do_upload($name))
+			response([
+				'status' => false,
+				'message' => $ci->upload->display_errors('', ''),
+				'files' => $_FILES,
+				'payload' => post()
+			], 404);
+
+		return $ci->upload->data('file_name');
+
+	elseif ($type === 'multiple') :
+
+		foreach ($_FILES[$name]['name'] as $k => $v) {
+			$_FILES['file']['name'] = $v['name'][$k];
+			$_FILES['file']['type'] = $v['type'][$k];
+			$_FILES['file']['tmp_name'] = $v['tmp_name'][$k];
+			$_FILES['file']['error'] = $v['error'][$k];
+			$_FILES['file']['size'] = $v['size'][$k];
+
+			// Upload file to server
+			if ($ci->upload->do_upload($name)) {
+				// Uploaded file data
+				$file_data = $ci->upload->data();
+
+				if (is_callable($callback)) $callback($k, $file_data);
+			}
+		}
+	endif;
 }

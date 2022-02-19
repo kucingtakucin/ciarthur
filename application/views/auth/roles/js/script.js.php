@@ -16,7 +16,7 @@
 	const load_datatable_role = () => {
 		datatable_role = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			scrollX: true,
 			dom: `
@@ -84,7 +84,7 @@
 			initComplete: function(event) {
 				$(this).on('click', '.btn_edit', function(event) {
 					event.preventDefault()
-					location.replace(BASE_URL + `edit_role/${$(this).data('id')}`)
+					location.replace(BASE_URL + `edit_role/${$(this).data('uuid')}`)
 				});
 
 				$(this).on('click', '.btn_delete', function(event) {

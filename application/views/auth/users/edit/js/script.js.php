@@ -1,7 +1,7 @@
 <script>
 	const BASE_URL = "<?= base_url($uri_segment) ?>"
 
-	let $update_user = async (event, id) => {
+	let $update_user = async (event, uuid) => {
 		event.preventDefault()
 		Swal.fire({
 			title: 'Apakah anda yakin?',
@@ -20,7 +20,7 @@
 
 				let formData = new FormData(event.target);
 
-				axios.post(BASE_URL + 'edit_user/' + id, formData)
+				axios.post(BASE_URL + 'edit_user/' + uuid, formData)
 					.then(res => {
 
 						Swal.fire({

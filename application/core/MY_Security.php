@@ -1,5 +1,7 @@
 <?php
 
+use Nullix\CryptoJsAes\CryptoJsAes;
+
 class MY_Security extends CI_Security
 {
 
@@ -56,12 +58,16 @@ class MY_Security extends CI_Security
             !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
         ) {
-            $x_xsrf_token = (array) json_decode(@$_SERVER['HTTP_X_XSRF_TOKEN']);
-            $csrf_hash = @$x_xsrf_token[bin2hex('hash')];
+            $password = config_item('cryptojs_aes_password');
+            $decrypted = CryptoJsAes::decrypt(@$_SERVER['HTTP_X_CI_XSRF_TOKEN'], $password);
 
-            $valid = isset($_SERVER['HTTP_X_XSRF_TOKEN'], $_COOKIE[$this->_csrf_cookie_name])
-                && is_string($csrf_hash) && is_string($_COOKIE[$this->_csrf_cookie_name])
-                && hash_equals(base64_decode($csrf_hash), $_COOKIE[$this->_csrf_cookie_name]);
+            $x_xsrf_token = (array) $decrypted;
+            $csrf_hash = @$x_xsrf_token[bin2hex('hash')];
+            $csrf_token_name = @$x_xsrf_token[bin2hex('token_name')];
+
+            $valid = isset($_SERVER['HTTP_X_CI_XSRF_TOKEN'], $_COOKIE[$this->_csrf_cookie_name])
+                && is_string($csrf_hash) && is_string($csrf_token_name) && is_string($_COOKIE[$this->_csrf_cookie_name])
+                && hash_equals($csrf_hash, $_COOKIE[$this->_csrf_cookie_name]);
         } else {
             // Check CSRF token validity, but don't error on mismatch just yet - we'll want to regenerate
             $valid = isset($_POST[$this->_csrf_token_name], $_COOKIE[$this->_csrf_cookie_name])

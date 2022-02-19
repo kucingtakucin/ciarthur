@@ -74,6 +74,7 @@ class Fakultas extends MY_Controller
 	private function _validator()
 	{
 		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_data(post());
 		$this->form_validation->set_rules('nama', 'nama fakultas', 'required|trim');
 
 		if (!$this->form_validation->run())
@@ -81,7 +82,7 @@ class Fakultas extends MY_Controller
 				'status' => false,
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array(),
-				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 422);
 	}
 
@@ -120,6 +121,7 @@ class Fakultas extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 404);
 		}
 
@@ -129,14 +131,15 @@ class Fakultas extends MY_Controller
 			'status' => true,
 			'message' => 'Created successfuly',
 			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 
 	/**
-	 * Keperluan CRUD get where data
+	 * Keperluan CRUD detail data
 	 *
 	 */
-	public function get_where()
+	public function detail()
 	{
 		method('get');
 		//=========================================================//
@@ -144,13 +147,14 @@ class Fakultas extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Found',
-			'data' => $this->Crud->get_where(
+			'data' => $this->Crud->detail(
 				[
 					'a.id' => $this->encryption->decrypt(base64_decode(post('id', true))),
 					'a.is_active' => '1'
 				]
 			),
 			'query' => $this->db->last_query(),
+			'payload' => get()
 		]);
 	}
 
@@ -187,6 +191,7 @@ class Fakultas extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 404);
 		}
 
@@ -196,6 +201,7 @@ class Fakultas extends MY_Controller
 			'status' => true,
 			'message' => 'Updated successfuly',
 			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 
@@ -218,7 +224,7 @@ class Fakultas extends MY_Controller
 				'deleted_by' => get_user_id()
 			],
 			[
-				'id' => $this->encryption->decrypt(urldecode(post('id')))
+				'id' => $this->encryption->decrypt(base64_decode(post('id')))
 			]
 		);
 
@@ -229,6 +235,7 @@ class Fakultas extends MY_Controller
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
 				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 404);
 		}
 
@@ -238,6 +245,7 @@ class Fakultas extends MY_Controller
 			'status' => true,
 			'message' => 'Deleted successfuly',
 			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 }

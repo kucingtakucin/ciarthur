@@ -48,12 +48,18 @@
     <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
 
+    <!-- OfflineJs -->
+    <link rel="stylesheet" href="<?= base_url() ?>assets/custom/offlinejs/css/offline.css">
+    <link rel="stylesheet" href="<?= base_url() ?>assets/custom/offlinejs/css/offline-language-english.css">
+
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="<?= config_item('assets_auth') ?>css/responsive.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
+
 </head>
 
 <body>
+    <div id="firebaseui-auth-container"></div>
     <div class="preloader-container">
         <svg class="preloader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340">
             <circle cx="170" cy="170" r="160" stroke="#E2007C" />
@@ -112,9 +118,44 @@
     <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+    <!-- Offline Js -->
+    <script src="<?= base_url() ?>assets/custom/offlinejs/js/offline.min.js"></script>
+
+    <!-- CryptoJs AES -->
+    <script src="<?= base_url() ?>assets/custom/cryptojs-aes/cryptojs-aes.min.js"></script>
+    <script src="<?= base_url() ?>assets/custom/cryptojs-aes/cryptojs-aes-format.js"></script>
 
     <!-- Custom Javascripts -->
     <script>
+        // ================================================//
+        /**
+         * Implement hex2bin and bin2hex in JavaScript
+         * https://gist.github.com/jasperck
+         *
+         * Copyright 2017, JasperChang <jasperc8@gmail.com>
+         * Licensed under The MIT License
+         * http://www.opensource.org/licenses/mit-license
+         */
+
+        const _hex2bin = str => str.match(/.{1,2}/g).reduce((str, hex) => str += String.fromCharCode(parseInt(hex, 16)), '');
+
+        const _bin2hex = str => str.split('').reduce((str, glyph) => str += glyph.charCodeAt().toString(16).length < 2 ? `0${glyph.charCodeAt().toString(16)}` :
+            glyph.charCodeAt().toString(16), '');
+
+        // Crypto.Js AES encrypt
+        const _cryptoAesJson_encrypt = (valueToEncrypt) => {
+            let password = "<?= config_item('cryptojs_aes_password') ?>";
+            let encrypted = CryptoJSAesJson.encrypt(valueToEncrypt, password)
+            return encrypted
+        }
+
+        // Crypto.Js AES decrypt
+        const _cryptoAesJson_decrypt = (valueToDecrypt) => {
+            let password = "<?= config_item('cryptojs_aes_password') ?>"
+            let decrypted = CryptoJSAesJson.decrypt(valueToDecrypt, password)
+            return decrypted
+        }
+
         /**
          * Keperluan generate csrf
          */
@@ -124,10 +165,25 @@
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {
                 xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-                xhr.setRequestHeader("X-XSRF-TOKEN", JSON.stringify({
+
+                xhr.setRequestHeader("X-CI-XSRF-TOKEN", _cryptoAesJson_encrypt({
                     '<?= bin2hex('token_name') ?>': '<?= base64_encode($this->security->get_csrf_token_name()) ?>',
-                    '<?= bin2hex('hash') ?>': btoa(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
+                    '<?= bin2hex('hash') ?>': Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>'))
                 }))
+
+                if (settings.data instanceof FormData) {
+                    for ([k, v] of settings.data.entries()) {
+                        settings.data.set(k, _cryptoAesJson_encrypt(v))
+                    }
+                } else if (typeof settings.data === 'string') {
+                    const urlParams = new URLSearchParams(settings.data);
+                    const entries = urlParams.entries(); //returns an iterator of decoded [key,value] tuples
+                    const obj = {}
+                    for (const [key, value] of entries) { // each 'entry' is a [key, value] tupple
+                        obj[key] = _cryptoAesJson_encrypt(value);
+                    }
+                    settings.data = new URLSearchParams(obj).toString()
+                }
             }
         });
 
@@ -149,10 +205,17 @@
         axios.interceptors.request.use(function(config) {
             $.LoadingOverlay("show")
             // Do something before request is sent
-            if (config?.headers) config.headers['X-XSRF-TOKEN'] = JSON.stringify({
+            if (config?.headers) config.headers['X-CI-XSRF-TOKEN'] = _cryptoAesJson_encrypt({
                 '<?= bin2hex('token_name') ?>': '<?= base64_encode($this->security->get_csrf_token_name()) ?>',
-                '<?= bin2hex('hash') ?>': btoa(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
+                '<?= bin2hex('hash') ?>': Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>'))
             });
+
+            if (config?.data && config?.data instanceof FormData) {
+                for ([k, v] of config?.data.entries()) {
+                    config?.data.set(k, _cryptoAesJson_encrypt(v))
+                }
+            }
+
             return config;
         }, function(error) {
             $.LoadingOverlay("hide")

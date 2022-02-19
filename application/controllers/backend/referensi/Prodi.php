@@ -80,7 +80,8 @@ class Prodi extends MY_Controller
 			'status' => true,
 			'data' => $this->db->like('nama', get('search'))
 				->get_where('fakultas', ['is_active' => '1'])->result(),
-			'last_query' => $this->db->last_query()
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 
@@ -94,6 +95,7 @@ class Prodi extends MY_Controller
 	private function _validator($status = null)
 	{
 		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_data(post());
 		if ($status === 'inline') $this->form_validation->set_rules('value', post('name'), 'required|trim');
 		else {
 			$this->form_validation->set_rules('nama', 'nama prodi', 'required|trim');
@@ -104,7 +106,7 @@ class Prodi extends MY_Controller
 				'status' => false,
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array(),
-				'last_query' => $this->db->last_query(),
+				'payload' => post(),
 			], 422);
 	}
 
@@ -142,7 +144,8 @@ class Prodi extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post(),
 			], 500);
 		}
 
@@ -151,7 +154,8 @@ class Prodi extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Created successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post(),
 		]);
 	}
 
@@ -159,7 +163,7 @@ class Prodi extends MY_Controller
 	 * Keperluan CRUD detail data
 	 *
 	 */
-	public function get_where()
+	public function detail()
 	{
 		method('get');
 		//=========================================================//
@@ -167,13 +171,14 @@ class Prodi extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Found',
-			'data' => $this->Crud->get_where(
+			'data' => $this->Crud->detail(
 				[
 					'a.id' => $this->encryption->decrypt(base64_decode(post('id'))),
 					'a.is_active' => '1'
 				]
 			),
-			'last_query' => $this->db->last_query()
+			'query' => $this->db->last_query(),
+			'payload' => get()
 		]);
 	}
 
@@ -210,7 +215,8 @@ class Prodi extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post(),
 			], 500);
 		}
 
@@ -219,7 +225,8 @@ class Prodi extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Updated successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post(),
 		]);
 	}
 
@@ -252,7 +259,8 @@ class Prodi extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post(),
 			], 500);
 		}
 
@@ -261,7 +269,8 @@ class Prodi extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Deleted successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post(),
 		]);
 	}
 
@@ -297,7 +306,8 @@ class Prodi extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post(),
 			], 500);
 		}
 
@@ -306,7 +316,8 @@ class Prodi extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Updated successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post(),
 		]);
 	}
 }

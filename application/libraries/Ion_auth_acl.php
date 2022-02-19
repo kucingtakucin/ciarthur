@@ -109,7 +109,9 @@ class Ion_auth_acl
 
         $permissions || $permissions = $this->user_permissions;
 
-        return ($this->has_permission($key, $permissions) && !$this->is_inherited($key, $permissions)) ? TRUE : FALSE;
+        return ($this->has_permission($key, $permissions)
+            //  && !$this->is_inherited($key, $permissions)
+        ) ? TRUE : FALSE;
     }
 
     /**

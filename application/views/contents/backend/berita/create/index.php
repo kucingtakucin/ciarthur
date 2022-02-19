@@ -1,7 +1,7 @@
 <div class="card">
 	<div class="card-body">
-		<h3 class="text-center">Tambah Data Berita</h5>
-			<p class="text-muted text-center mb-0">Sistem Informasi <?= sistem()->nama ?></p>
+		<h3 class="text-center">Tambah Data <?= $title ?></h5>
+			<p class="text-muted text-center mb-0"><?= sistem()->nama ?></p>
 	</div>
 </div>
 

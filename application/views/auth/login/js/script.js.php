@@ -24,25 +24,32 @@
 						timer: 1500
 					}).then(() => location.replace("<?= base_url() ?>" + res.data.redirect))
 				}).catch(err => {
-					if (!err?.response) _handle_csrf();
 
-					let errors = err.response.data?.errors;
-					let message = err.response.data?.message;
-					let title = err.response.data?.title;
+					if (err?.response) {
+						let errors = err?.response.data?.errors;
+						let message = err?.response.data?.message;
+						let title = err?.response.data?.title;
 
-					if (errors && typeof errors === 'object') {
-						Object.entries(errors).map(([key, value]) => {
-							$(`#input_login_${key}`).addClass('is-invalid border-danger')
-							$(`#error_login_${key}`).html(value).slideDown(500)
-						})
-						Swal.close();
-					} else {
-						Swal.fire({
-							icon: 'error',
-							title: title ? title : "Oops...",
-							html: message ? message : err.response.statusText,
-						})
+						if (errors && typeof errors === 'object') {
+							Object.entries(errors).map(([key, value]) => {
+								$(`#input_login_${key}`).addClass('is-invalid border-danger')
+								$(`#error_login_${key}`).html(value).slideDown(500)
+							})
+							Swal.close();
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: title ? title : "Oops...",
+								html: message ? message : err.response.statusText,
+							})
+						}
 					}
+					console.error(err)
+					Swal.fire({
+						icon: 'error',
+						title: "Oops...",
+						html: "Terjadi Kesalahan",
+					})
 				}).then(res => grecaptcha.reset())
 		}
 

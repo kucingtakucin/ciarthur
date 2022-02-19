@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="card-body">
-		<form id="update_role" class="needs-validation" onsubmit="$update_role(event, '<?= bin2hex($this->encryption->encrypt($group_id)) ?>')" novalidate>
+		<form id="update_role" class="needs-validation" onsubmit="$update_role(event, '<?= $group->uuid ?>')" novalidate>
 
 			<div class="form-group">
 				<label for="role_name">Role Name</label>

@@ -5,7 +5,7 @@
 	</div>
 
 	<div class="card-body">
-		<form id="update_user" class="needs-validation" onsubmit="$update_user(event,'<?= bin2hex($this->encryption->encrypt($user->id)) ?>')" novalidate>
+		<form id="update_user" class="needs-validation" onsubmit="$update_user(event,'<?= $user->uuid ?>')" novalidate>
 
 			<div class="form-group">
 				<?= lang('edit_user_fname_label', 'first_name'); ?>

@@ -3,8 +3,8 @@
 class Datatable extends CI_Model
 {
 	private $_table = 'users';
-	private $_column_order = [null, 'username', 'email', 'nama_role', null, null];
-	private $_column_search = [null, 'username', 'email', 'nama_role', null, null];
+	private $_column_order = [null, 'username', 'email', 'nama_role', 'a.active', null];
+	private $_column_search = [null, 'username', 'email', 'nama_role', 'a.active', null];
 	private $_default_order = ['id ' => 'DESC'];
 
 	private function _query()
@@ -24,12 +24,12 @@ class Datatable extends CI_Model
 		$q .= " HAVING 1=1 AND (1=0";
 		$search_value = false;
 		foreach ($this->_column_search as $k => $v) {
-			if ($v && post('columns')[$k]['search']['value']) {
+			if ($v && post("columns[$k][search][value]")) {
 				$search_value = true;
-				$q .= " OR {$v} LIKE '%" . post('columns')[$k]['search']['value'] . "%'";
-			} elseif ($v && post('search')['value']) {
+				$q .= " OR {$v} LIKE '%" . post("columns[$k][search][value]") . "%'";
+			} elseif ($v && post('search[value]')) {
 				$search_value = true;
-				$q .= " OR {$v} LIKE '%" . post('search')['value'] . "%'";
+				$q .= " OR {$v} LIKE '%" . post('search[value]') . "%'";
 			}
 		}
 
@@ -78,12 +78,13 @@ class Datatable extends CI_Model
 			$row['nama_role'] = $v->nama_role;
 			$row['aksi'] = "
 				<div role=\"group\" class=\"btn-group btn-group-sm\">
+					" . (is_allowed('update-users') ? "
 					<button type=\"button\" class=\"btn btn-success btn_edit\" data-uuid=\"{$v->uuid}\" data-id=\"" . bin2hex($this->encryption->encrypt($v->id)) . "\" title=\"Ubah Data\">
 						<i class=\"fa fa-edit\"></i>
-					</button>
+					</button>" : "") . (is_allowed('delete-users') ? " 
 					<button type=\"button\" class=\"btn btn-danger btn_delete\" data-uuid=\"{$v->uuid}\" data-id=\"" . bin2hex($this->encryption->encrypt($v->id)) . "\" title=\"Hapus Data\">
 						<i class=\"fa fa-trash\"></i>
-					</button>
+					</button> " : "") . "
 				</div>
 			";
 			$row['active'] = $v->active;
@@ -98,7 +99,7 @@ class Datatable extends CI_Model
 			"recordsFiltered" => $result['recordsFiltered'],
 			"data" => $data,
 			"query" => $result['query'],
-			"csrf" => csrf()
+			"payload" => post()
 		];
 	}
 }

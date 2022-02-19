@@ -13,7 +13,7 @@ class Mahasiswa extends MY_RestController
 		// Construct the parent class
 		parent::__construct();
 		$this->verify_v2();
-		$this->load->model($this->_path . 'M_Mahasiswa');
+		$this->load->model($this->_path . 'Crud');
 		$this->load->library(['upload', 'image_lib', 'ion_auth']);  // Load library upload, image_lib
 	}
 
@@ -29,7 +29,7 @@ class Mahasiswa extends MY_RestController
 
 	public function all_get()
 	{
-		$data = $this->M_Mahasiswa->get();
+		$data = $this->Crud->get();
 
 		if ($data) {
 			return $this->response([
@@ -46,7 +46,7 @@ class Mahasiswa extends MY_RestController
 
 	public function get_where_get()
 	{
-		$data = $this->M_Mahasiswa->get_where([
+		$data = $this->Crud->get_where([
 			'a.id' => $this->get('id', true)
 		]);
 
@@ -79,7 +79,7 @@ class Mahasiswa extends MY_RestController
 			], 404);
 		}
 
-		$this->M_Mahasiswa->insert(
+		$this->Crud->insert(
 			[
 				'nim' => $this->post('nim', true),
 				'nama' => $this->post('nama', true),
@@ -121,7 +121,7 @@ class Mahasiswa extends MY_RestController
 			}
 		}
 
-		$this->M_Mahasiswa->update(
+		$this->Crud->update(
 			[
 				'nim' => $this->put('nim', true),
 				'nama' => $this->put('nama', true),
@@ -144,7 +144,7 @@ class Mahasiswa extends MY_RestController
 
 	public function delete_delete()
 	{
-		$data = $this->M_Mahasiswa->get_where([
+		$data = $this->Crud->get_where([
 			'a.id' => $this->delete('id', true),
 			'a.is_active' => '1'
 		]);
@@ -152,7 +152,7 @@ class Mahasiswa extends MY_RestController
 			unlink("./uploads/mahasiswa/{$data->foto}");
 		}
 
-		$this->M_Mahasiswa->update(
+		$this->Crud->update(
 			[
 				'is_active' => '0',
 				'deleted_at' => date('Y-m-d H:i:s'),

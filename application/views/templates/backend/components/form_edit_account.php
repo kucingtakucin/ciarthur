@@ -15,11 +15,22 @@
     <div class="form-group">
         <div class="row m-0">
             <div class="col-sm-3 text-left">
-                <label class="mt-2" for="select_ubah_password">Password</label>
+                <label class="mt-2" for="input_ubah_password">Password</label>
             </div>
             <div class="col-sm-9">
                 <input type="password" id="input_ubah_password" name="password" class="form-control" placeholder="Masukkan Password" autocomplete="off" onkeydown="return event.keyCode != 13;">
                 <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_ubah_password"></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row m-0">
+            <div class="col-sm-3 text-left">
+                <label class="mt-2" for="input_ubah_password_confirmation">Ulangi Password</label>
+            </div>
+            <div class="col-sm-9">
+                <input type="password" id="input_ubah_password_confirmation" name="password_confirmation" class="form-control" placeholder="Masukkan Password" autocomplete="off" onkeydown="return event.keyCode != 13;">
+                <div class="invalid-feedback text-danger text-left" style="display: none;" id="error_ubah_password_confirmation"></div>
             </div>
         </div>
     </div>

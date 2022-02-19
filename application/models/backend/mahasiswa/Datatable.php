@@ -29,12 +29,12 @@ class Datatable extends CI_Model
 		$q .= " HAVING 1=1 AND (1=0";
 		$search_value = false;
 		foreach ($this->_column_search as $k => $v) {
-			if ($v && post('columns')[$k]['search']['value']) {
+			if ($v && post("columns[$k][search][value]")) {
 				$search_value = true;
-				$q .= " OR {$v} LIKE '%" . post('columns')[$k]['search']['value'] . "%'";
-			} elseif ($v && post('search')['value']) {
+				$q .= " OR {$v} LIKE '%" . post("columns[$k][search][value]") . "%'";
+			} elseif ($v && post('search[value]')) {
 				$search_value = true;
-				$q .= " OR {$v} LIKE '%" . post('search')['value'] . "%'";
+				$q .= " OR {$v} LIKE '%" . post('search[value]') . "%'";
 			}
 		}
 
@@ -81,9 +81,14 @@ class Datatable extends CI_Model
 			$row['nim'] = $v->nim;
 			$row['nama'] = $v->nama;
 			$row['angkatan'] = $v->angkatan;
+
+			$foto = base_url("img/mahasiswa/{$v->foto}?w=100&h=200&fit=crop");
+			$mime_type = @get_headers($foto, true)['Content-Type'];
+			$encoded = base64_encode(file_get_contents($foto));
 			$row['foto'] = "
-				<img src=\"" . base_url("img/mahasiswa/{$v->foto}?w=100&h=200&fit=crop") . "\" alt=\"Foto {$v->nama}\">
+				<img src=\"data:$mime_type;base64,$encoded\" alt=\"Foto {$v->nama}\">
 			";
+
 			$row['nama_prodi'] = $v->nama_prodi;
 			$row['nama_fakultas'] = $v->nama_fakultas;
 			$row['latitude'] = $v->latitude;
@@ -94,12 +99,13 @@ class Datatable extends CI_Model
 			";
 			$row['aksi'] = "
 				<div role=\"group\" class=\"btn-group btn-group-sm\">
+					" . (is_allowed('update-mahasiswa') ? "
 					<button type=\"button\" class=\"btn btn-success btn_edit\" data-uuid=\"{$v->uuid}\" data-id=\"" . base64_encode($this->encryption->encrypt($v->id)) . "\" title=\"Ubah Data\">
 						<i class=\"fa fa-edit\"></i>
-					</button>
+					</button>" : "") . (is_allowed('delete-mahasiswa') ? " 
 					<button type=\"button\" class=\"btn btn-danger btn_delete\" data-uuid=\"{$v->uuid}\" data-id=\"" . base64_encode($this->encryption->encrypt($v->id)) . "\" title=\"Hapus Data\">
 						<i class=\"fa fa-trash\"></i>
-					</button>
+					</button> " : "") . "
 				</div>
 			";
 			$row['prodi_id'] = $v->prodi_id;
@@ -114,6 +120,7 @@ class Datatable extends CI_Model
 			"recordsFiltered" => $result['recordsFiltered'],
 			"data" => $data,
 			"query" => $result['query'],
+			"payload" => post()
 		];
 	}
 }
