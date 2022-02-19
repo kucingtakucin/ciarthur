@@ -26,12 +26,12 @@ class Datatable extends CI_Model
 		$q .= " HAVING 1=1 AND (1=0";
 		$search_value = false;
 		foreach ($this->_column_search as $k => $v) {
-			if ($v && post('columns')[$k]['search']['value']) {
+			if ($v && post("columns[$k][search][value]")) {
 				$search_value = true;
-				$q .= " OR {$v} LIKE '%" . post('columns')[$k]['search']['value'] . "%'";
-			} elseif ($v && post('search')['value']) {
+				$q .= " OR {$v} LIKE '%" . post("columns[$k][search][value]") . "%'";
+			} elseif ($v && post('search[value]')) {
 				$search_value = true;
-				$q .= " OR {$v} LIKE '%" . post('search')['value'] . "%'";
+				$q .= " OR {$v} LIKE '%" . post('search[value]') . "%'";
 			}
 		}
 
@@ -52,7 +52,7 @@ class Datatable extends CI_Model
 			}
 		}
 
-		if (post('start') && post('length'))
+		if (!is_null(post('start')) && post('length'))
 			$q .= " LIMIT " . post('start') . ", " . post('length');
 
 		// Data

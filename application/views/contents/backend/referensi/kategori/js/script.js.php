@@ -1,6 +1,6 @@
 <script>
 	const BASE_URL = "<?= base_url($uri_segment) ?>"
-	let datatable, $insert, $update, $delete;
+	let datatable;
 
 	// Document ready
 	$(() => {
@@ -20,11 +20,11 @@
 	const load_datatable = () => {
 		datatable = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
-			dom: `<"dt-custom-filter mb-3 d-block">
+			dom: `<"dt-custom-filter mb-2 d-block">
 				<"d-flex flex-row justify-content-end flex-wrap mb-2"B>
-				<"d-flex flex-row justify-content-between"lf>
+				<"d-flex flex-row justify-content-between mb-2"lf>
 				rt
 				<"d-flex flex-row justify-content-between"ip>`,
 			buttons: {
@@ -49,41 +49,27 @@
 			},
 			ajax: {
 				url: BASE_URL + 'data',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'JSON',
 				data: {
 					type: '<?= $type_kategori ?>'
 				},
-				beforeSend: () => loading(),
-				complete: () => {
-					setTimeout(async () => {
-						await Swal.hideLoading()
-						await Swal.close()
-					}, 100);
-				}
 			},
 			columnDefs: [{
 					targets: [0, 1, 2], // Sesuaikan dengan jumlah kolom
 					className: 'text-center'
 				},
 				{
-					targets: [0, 2, 3],
+					targets: [0, 2],
 					searchable: false,
 					orderable: false,
 				},
-				{
-					targets: [3],
-					visible: false,
-					searchable: false,
-				}
 			],
-			order: [
-				[3, 'desc']
-			],
+			order: [],
 			columns: [{ // 0
 					title: '#',
 					name: '#',
-					data: 'DT_RowIndex',
+					data: 'no',
 				},
 				{ // 1
 					title: 'Nama Kategori',
@@ -92,41 +78,9 @@
 				},
 				{ // 2
 					title: 'Aksi',
-					name: 'id',
-					data: 'id',
-					render: (id) => {
-						let btn_edit = $('<button>', {
-							type: 'button',
-							class: 'btn btn-success btn_edit',
-							'data-id': id,
-							html: $('<i>', {
-								class: 'fa fa-edit'
-							}).prop('outerHTML'),
-							title: 'Ubah Data'
-						})
-
-						let btn_delete = $('<button>', {
-							type: 'button',
-							class: 'btn btn-danger btn_delete',
-							'data-id': id,
-							html: $('<i>', {
-								class: 'fa fa-trash'
-							}).prop('outerHTML'),
-							title: 'Hapus Data'
-						})
-
-						return $('<div>', {
-							role: 'group',
-							class: 'btn-group btn-group-sm',
-							html: [btn_edit, btn_delete]
-						}).prop('outerHTML')
-					}
+					name: 'aksi',
+					data: 'aksi',
 				},
-				{ // 3
-					title: 'Created At',
-					name: 'created_at',
-					data: 'created_at',
-				}
 			],
 			initComplete: function(event) {
 				$(this).on('click', '.btn_edit', function(event) {
@@ -153,15 +107,6 @@
 		})
 	}
 
-	datatable.on('draw.dt', function() {
-		let PageInfo = datatable.page.info();
-		datatable.column(0, {
-			page: 'current'
-		}).nodes().each(function(cell, i) {
-			cell.innerHTML = i + 1 + PageInfo.start;
-		});
-	});
-
 	// ================================================== //
 </script>
 
@@ -175,7 +120,7 @@
 	 */
 	// ======================================================= //
 
-	$insert = () => {
+	const $insert = () => {
 		Swal.fire({
 			title: 'Form Tambah Data',
 			width: '800px',
@@ -195,11 +140,6 @@
 			},
 			preConfirm: async () => {
 				let formData = new FormData(document.getElementById('form_tambah'));
-
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
 				formData.append('type', '<?= $type_kategori ?>')
 
 				$('#form_tambah .invalid-feedback').slideUp(500)
@@ -239,7 +179,7 @@
 		})
 	}
 
-	$update = (element) => {
+	const $update = (element) => {
 		let row = datatable.row($(element).closest('tr')).data();
 
 		Swal.fire({
@@ -262,12 +202,7 @@
 			},
 			preConfirm: async () => {
 				let formData = new FormData(document.getElementById('form_ubah'));
-
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
-				formData.append('id', row.id)
+				formData.append('uuid', row.uuid)
 				formData.append('type', '<?= $type_kategori ?>')
 
 				$('#form_ubah .invalid-feedback').slideUp(500)
@@ -307,7 +242,7 @@
 		})
 	}
 
-	$delete = async (element) => {
+	const $delete = async (element) => {
 		Swal.fire({
 			title: 'Are you sure?',
 			text: "You won't be able to revert this!",
@@ -321,11 +256,7 @@
 				loading()
 
 				let formData = new FormData();
-				formData.append('id', $(element).data('id'));
-				formData.append(
-					await csrf().then(csrf => csrf.token_name),
-					await csrf().then(csrf => csrf.hash)
-				)
+				formData.append('uuid', $(element).data('uuid'))
 
 				axios.post(BASE_URL + 'delete', formData)
 					.then(res => {

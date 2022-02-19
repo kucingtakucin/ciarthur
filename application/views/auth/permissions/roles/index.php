@@ -9,7 +9,7 @@
 	<div class="card-body">
 		<div class="row">
 			<div class="col-md-12">
-				<table id="datatable" class="table table-striped table-hover table-bordered">
+				<table id="datatable" class="display">
 				</table>
 			</div>
 		</div>

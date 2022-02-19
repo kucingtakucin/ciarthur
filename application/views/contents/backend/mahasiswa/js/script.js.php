@@ -19,6 +19,7 @@
 			serverSide: true,
 			processing: false,
 			destroy: true,
+			scrollX: true,
 			dom: `<"dt-custom-filter mb-2 d-block">
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
                 <"d-flex flex-row justify-content-between mb-2"lf>
@@ -56,25 +57,27 @@
 							$export_excel()
 						}
 					},
-					{
-						className: 'btn btn-success m-2 <?php if (is_denied('create-mahasiswa')) : ?>d-none<?php endif ?>',
-						text: $('<i>', {
-							class: 'fa fa-upload'
-						}).prop('outerHTML') + ' Import XLSX', // Import XLSX
-						action: (e, dt, node, config) => {
-							$import_excel()
-						}
-					},
-					{
-						className: "btn btn-info m-2 text-white <?php if (is_denied('create-mahasiswa')) : ?>d-none<?php endif ?>",
-						text: $('<i>', {
-							class: 'fa fa-plus',
-						}).prop('outerHTML') + ' Tambah Data', // Tambah Data
-						action: (e, dt, node, config) => {
-							// $('#modal_tambah').modal('show');
-							$insert();
-						}
-					},
+
+					<?php if (is_allowed('create-mahasiswa')) : ?> {
+							className: 'btn btn-success m-2',
+							text: $('<i>', {
+								class: 'fa fa-upload'
+							}).prop('outerHTML') + ' Import XLSX', // Import XLSX
+							action: (e, dt, node, config) => {
+								$import_excel()
+							}
+						},
+						{
+							className: "btn btn-info m-2 text-white <?php if (is_denied('create-mahasiswa')) : ?>d-none<?php endif ?>",
+							text: $('<i>', {
+								class: 'fa fa-plus',
+							}).prop('outerHTML') + ' Tambah Data', // Tambah Data
+							action: (e, dt, node, config) => {
+								// $('#modal_tambah').modal('show');
+								$insert();
+							}
+						},
+					<?php endif ?>
 				],
 				dom: {
 					button: {
@@ -153,197 +156,202 @@
 				},
 			],
 			initComplete: function(event) {
-				$(this).on('click', '.btn_edit', function(event) {
-					event.preventDefault()
-					$update(this);
-				});
 
-				$(this).on('click', '.btn_delete', function(event) {
-					event.preventDefault()
-					$delete(this);
-				});
+				<?php if (is_allowed('update-mahasiswa')) : ?>
+					$(this).on('click', '.btn_edit', function(event) {
+						event.preventDefault()
+						$update(this);
+					});
 
-				$(this).on('dblclick', 'td.input_fakultas_id:not(.clicked)', function(event) {
-					event.preventDefault()
-					$(this).addClass('clicked')
-					let row = datatable.row($(this).closest('tr')).data();
+					$(this).on('dblclick', 'td.input_fakultas_id:not(.clicked)', function(event) {
+						event.preventDefault()
+						$(this).addClass('clicked')
+						let row = datatable.row($(this).closest('tr')).data();
 
-					let val = $(this).html();
-					let html = $('<select>', {
-						name: 'fakultas_id',
-						id: 'inline_ubah_value',
-						class: 'form-control',
-						html: $('<option>', {
-							html: ''
-						})
-					}).prop('outerHTML')
+						let val = $(this).html();
+						let html = $('<select>', {
+							name: 'fakultas_id',
+							id: 'inline_ubah_value',
+							class: 'form-control',
+							html: $('<option>', {
+								html: ''
+							})
+						}).prop('outerHTML')
 
-					$(this).html(html)
-					$(this).find('select').select2({
-						placeholder: 'Pilih Fakultas',
-						width: '100%',
-						ajax: {
-							url: BASE_URL + 'ajax_get_fakultas',
-							dataType: 'JSON',
-							delay: 250,
-							data: function(params) {
-								return {
-									search: params.term, // search term
-								};
-							},
-							processResults: function(response) {
-								let myResults = [];
-								response.data.map(item => {
-									myResults.push({
-										'id': item.id,
-										'text': item.nama
-									});
-								})
-								return {
-									results: myResults
-								};
+						$(this).html(html)
+						$(this).find('select').select2({
+							placeholder: 'Pilih Fakultas',
+							width: '100%',
+							ajax: {
+								url: BASE_URL + 'ajax_get_fakultas',
+								dataType: 'JSON',
+								delay: 250,
+								data: function(params) {
+									return {
+										search: params.term, // search term
+									};
+								},
+								processResults: function(response) {
+									let myResults = [];
+									response.data.map(item => {
+										myResults.push({
+											'id': item.id,
+											'text': item.nama
+										});
+									})
+									return {
+										results: myResults
+									};
+								}
 							}
-						}
+						})
+
+						$(this).find('select')
+							.append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
+							.trigger('change')
+							.trigger('select2:select');
+
+						$(this).find('select').select2('open')
 					})
 
-					$(this).find('select')
-						.append(new Option(row.nama_fakultas, row.fakultas_id, true, true))
-						.trigger('change')
-						.trigger('select2:select');
+					$(this).on('dblclick', 'td.input_prodi_id:not(.clicked)', function(event) {
+						event.preventDefault()
+						$(this).addClass('clicked')
+						let row = datatable.row($(this).closest('tr')).data();
 
-					$(this).find('select').select2('open')
-				})
+						let val = $(this).html();
+						let html = $('<select>', {
+							name: 'prodi_id',
+							id: 'inline_ubah_value',
+							class: 'form-control',
+							html: $('<option>', {
+								html: ''
+							})
+						}).prop('outerHTML')
 
-				$(this).on('dblclick', 'td.input_prodi_id:not(.clicked)', function(event) {
-					event.preventDefault()
-					$(this).addClass('clicked')
-					let row = datatable.row($(this).closest('tr')).data();
-
-					let val = $(this).html();
-					let html = $('<select>', {
-						name: 'prodi_id',
-						id: 'inline_ubah_value',
-						class: 'form-control',
-						html: $('<option>', {
-							html: ''
-						})
-					}).prop('outerHTML')
-
-					$(this).html(html)
-					$(this).find('select').select2({
-						placeholder: 'Pilih Program Studi',
-						width: '100%',
-						ajax: {
-							url: BASE_URL + 'ajax_get_prodi',
-							dataType: 'JSON',
-							delay: 250,
-							data: function(params) {
-								return {
-									search: params.term, // search term
-									fakultas_id: row.fakultas_id
-								};
-							},
-							processResults: function(response) {
-								let myResults = [];
-								response.data.map(item => {
-									myResults.push({
-										'id': item.id,
-										'text': item.nama
-									});
-								})
-								return {
-									results: myResults
-								};
+						$(this).html(html)
+						$(this).find('select').select2({
+							placeholder: 'Pilih Program Studi',
+							width: '100%',
+							ajax: {
+								url: BASE_URL + 'ajax_get_prodi',
+								dataType: 'JSON',
+								delay: 250,
+								data: function(params) {
+									return {
+										search: params.term, // search term
+										fakultas_id: row.fakultas_id
+									};
+								},
+								processResults: function(response) {
+									let myResults = [];
+									response.data.map(item => {
+										myResults.push({
+											'id': item.id,
+											'text': item.nama
+										});
+									})
+									return {
+										results: myResults
+									};
+								}
 							}
-						}
+						})
+
+						$(this).find('select')
+							.append(new Option(row.nama_prodi, row.prodi_id, true, true))
+							.trigger('change')
+							.trigger('select2:select');
+
+						$(this).find('select').select2('open')
 					})
 
-					$(this).find('select')
-						.append(new Option(row.nama_prodi, row.prodi_id, true, true))
-						.trigger('change')
-						.trigger('select2:select');
+					$(this).on('dblclick', 'td.input_nama:not(.clicked)', function(event) {
+						event.preventDefault()
+						$(this).addClass('clicked')
 
-					$(this).find('select').select2('open')
-				})
+						let val = $(this).html();
+						let html = $('<input>', {
+							type: 'text',
+							name: 'nama',
+							id: 'inline_ubah_value',
+							class: 'form-control',
+							autocomplete: 'off',
+							value: val
+						}).prop('outerHTML')
 
-				$(this).on('dblclick', 'td.input_nama:not(.clicked)', function(event) {
-					event.preventDefault()
-					$(this).addClass('clicked')
+						$(this).html(html)
+						$(this).find('input').focus()
+					})
 
-					let val = $(this).html();
-					let html = $('<input>', {
-						type: 'text',
-						name: 'nama',
-						id: 'inline_ubah_value',
-						class: 'form-control',
-						autocomplete: 'off',
-						value: val
-					}).prop('outerHTML')
+					$(this).on('dblclick', 'td.input_nim:not(.clicked)', function(event) {
+						event.preventDefault()
+						$(this).addClass('clicked')
 
-					$(this).html(html)
-					$(this).find('input').focus()
-				})
+						let val = $(this).html();
+						let html = $('<input>', {
+							type: 'text',
+							name: 'nim',
+							id: 'inline_ubah_value',
+							class: 'form-control',
+							autocomplete: 'off',
+							value: val
+						}).prop('outerHTML')
 
-				$(this).on('dblclick', 'td.input_nim:not(.clicked)', function(event) {
-					event.preventDefault()
-					$(this).addClass('clicked')
+						$(this).html(html)
+						$(this).find('input').focus()
+					})
 
-					let val = $(this).html();
-					let html = $('<input>', {
-						type: 'text',
-						name: 'nim',
-						id: 'inline_ubah_value',
-						class: 'form-control',
-						autocomplete: 'off',
-						value: val
-					}).prop('outerHTML')
+					$(this).on('dblclick', 'td.input_angkatan:not(.clicked)', function(event) {
+						event.preventDefault()
+						$(this).addClass('clicked')
 
-					$(this).html(html)
-					$(this).find('input').focus()
-				})
+						let val = $(this).html();
+						let html = $('<input>', {
+							type: 'text',
+							name: 'angkatan',
+							id: 'inline_ubah_value',
+							class: 'form-control',
+							autocomplete: 'off',
+							value: val
+						}).prop('outerHTML')
 
-				$(this).on('dblclick', 'td.input_angkatan:not(.clicked)', function(event) {
-					event.preventDefault()
-					$(this).addClass('clicked')
+						$(this).html(html)
+						$(this).find('input').focus()
+					})
 
-					let val = $(this).html();
-					let html = $('<input>', {
-						type: 'text',
-						name: 'angkatan',
-						id: 'inline_ubah_value',
-						class: 'form-control',
-						autocomplete: 'off',
-						value: val
-					}).prop('outerHTML')
+					$(this).on('blur', 'td.input_nama.clicked input', function(event) {
+						event.preventDefault();
+						$inline(this, 'nama');
+					})
 
-					$(this).html(html)
-					$(this).find('input').focus()
-				})
+					$(this).on('blur', 'td.input_nim.clicked input', function(event) {
+						event.preventDefault();
+						$inline(this, 'nim');
+					})
 
-				$(this).on('blur', 'td.input_nama.clicked input', function(event) {
-					event.preventDefault();
-					$inline(this, 'nama');
-				})
+					$(this).on('blur', 'td.input_angkatan.clicked input', function(event) {
+						event.preventDefault();
+						$inline(this, 'angkatan');
+					})
 
-				$(this).on('blur', 'td.input_nim.clicked input', function(event) {
-					event.preventDefault();
-					$inline(this, 'nim');
-				})
+					$(this).on('select2:close', 'td.input_fakultas_id.clicked select', function(event) {
+						event.preventDefault();
+						$inline(this, 'fakultas_id');
+					})
 
-				$(this).on('blur', 'td.input_angkatan.clicked input', function(event) {
-					event.preventDefault();
-					$inline(this, 'angkatan');
-				})
+					$(this).on('select2:close', 'td.input_prodi_id.clicked select', function(event) {
+						event.preventDefault();
+						$inline(this, 'prodi_id');
+					})
+				<?php endif ?>
 
-				$(this).on('select2:close', 'td.input_fakultas_id.clicked select', function(event) {
-					event.preventDefault();
-					$inline(this, 'fakultas_id');
-				})
-
-				$(this).on('select2:close', 'td.input_prodi_id.clicked select', function(event) {
-					event.preventDefault();
-					$inline(this, 'prodi_id');
-				})
+				<?php if (is_allowed('delete-mahasiswa')) : ?>
+					$(this).on('click', '.btn_delete', function(event) {
+						event.preventDefault()
+						$delete(this);
+					});
+				<?php endif ?>
 
 				/** Elemen - elemen filter */
 				$('.dt-custom-filter').html((index, currentContent) => {

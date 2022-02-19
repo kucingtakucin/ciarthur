@@ -14,7 +14,6 @@
  * @link     https://github.com/firebase/php-jwt
  */
 
-use chriskacerguis\RestServer\RestController;
 
 /**
  * Decodes a JWT string into a PHP object.
@@ -235,8 +234,6 @@ function validateTimestamp($token)
     $CI = &get_instance();
     try {
         $token_from_user = validateToken($token);
-        // var_dump($token_from_user->data->id);
-        // exit();
         if (!$token_from_user) {
             return (object)[
                 'status' => false,
@@ -248,8 +245,6 @@ function validateTimestamp($token)
             'user_id' => $token_from_user->data->id,
             'is_active' => '1'
         ])->row();
-        // var_dump($check_in_db);
-        // exit();
 
         if (!$check_in_db) {
             return (object)[

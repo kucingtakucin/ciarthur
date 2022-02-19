@@ -20,14 +20,14 @@
 		"chriskacerguis/codeigniter-restserver": "dev-master",
 		"google/recaptcha": "^1.2",
 		"seunmatt/codeigniter-log-viewer": "^1.1",
-		"ozdemir/datatables": "^2.3",
 		"guzzlehttp/guzzle": "^7.0",
 		"league/flysystem": "^2.2",
 		"pusher/pusher-php-server": "^6.1",
 		"endroid/qr-code": "^4.3",
-		"kreait/firebase-php": "^5.24",
 		"picqer/php-barcode-generator": "^2.2",
-		"ramsey/uuid": "^4.2"
+		"ramsey/uuid": "^4.2",
+		"kreait/firebase-php": "^6.1",
+		"brainfoolong/cryptojs-aes-php": "^2.1"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

@@ -9,7 +9,7 @@
 		// ================================================== //
 		datatable = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			scrollX: true,
 			dom: `<"dt-custom-filter mb-2 d-block">

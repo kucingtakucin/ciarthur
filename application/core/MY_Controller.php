@@ -1,5 +1,6 @@
 <?php
 
+use Kreait\Firebase\Factory;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
@@ -25,5 +26,17 @@ class MY_Controller extends CI_Controller
 				'mode' => 'ctr',
 			]
 		);
+
+		$factory = (new Factory)
+			->withProjectId(config_item('firebase_project_id'))
+			->withServiceAccount(config_item('firebase_service_account'))
+			->withDatabaseUri(config_item('firebase_database_uri'));
+
+		$this->auth = $factory->createAuth();
+		$this->realtimeDatabase = $factory->createDatabase();
+		$this->cloudMessaging = $factory->createMessaging();
+		$this->remoteConfig = $factory->createRemoteConfig();
+		$this->cloudStorage = $factory->createStorage();
+		// $this->firestore = $factory->createFirestore();
 	}
 }

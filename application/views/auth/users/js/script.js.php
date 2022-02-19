@@ -16,7 +16,7 @@
 	const load_datatable_user = () => {
 		datatable_user = $('#datatable').DataTable({
 			serverSide: true,
-			processing: true,
+			processing: false,
 			destroy: true,
 			dom: `
                 <"d-flex flex-row justify-content-end flex-wrap mb-2"B>
@@ -25,15 +25,18 @@
                 <"d-flex flex-row justify-content-between mt-2"ip>`,
 			buttons: {
 				/** Tombol-tombol Export & Tambah Data */
-				buttons: [{
-					className: 'btn btn-info m-2 text-white',
-					text: $('<i>', {
-						class: 'fa fa-plus'
-					}).prop('outerHTML') + ' Tambah User', // Tambah Data
-					action: (e, dt, node, config) => {
-						location.href = BASE_URL + 'create_user'
-					}
-				}, ],
+				buttons: [
+					<?php if (is_allowed('create-users')) : ?> {
+							className: 'btn btn-info m-2 text-white',
+							text: $('<i>', {
+								class: 'fa fa-plus'
+							}).prop('outerHTML') + ' Tambah User', // Tambah Data
+							action: (e, dt, node, config) => {
+								location.href = BASE_URL + 'create_user'
+							}
+						},
+					<?php endif ?>
+				],
 				dom: {
 					button: {
 						className: 'btn'
@@ -92,7 +95,6 @@
 						return $('<a>', {
 							html: eval(data.active) ? 'Active' : 'Inactive',
 							class: eval(data.active) ? 'badge badge-success deactivate-user' : 'badge badge-danger activate-user',
-							href: eval(data.active) ? BASE_URL + `deactivate/${data.id}` : BASE_URL + `activate/${data.id}`,
 							'data-id': data.id
 						}).prop('outerHTML')
 					}
@@ -104,25 +106,30 @@
 				},
 			],
 			initComplete: function(event) {
-				$(this).on('click', '.btn_edit', function(event) {
-					event.preventDefault()
-					location.href = BASE_URL + `edit_user/${$(this).data('id')}`
-				});
+				<?php if (is_allowed('update-users')) : ?>
+					$(this).on('click', '.btn_edit', function(event) {
+						event.preventDefault()
+						location.href = BASE_URL + `edit_user/${$(this).data('uuid')}`
+					});
 
-				$(this).on('click', '.btn_delete', function(event) {
-					event.preventDefault()
-					$delete_user(this);
-				});
+					$(this).on('click', '.activate-user', function(event) {
+						event.preventDefault()
+						$activate_user(this)
+					})
 
-				$(this).on('click', '.activate-user', function(event) {
-					event.preventDefault()
-					$activate_user(this)
-				})
+					$(this).on('click', '.deactivate-user', function(event) {
+						event.preventDefault()
+						$deactivate_user(this)
+					})
 
-				$(this).on('click', '.deactivate-user', function(event) {
-					event.preventDefault()
-					$deactivate_user(this)
-				})
+				<?php endif ?>
+
+				<?php if (is_allowed('delete-users')) : ?>
+					$(this).on('click', '.btn_delete', function(event) {
+						event.preventDefault()
+						$delete_user(this);
+					});
+				<?php endif ?>
 
 				$('[title]').tooltip()
 				// ================================================== //
@@ -153,7 +160,7 @@
 				loading()
 
 				let formData = new FormData();
-				formData.append('id', $(element).data('id'));
+				formData.append('uuid', $(element).data('uuid'));
 
 				axios.post(BASE_URL + 'delete_user', formData)
 					.then(res => {

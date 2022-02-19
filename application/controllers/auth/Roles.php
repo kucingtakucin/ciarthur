@@ -12,11 +12,10 @@ class Roles extends MY_Controller
 		$this->_name = 'roles';
 		$this->_path = "auth/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
 
-		role("admin");    // admin, ...
-
 		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 
 		$this->lang->load('auth');
+		has_permission("access-{$this->_name}");
 	}
 
 	/**
@@ -47,7 +46,7 @@ class Roles extends MY_Controller
 	 * Keperluan DataTables server-side
 	 *
 	 */
-	public function data_roles()
+	public function data_role()
 	{
 		method('post');
 		// ================================================ //
@@ -60,6 +59,7 @@ class Roles extends MY_Controller
 	 */
 	public function create_role()
 	{
+		has_permission("create-{$this->_name}");
 		if ($this->input->method() === 'get') :
 			// display the create group form
 			// set the flash data error message if there is one
@@ -121,26 +121,24 @@ class Roles extends MY_Controller
 	/**
 	 * Edit a group
 	 *
-	 * @param int|string $id
+	 * @param int|string $uuid
 	 */
-	public function edit_role($id)
+	public function edit_role($uuid)
 	{
-		$id = (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
+		has_permission("update-{$this->_name}");
+		$id = @$this->db->get_where('roles', [
+			'uuid' => $uuid
+		])->row()->id;
 
 		// validate form input
 		if ($this->input->method() === 'get') :
-			// bail if no group id given
-			if (!$id || empty($id)) redirect('auth', 'refresh');
 
 			$this->data['title'] = 'Edit Role';
 
-			if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
-				redirect('auth', 'refresh');
-			}
-
+			// bail if no group id given
 			$group = $this->ion_auth->group($id)->row();
 
-			if (!$group) redirect($this->_path);
+			if (!$group || !$id) show_404();
 
 			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
@@ -188,8 +186,10 @@ class Roles extends MY_Controller
 
 		elseif ($this->input->method() === 'post') :
 
-			$group_update = $this->ion_auth->update_group($id, $_POST['group_name'], array(
-				'description' => $_POST['group_description']
+			$group_update = $this->ion_auth->update_group($id, post('group_name'), array(
+				'description' => post('group_description'),
+				'uuid' => uuid(),
+				'updated_at' => now()
 			));
 
 			if ($group_update) {
@@ -212,9 +212,14 @@ class Roles extends MY_Controller
 
 	public function delete_role()
 	{
+		has_permission("delete-{$this->_name}");
 		method('post');
 
-		$id = (ctype_xdigit(post('id')) && strlen(post('id')) % 2 === 0) ? $this->encryption->decrypt(hex2bin(post('id'))) : null;
+		$id = @$this->db->get_where('roles', [
+			'uuid' => post('uuid')
+		])->row()->id;
+
+		if (!$id) show_404();
 
 		if ($this->ion_auth->delete_group($id)) {
 			response([

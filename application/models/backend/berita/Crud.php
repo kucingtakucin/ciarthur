@@ -1,81 +1,89 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
-
 class Crud extends CI_Model
 {
-	public $table = 'berita';
+	public $_table = 'berita';
 
-	//=============================================================//
-	//======================== DATATABLES =========================//
-	//=============================================================//
-
-	public function datatables()
+	// Query SQL
+	private function _query($where = [], $having = [])
 	{
-		$datatables = new Datatables(new CodeigniterAdapter());
-		$datatables->query(
-			"SELECT a.id, a.uuid, a.judul, a.gambar, a.slug, a.konten,
-			a.is_published, a.created_at, a.created_by,
+		$q = "SELECT a.*,
 			(SELECT b.nama FROM kategori AS b 
 			WHERE b.id = a.kategori_id) AS nama_kategori 
-			FROM berita AS a
-            WHERE a.is_active = '1'"
-		);
+			FROM {$this->_table} a
+			WHERE 1=1 
+			AND a.is_active = '1'
+			AND a.deleted_at IS NULL";
 
-		// Add row index
-		$datatables->add('DT_RowIndex', function () {
-			return 0;
-		});
+		if (count($where))
+			foreach ($where as $k => $v) {
+				$q .= " AND $k " . (str_contains($k, "!=") ? '' : '= ') .
+					(is_string($v) ? "'$v'"			// Jika string
+						: (is_int($v) ? "$v"		// Jika integer
+							: (is_null($v) ? "NULL"	// Jika null
+								: "'$v'")));
+			}
 
-		$result = $datatables->generate()->toArray();
+		if (count($having)) {
+			$q .= " HAVING 1=1 AND (1=0";
+			foreach ($having as $k => $v) {
+				$q .= " OR {$k} LIKE '%" . $v . "%'";
+			}
+			$q .= " )";
+		}
 
-		// For dev purposes
-		$result['last_query'] = $datatables->getQuery();
-
-		return $result;
+		return $q;
 	}
 
-	//=============================================================//
-	//=========================== CRUD ============================//
-	//=============================================================//
-
+	// Get all data
 	public function get()
 	{
-		$data = $this->db->select('a.*, b.nama as nama_kategori')
-			->join('kategori b', 'b.id = a.kategori_id')
-			->get("{$this->table} a")->result();
+		$q = $this->_query();
 
-		return $data;
+		return $this->db->query($q)->result();
 	}
 
-	public function insert($data = [])
-	{
-		$this->db->insert($this->table, $data);
-		$insert_id = $this->db->insert_id();
-		return $insert_id;
-	}
-
+	// Get data by where clause, returning multiple records
 	public function get_where($where = [])
 	{
-		$data = $this->db->select('a.*')->get_where("{$this->table} a", $where)->row();
-		return $data;
+		$q = $this->_query($where);
+
+		return $this->db->query($q)->result();
 	}
 
+	// Get data by where clause, returning single record
+	public function detail($where = [])
+	{
+		$q = $this->_query($where);
+
+		return $this->db->query($q)->row();
+	}
+
+	// Insert data
+	public function insert($data = [])
+	{
+		$this->db->insert($this->_table, $data);
+
+		return $this->db->insert_id();
+	}
+
+	// Update data and soft delete
 	public function update($data = [], $where = [])
 	{
-		$update = $this->db->update($this->table, $data, $where);
-		return $update;
+		return $this->db->update($this->_table, $data, $where);
 	}
 
-	public function num_rows($where)
+	// Get num rows
+	public function num_rows($where = [])
 	{
-		$data = $this->db->select('a.*')->get_where("{$this->table} a", $where)->num_rows();
-		return $data;
+		$q = $this->_query($where);
+
+		return $this->db->query($q)->num_rows();
 	}
 
-	// public function delete($table, $id = null)
+	// Delete data
+	// public function delete($where)
 	// {
-	//     return $this->db->delete($table, ['id' => $id]);
+	//     return $this->db->delete($this->_table, $where);
 	// }
 }

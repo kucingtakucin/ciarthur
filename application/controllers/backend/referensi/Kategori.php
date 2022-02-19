@@ -1,7 +1,5 @@
 <?php
 
-use Ramsey\Uuid\Uuid;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Kategori extends MY_Controller
@@ -21,6 +19,7 @@ class Kategori extends MY_Controller
 		//=========================================================//
 
 		$this->load->model($this->_path . 'Crud');   // Load CRUD model
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 	}
 
 	/**
@@ -64,10 +63,10 @@ class Kategori extends MY_Controller
 	 */
 	public function data()
 	{
-		method('get');
+		method('post');
 		//=========================================================//
 
-		response($this->Crud->datatables());
+		response($this->Datatable->list());
 	}
 
 	//=============================================================//
@@ -80,13 +79,15 @@ class Kategori extends MY_Controller
 	private function _validator()
 	{
 		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_data(post());
 		$this->form_validation->set_rules('nama', 'nama', 'required|trim');
 
 		if (!$this->form_validation->run())
 			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
+				'errors' => $this->form_validation->error_array(),
+				'payload' => post()
 			], 422);
 	}
 
@@ -108,12 +109,12 @@ class Kategori extends MY_Controller
 		$this->db->trans_begin();   // Begin transaction
 		$this->Crud->insert(
 			[
-				'uuid' => Uuid::uuid4()->toString(),
+				'uuid' => uuid(),
 				'nama' => post('nama'),
 				'slug' => slugify(post('nama')),
 				'type' => strtolower(explode(" ", post('type'))[1]),
 				'is_active' => '1',
-				'created_at' => date('Y-m-d H:i:s'),
+				'created_at' => now(),
 				'created_by' => get_user_id(),
 			]
 		);
@@ -123,22 +124,26 @@ class Kategori extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Failed',
-				'errors' => $this->db->error()
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
 		$this->db->trans_commit();  // Commit transaction
 		response([
 			'status' => true,
-			'message' => 'Created successfuly'
+			'message' => 'Created successfuly',
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 
 	/**
-	 * Keperluan CRUD detail data
+	 * Keperluan CRUD detail
 	 *
 	 */
-	public function get_where()
+	public function detail()
 	{
 		method('get');
 		//=========================================================//
@@ -146,7 +151,7 @@ class Kategori extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Found',
-			'data' => $this->Crud->get_where(
+			'data' => $this->Crud->detail(
 				[
 					'a.id' => post('id'),
 					'a.is_active' => '1',
@@ -170,16 +175,16 @@ class Kategori extends MY_Controller
 		$this->db->trans_begin();   // Begin transaction
 		$this->Crud->update(
 			[
-				'uuid' => Uuid::uuid4()->toString(),
+				'uuid' => uuid(),
 				'nama' => post('nama'),
 				'slug' => slugify(post('nama')),
 				'type' => strtolower(explode(" ", post('type'))[1]),
 				'is_active' => '1',
-				'updated_at' => date('Y-m-d H:i:s'),
+				'updated_at' => now(),
 				'updated_by' => get_user_id(),
 			],
 			[
-				'id' => post('id')
+				'uuid' => post('uuid')
 			]
 		);
 
@@ -188,14 +193,18 @@ class Kategori extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Failed',
-				'errors' => $this->db->error()
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 		$this->db->trans_commit();  // Commit transaction
 
 		response([
 			'status' => true,
-			'message' => 'Updated successfuly'
+			'message' => 'Updated successfuly',
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		], 200);
 	}
 
@@ -212,13 +221,13 @@ class Kategori extends MY_Controller
 		$this->db->trans_begin();   // Begin transaction
 		$this->Crud->update(
 			[
-				'uuid' => Uuid::uuid4()->toString(),
+				'uuid' => uuid(),
 				'is_active' => '0',
-				'deleted_at' => date('Y-m-d H:i:s'),
+				'deleted_at' => now(),
 				'deleted_by' => get_user_id()
 			],
 			[
-				'id' => post('id')
+				'uuid' => post('uuid')
 			]
 		);
 
@@ -227,7 +236,9 @@ class Kategori extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Failed',
-				'errors' => $this->db->error()
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 		$this->db->trans_commit();  // Commit transaction
@@ -235,6 +246,8 @@ class Kategori extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Deleted successfuly',
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 }

@@ -1,15 +1,9 @@
 <?php
 
-use Ozdemir\Datatables\Datatables;
-use Ozdemir\Datatables\DB\CodeigniterAdapter;
-use Ramsey\Uuid\Uuid;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Berita extends MY_Controller
 {
-	private $_path_kategori = 'backend/referensi/kategori/';
-
 	/**
 	 * Berita constructor
 	 */
@@ -24,8 +18,9 @@ class Berita extends MY_Controller
 		has_permission("access-{$this->_name}");
 		//=========================================================//
 
-		$this->load->model($this->_path . 'Crud');   // Load model
-		$this->load->model($this->_path_kategori . 'Crud_kategori');   // Load model
+		$this->load->model($this->_path . 'Crud', 'Crud_berita');   // Load CRUD model
+		$this->load->model($this->_path_kategori . 'Crud', 'Crud_kategori');   // Load Datatable model
+		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 	}
 
 	/**
@@ -67,9 +62,9 @@ class Berita extends MY_Controller
 	 */
 	public function data()
 	{
-		method('get');
+		method('post');
 		//=========================================================//
-		response($this->Crud->datatables());
+		response($this->Datatable->list());
 	}
 
 	//=============================================================//
@@ -82,16 +77,14 @@ class Berita extends MY_Controller
 	private function _validator($status = 'tambah')
 	{
 		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_data(post());
 
-		if ($status === 'tambah' || $this->Crud->num_rows([
+		if ($status === 'tambah' || $this->Crud_berita->num_rows([
 			'judul' => post('judul'),
 			'is_active' => '1',
-			'id != ' => $status === 'ubah' ? post('id') : 'null'
-		])) {
-			$is_unique = '|is_unique[berita.judul]';
-		} else {
-			$is_unique = '';
-		}
+			'uuid !=' => $status === 'ubah' ? post('uuid') : null
+		])) $is_unique = '|is_unique[berita.judul]';
+		else $is_unique = '';
 
 		$this->form_validation->set_rules('judul', 'judul', 'required|trim' . $is_unique);
 		$this->form_validation->set_rules('kategori_id', 'kategori', 'required');
@@ -102,20 +95,24 @@ class Berita extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
+				'errors' => $this->form_validation->error_array(),
+				'payload' => post()
 			], 422);
 	}
 
 	private function _validator_kategori()
 	{
 		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_data(post());
 		$this->form_validation->set_rules('nama', 'nama', 'required|trim');
 
 		if (!$this->form_validation->run())
 			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
+				'errors' => $this->form_validation->error_array(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 422);
 	}
 
@@ -152,28 +149,15 @@ class Berita extends MY_Controller
 
 			$this->_validator();
 
-			$config['upload_path'] = './uploads/berita/';
-			$config['allowed_types'] = 'jpg|jpeg|png';
-			$config['max_size'] = 2048;
-			$config['encrypt_name'] = true;
-			$config['remove_spaces'] = true;
-
-			$this->upload->initialize($config);
-
-			if (!$this->upload->do_upload("gambar")) {
-				response([
-					'status' => false,
-					'message' => $this->upload->display_errors('', '')
-				], 404);
-			}
+			$gambar = upload('gambar', "./uploads/berita/");
 
 			$this->db->trans_start();	// Transaction start
 
-			$berita_id = $this->Crud->insert(
+			$berita_id = $this->Crud_berita->insert(
 				[
 					'uuid' => uuid(),
 					'judul' => post('judul', true),
-					'gambar' => $this->upload->data('file_name'),
+					'gambar' => $gambar,
 					'slug' => slugify(post('judul', true)),
 					'konten' => post('konten', true),
 					'kategori_id' => post('kategori_id', true),
@@ -183,6 +167,7 @@ class Berita extends MY_Controller
 					'created_by' => get_user_id(),
 				]
 			);
+			$last_query = $this->db->last_query();
 
 			if (post('tags[]')) {
 				foreach (post('tags[]') as $tag) {
@@ -194,7 +179,10 @@ class Berita extends MY_Controller
 						$this->db->insert('tags', [
 							'uuid' => uuid(),
 							'nama' => $tag,
-							'slug' => slugify(strtolower($tag))
+							'slug' => slugify(strtolower($tag)),
+							'is_active' => '1',
+							'created_at' => now(),
+							'created_by' => get_user_id()
 						]);
 						$tag_id = $this->db->insert_id();
 					}
@@ -212,13 +200,17 @@ class Berita extends MY_Controller
 				response([
 					'status' => false,
 					'message' => 'Failed',
-					'errors' => $this->db->error()
+					'errors' => $this->db->error(),
+					'query' => $last_query,
+					'payload' => post()
 				], 500);
 			}
 
 			response([
 				'status' => true,
-				'message' => 'Created successfuly'
+				'message' => 'Created successfuly',
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 200);
 		endif;
 	}
@@ -250,13 +242,17 @@ class Berita extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Failed',
-				'errors' => $this->db->error()
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
 		response([
 			'status' => true,
-			'message' => 'Created successfuly'
+			'message' => 'Created successfuly',
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 
@@ -264,7 +260,7 @@ class Berita extends MY_Controller
 	 * Keperluan CRUD get where data
 	 *
 	 */
-	public function get_where()
+	public function detail()
 	{
 		method('get');
 		//=========================================================//
@@ -272,12 +268,14 @@ class Berita extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Found',
-			'data' => $this->Crud->get_where(
+			'data' => $this->Crud_berita->detail(
 				[
 					'a.id' => post('id', true),
 					'a.is_active' => '1'
 				]
-			)
+			),
+			'query' => $this->db->last_query(),
+			'payload' => get()
 		]);
 	}
 
@@ -289,9 +287,26 @@ class Berita extends MY_Controller
 	{
 		has_permission("update-{$this->_name}");
 
+		$data = $this->Crud_berita->detail(
+			[
+				'a.uuid' => $uuid,
+				'a.is_active' => '1'
+			]
+		);
+
+		if (!$data) show_404();
+
 		if ($this->input->method() === 'get') :
 
-			if (!$uuid) redirect($this->_path, 'refresh');
+			$tags = $this->db->select('a.tag_id,
+				(SELECT b.nama FROM tags b
+				WHERE b.id = a.tag_id) tag_name
+			')
+				->from('berita_tag a')
+				->where([
+					'berita_id' => @$data->id
+				])
+				->get()->result();
 
 			$config = [
 				'title' => 'Berita',
@@ -305,55 +320,74 @@ class Berita extends MY_Controller
 				'style' => 'contents/' . $this->_path . 'edit/css/style.css.php',
 				'uuid' => $uuid,
 				'modals' => [],
+				'data' => $data,
+				'tags' => $tags,
 			];
 
 			render($config);
 
 		elseif ($this->input->method() === 'post') :
 
-			$this->_validator();
+			$this->_validator('ubah');
 			//=========================================================//
-
-			$config['upload_path'] = './uploads/berita/';
-			$config['allowed_types'] = 'jpg|jpeg|png';
-			$config['max_size'] = 2048;
-			$config['encrypt_name'] = true;
-			$config['remove_spaces'] = true;
-			$this->upload->initialize($config);
-
-			if ($_FILES['foto']['error'] !== 4) {
-				if (file_exists("./uploads/berita/" . post('old_foto'))) {
-					unlink("./uploads/berita/" . post('old_foto'));
+			if (@$_FILES['gambar']['name'] && @$_FILES['gambar']['error'] !== 4) {
+				if (file_exists("./uploads/berita/" . @$data->gambar)) {
+					unlink("./uploads/berita/" . @$data->gambar);
 				}
 
-				if (!$this->upload->do_upload("foto")) {
-					response([
-						'status' => false,
-						'message' => $this->upload->display_errors()
-					], 400);
-				}
-			}
+				$gambar = upload('gambar', "./uploads/berita/");
+			} else $gambar = @$data->gambar;
 
 			$this->db->trans_start();
 
-			$this->Crud->update(
+			$this->Crud_berita->update(
 				[
 					'uuid' => uuid(),
 					'judul' => post('judul', true),
-					'gambar' =>  $_FILES['foto']['error'] === 4
-						? post('old_gambar') : $this->upload->data('file_name'),
+					'gambar' =>  $gambar,
 					'slug' => post('slug', true),
 					'konten' => post('konten', true),
 					'kategori_id' => post('kategori_id', true),
-					'is_published' => post('is_published', true),
 					'is_active' => '1',
 					'updated_at' => now(),
 					'updated_by' => get_user_id(),
 				],
 				[
-					'uuid' => post('uuid', true)
+					'id' => @$data->id
 				]
 			);
+			$last_query = $this->db->last_query();
+
+			if (post('tags[]')) {
+
+				$this->db->delete('berita_tag', [
+					'berita_id' => @$data->id
+				]);
+
+				foreach (post('tags[]') as $tag) {
+					$slug = $this->db->get_where('tags', [
+						'slug' => slugify(strtolower($tag))
+					])->row();
+
+					$id = $this->db->get_where('tags', [
+						'id' => $tag
+					])->row();
+
+					if (!$slug && !$id) {
+						$this->db->insert('tags', [
+							'uuid' => uuid(),
+							'nama' => $tag,
+							'slug' => slugify(strtolower($tag))
+						]);
+						$tag_id = $this->db->insert_id();
+					}
+
+					$this->db->insert('berita_tag', [
+						'berita_id' => @$data->id,
+						'tag_id' => $tag_id ?? $tag
+					]);
+				}
+			}
 
 			$this->db->trans_complete();
 
@@ -361,13 +395,17 @@ class Berita extends MY_Controller
 				response([
 					'status' => false,
 					'message' => 'Failed',
-					'errors' => $this->db->error()
+					'errors' => $this->db->error(),
+					'query' => $this->db->last_query(),
+					'payload' => post()
 				], 500);
 			}
 
 			response([
 				'status' => true,
-				'message' => 'Updated successfuly'
+				'message' => 'Updated successfuly',
+				'query' => $last_query,
+				'payload' => post()
 			]);
 		endif;
 	}
@@ -378,13 +416,13 @@ class Berita extends MY_Controller
 	 */
 	public function delete()
 	{
-		has_permission('delete-berita');
+		has_permission("delete-{$this->_name}");
 		method('post');
 		//=========================================================//
 
 		$this->db->trans_start();
 
-		$this->Crud->update(
+		$this->Crud_berita->update(
 			[
 				'is_active' => '0',
 				'is_published' => '0',
@@ -402,14 +440,94 @@ class Berita extends MY_Controller
 			response([
 				'status' => false,
 				'message' => 'Failed',
-				'errors' => $this->db->error()
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
 		response([
 			'status' => true,
 			'message' => 'Deleted successfuly',
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
+	}
+
+	/**
+	 * Activate berita
+	 *
+	 */
+	public function activate()
+	{
+		method('post');
+
+		$this->db->trans_start();
+
+		$this->Crud_berita->update([
+			'is_published' => '1'
+		], [
+			'uuid' => post('uuid'),
+			'is_active' => '1',
+			'deleted_at' => null
+		]);
+
+		$this->db->trans_complete();
+
+		if (!$this->db->trans_status()) {	// Check transaction status
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
+			], 500);
+		}
+
+		response([
+			'status' => true,
+			'message' => 'Status berhasil diubah',
+			'query' => $this->db->last_query(),
+			'payload' => post()
+		], 200);
+	}
+
+	/**
+	 * Deactivate berita
+	 *
+	 */
+	public function deactivate()
+	{
+		method('post');
+
+		$this->db->trans_start();
+
+		$this->Crud_berita->update([
+			'is_published' => '0'
+		], [
+			'uuid' => post('uuid'),
+			'is_active' => '1',
+			'deleted_at' => null
+		]);
+
+		$this->db->trans_complete();
+
+		if (!$this->db->trans_status()) {	// Check transaction status
+			response([
+				'status' => false,
+				'message' => 'Failed',
+				'errors' => $this->db->error(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
+			], 500);
+		}
+
+		response([
+			'status' => true,
+			'message' => 'Status berhasil diubah',
+			'query' => $this->db->last_query(),
+			'payload' => post()
+		], 200);
 	}
 
 	//=============================================================//

@@ -6,7 +6,7 @@
 	 */
 	// ================================================== //
 
-	let $update_role = async (event, id) => {
+	let $update_role = async (event, uuid) => {
 		event.preventDefault()
 
 		Swal.fire({
@@ -26,7 +26,7 @@
 
 				let formData = new FormData(event.target);
 
-				axios.post(BASE_URL + 'edit_role/' + id, formData)
+				axios.post(BASE_URL + 'edit_role/' + uuid, formData)
 					.then(res => {
 
 						Swal.fire({

@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-
 class Login extends MY_Controller
 {
 	public function __construct()
@@ -48,16 +47,14 @@ class Login extends MY_Controller
 					'status' => false,
 					'message' => "Recaptcha wajib dicentang!",
 					'data' => null,
-					'csrf' => csrf(),
 				], 422);
 			}
 
-			if (!$response['success'] && $response['error']) {
+			if (!@$response['success'] && @$response['error']) {
 				response([
 					'status' => false,
 					'title' => 'Recaptcha error',
 					'message' => $response['error_message'],
-					'csrf' => csrf(),
 				], 400);
 			}
 
@@ -72,7 +69,6 @@ class Login extends MY_Controller
 					'status' => true,
 					'message' => 'Login Berhasil!',
 					'redirect' => 'backend/dashboard',
-					'csrf' => csrf(),
 				], 200);
 			}
 
@@ -81,7 +77,6 @@ class Login extends MY_Controller
 			response([
 				'status' => false,
 				'message' => $this->ion_auth->errors(),
-				'csrf' => csrf(),
 			], 422);
 		endif;
 	}
@@ -92,6 +87,7 @@ class Login extends MY_Controller
 	private function _validator()
 	{
 		$this->form_validation->set_error_delimiters('', '');
+		$this->form_validation->set_data(post());
 		$this->form_validation->set_rules('identity', 'username', 'required|trim');
 		$this->form_validation->set_rules('password', 'password', 'required|trim|min_length[8]');
 		if (!$this->form_validation->run())

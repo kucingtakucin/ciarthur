@@ -22,10 +22,7 @@ class Permissions extends MY_Controller
 		$this->_name = 'permissions';
 		$this->_path = "auth/{$this->_name}/"; // Contoh 'backend/dashboard/ / 'frontend/home/'
 
-		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
-		$this->load->model('auth/roles/' . 'Datatable', 'Datatable_roles');   // Load Datatable model
-
-		role('admin');
+		has_permission("access-{$this->_name}");
 	}
 
 	public function index()
@@ -60,17 +57,20 @@ class Permissions extends MY_Controller
 	public function data_permission()
 	{
 		method('post');
-		response($this->Datatable->list());
+		$this->load->model($this->_path . 'Datatable', 'Datatable_permissions');   // Load Datatable model
+		response($this->Datatable_permissions->list());
 	}
 
 	public function data_roles()
 	{
 		method('post');
+		$this->load->model('auth/roles/' . 'Datatable', 'Datatable_roles');   // Load Datatable model
 		response($this->Datatable_roles->list());
 	}
 
 	public function add_permission()
 	{
+		has_permission("create-{$this->_name}");
 		method('post');
 
 		$new_permission_id = $this->ion_auth_acl->create_permission(post('perm_key'), post('perm_name'));
@@ -95,6 +95,7 @@ class Permissions extends MY_Controller
 
 	public function update_permission()
 	{
+		has_permission("update-{$this->_name}");
 		method('post');
 
 		$permission_id = $this->encryption->decrypt(base64_decode(post('id')));
@@ -123,6 +124,7 @@ class Permissions extends MY_Controller
 
 	public function delete_permission()
 	{
+		has_permission("delete-{$this->_name}");
 		method('post');
 
 		$permission_id = $this->encryption->decrypt(base64_decode(post('id')));
@@ -167,9 +169,9 @@ class Permissions extends MY_Controller
 
 	public function role_permissions($id)
 	{
-		$group_id = $this->encryption->decrypt(base64_decode($id));
+		$group_id =  (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
 
-		if (!$group_id) redirect($this->_path . 'role');
+		if (!$group_id) show_404();
 
 		if ($this->input->method() === 'get') :
 

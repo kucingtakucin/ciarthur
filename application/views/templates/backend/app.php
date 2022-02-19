@@ -72,22 +72,19 @@
 	<!-- Toastr -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
+	<?php if (session('dark_mode') === 'dark-only') : ?>
+		<!-- Dark SweetAlert2 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css">
+	<?php endif ?>
+
 	<!-- Custom Stylesheets -->
 	<link rel="stylesheet" href="<?= base_url() ?>assets/custom/offlinejs/css/offline.css">
+	<link rel="stylesheet" href="<?= base_url() ?>assets/custom/offlinejs/css/offline-language-english.css">
 	<link rel="stylesheet" href="<?= base_url() ?>assets/css/style.css">
-	<?= $this->load->view($style, '', true) ?>
+	<?= $style ? $this->load->view($style, [], true) : '' ?>
 </head>
 
 <body class="<?= session('dark_mode') ?>">
-	<!-- <div class="preloader-container">
-		<svg class="preloader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340">
-			<circle cx="170" cy="170" r="160" stroke="#E2007C" />
-			<circle cx="170" cy="170" r="135" stroke="#404041" />
-			<circle cx="170" cy="170" r="110" stroke="#E2007C" />
-			<circle cx="170" cy="170" r="85" stroke="#404041" />
-		</svg>
-	</div> -->
-
 	<!-- tap on top starts-->
 	<div class="tap-top"><i data-feather="chevrons-up"></i></div>
 	<!-- tap on tap ends-->
@@ -99,8 +96,8 @@
 				<div class="header-logo-wrapper">
 					<div class="logo-wrapper">
 						<a href="<?= base_url() ?>">
-							<img class="img-fluid for-light" src="<?= config_item('assets_backend') ?>images/logo/logo.png" alt="logo">
-							<img class="img-fluid for-dark" src="<?= config_item('assets_backend') ?>images/logo/logo_dark.png" alt="logo dark">
+							<img class="img-fluid for-light" src="data:image/png;base64,<?= base64_encode(file_get_contents(config_item('assets_backend') . 'images/logo/logo.png')) ?>" alt="logo">
+							<img class="img-fluid for-dark" src="data:image/png;base64,<?= base64_encode(file_get_contents(config_item('assets_backend') . 'images/logo/logo_dark.png')) ?>" alt="logo dark">
 						</a>
 					</div>
 					<div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="sliders" id="sidebar-toggle"> </i></div>
@@ -125,7 +122,7 @@
 						<li class="profile-nav onhover-dropdown p-0 mr-0">
 							<div class="media profile-media"><img class="b-r-10" src="<?= config_item('assets_backend') ?>images/dashboard/profile.jpg" alt="">
 								<div class="media-body"><span><?= ucwords(user()->username) ?></span>
-									<p class="mb-0 font-roboto"><?= (in_role("admin") ? 'Admin' : 'Member') ?> <i class="middle fa fa-angle-down"></i></p>
+									<p class="mb-0 font-roboto"><?= ucwords(get_role()) ?> <i class="middle fa fa-angle-down"></i></p>
 								</div>
 							</div>
 							<ul class="profile-dropdown onhover-show-div">
@@ -158,8 +155,8 @@
 			<div class="sidebar-wrapper" sidebar-layout="iconcolor-sidebar">
 				<div class="logo-wrapper">
 					<a href="<?= base_url() ?>">
-						<img class="img-fluid for-light" src="<?= config_item('assets_backend') ?>images/logo/logo.png" alt="logo">
-						<img class="img-fluid for-dark" src="<?= config_item('assets_backend') ?>images/logo/logo_dark.png" alt="logo dark">
+						<img class="img-fluid for-light" src="data:image/png;base64,<?= base64_encode(file_get_contents(config_item('assets_backend') . 'images/logo/logo.png')) ?>" alt="logo">
+						<img class="img-fluid for-dark" src="data:image/png;base64,<?= base64_encode(file_get_contents(config_item('assets_backend') . 'images/logo/logo_dark.png')) ?>" alt="logo dark">
 					</a>
 				</div>
 				<div class="logo-icon-wrapper"><a href="<?= base_url() ?>"><img class="img-fluid" src="<?= config_item('assets_backend') ?>images/logo/logo-icon.png" alt=""></a></div>
@@ -188,19 +185,22 @@
 											<i class="fa fa-home fa-2x"></i>
 										</a>
 									</li>
-									<?php $bc = 0;
-									foreach ($breadcrumb as $url => $item) : ?>
-										<li class="breadcrumb-item <?= $bc === (count($breadcrumb) - 1) ? 'active' : '' ?>">
-											<?php if ($bc === (count($breadcrumb) - 1)) : ?>
-												<a href="javascript:void(0);">
+									<?php
+									if (@$breadcrumb) :
+										$bc = 0;
+										foreach ($breadcrumb as $url => $item) : ?>
+											<li class="breadcrumb-item <?= $bc === (count($breadcrumb) - 1) ? 'active' : '' ?>">
+												<?php if ($bc === (count($breadcrumb) - 1)) : ?>
+													<a href="javascript:void(0);">
+														<?= $item ?>
+													</a>
+												<?php else : ?>
 													<?= $item ?>
-												</a>
-											<?php else : ?>
-												<?= $item ?>
-											<?php endif ?>
-										</li>
+												<?php endif ?>
+											</li>
 									<?php $bc++;
-									endforeach ?>
+										endforeach;
+									endif ?>
 								</ol>
 							</div>
 						</div>
@@ -279,13 +279,11 @@
 	<script src="<?= config_item('assets_backend') ?>js/datatable/datatable-extension/dataTables.fixedHeader.min.js"></script>
 	<script src="<?= config_item('assets_backend') ?>js/datatable/datatable-extension/dataTables.rowReorder.min.js"></script>
 	<script src="<?= config_item('assets_backend') ?>js/datatable/datatable-extension/dataTables.scroller.min.js"></script>
-	<!-- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.4/b-2.2.2/b-colvis-2.2.2/datatables.min.js"></script> -->
 
 	<!-- JQuery Validation -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 
 	<!-- Datepicker -->
-	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 	<script src="<?= config_item('assets_backend') ?>js/datepicker/date-picker/datepicker.js"></script>
 	<script src="<?= config_item('assets_backend') ?>js/datepicker/date-picker/datepicker.en.js"></script>
 	<script src="<?= config_item('assets_backend') ?>js/datepicker/date-picker/datepicker.custom.js"></script>
@@ -520,7 +518,6 @@
 			});
 		});
 	</script>
-	<!-- <script src="<?= base_url() ?>assets/cuba/js/theme-customizer/customizer.js"></script> -->
 
 	<!-- Loading Overlay -->
 	<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
@@ -528,8 +525,14 @@
 	<!-- Toastr -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-	<!-- Custom Scripts-->
+	<!-- Offline Js -->
 	<script src="<?= base_url() ?>assets/custom/offlinejs/js/offline.min.js"></script>
+
+	<!-- CryptoJs AES -->
+	<script src="<?= base_url() ?>assets/custom/cryptojs-aes/cryptojs-aes.min.js"></script>
+	<script src="<?= base_url() ?>assets/custom/cryptojs-aes/cryptojs-aes-format.js"></script>
+
+	<!-- Custom Scripts-->
 	<script>
 		// Dark Mode
 		$(".nav-menus").on("click", '.mode', function(event) {
@@ -563,6 +566,35 @@
 	<script>
 		$.fn.dataTable.ext.errMode = 'throw';
 
+		// ================================================//
+		/**
+		 * Implement hex2bin and bin2hex in JavaScript
+		 * https://gist.github.com/jasperck
+		 *
+		 * Copyright 2017, JasperChang <jasperc8@gmail.com>
+		 * Licensed under The MIT License
+		 * http://www.opensource.org/licenses/mit-license
+		 */
+
+		const _hex2bin = str => str.match(/.{1,2}/g).reduce((str, hex) => str += String.fromCharCode(parseInt(hex, 16)), '');
+
+		const _bin2hex = str => str.split('').reduce((str, glyph) => str += glyph.charCodeAt().toString(16).length < 2 ? `0${glyph.charCodeAt().toString(16)}` :
+			glyph.charCodeAt().toString(16), '');
+
+		// Crypto.Js AES encrypt
+		const _cryptoAesJson_encrypt = (valueToEncrypt) => {
+			let password = "<?= config_item('cryptojs_aes_password') ?>";
+			let encrypted = CryptoJSAesJson.encrypt(valueToEncrypt, password)
+			return encrypted
+		}
+
+		// Crypto.Js AES decrypt
+		const _cryptoAesJson_decrypt = (valueToDecrypt) => {
+			let password = "<?= config_item('cryptojs_aes_password') ?>"
+			let decrypted = CryptoJSAesJson.decrypt(valueToDecrypt, password)
+			return decrypted
+		}
+
 		/**
 		 * Keperluan generate csrf
 		 */
@@ -572,10 +604,33 @@
 		$.ajaxSetup({
 			beforeSend: function(xhr, settings) {
 				xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-				xhr.setRequestHeader("X-XSRF-TOKEN", JSON.stringify({
+				xhr.setRequestHeader("X-CI-XSRF-TOKEN", _cryptoAesJson_encrypt({
 					'<?= bin2hex('token_name') ?>': '<?= base64_encode($this->security->get_csrf_token_name()) ?>',
-					'<?= bin2hex('hash') ?>': btoa(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
+					'<?= bin2hex('hash') ?>': Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>'))
 				}))
+
+				let filename = ['foto', 'gambar', 'image', 'images', 'file', 'files', 'dokumen'];
+
+				if (settings.data instanceof FormData) {
+					for ([k, v] of settings.data.entries()) {
+						if (settings.data.get(k) &&
+							!filename.includes(k) &&
+							!k.includes('[]')) settings.data.set(k, _cryptoAesJson_encrypt(v))
+					}
+				} else if (typeof settings.data === 'string') {
+					const urlParams = new URLSearchParams(settings.data);
+					const entries = urlParams.entries(); //returns an iterator of decoded [key,value] tuples
+					const obj = {}
+					for (const [key, value] of entries) { // each 'entry' is a [key, value] tupple
+						if (value &&
+							!filename.includes(key) &&
+							!key.includes('[]')) {
+							obj[key] = _cryptoAesJson_encrypt(value);
+						}
+					}
+					settings.data = new URLSearchParams(obj).toString()
+				}
+
 			}
 		});
 
@@ -597,10 +652,20 @@
 		axios.interceptors.request.use(function(config) {
 			$.LoadingOverlay("show")
 			// Do something before request is sent
-			if (config?.headers) config.headers['X-XSRF-TOKEN'] = JSON.stringify({
+			if (config?.headers) config.headers['X-CI-XSRF-TOKEN'] = _cryptoAesJson_encrypt({
 				'<?= bin2hex('token_name') ?>': '<?= base64_encode($this->security->get_csrf_token_name()) ?>',
-				'<?= bin2hex('hash') ?>': btoa(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
+				'<?= bin2hex('hash') ?>': Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>'))
 			});
+
+			if (config?.data && config?.data instanceof FormData) {
+				let filename = ['foto', 'gambar', 'image', 'images', 'file', 'files', 'dokumen'];
+				for ([k, v] of config?.data.entries()) {
+					if (config?.data.get(k) &&
+						!filename.includes(k) &&
+						!k.includes('[]')) config?.data.set(k, _cryptoAesJson_encrypt(v))
+				}
+			}
+
 			return config;
 		}, function(error) {
 			$.LoadingOverlay("hide")
@@ -672,7 +737,7 @@
 		 * Keperluan show preloader
 		 */
 		// ================================================== //
-		// $('.preloader-container').fadeOut(500)
+		// $('.preloader-container').slideUp(500)
 
 		/**
 		 * Keperluan resize Google Recaptchaa
@@ -713,7 +778,7 @@
 				title: 'Form Edit Account',
 				width: '800px',
 				icon: 'info',
-				html: `<?= $this->load->view("templates/backend/components/form_edit_account", '', true); ?>`,
+				html: `<?= $this->load->view("templates/backend/components/form_edit_account", [], true); ?>`,
 				confirmButtonText: '<i class="fa fa-check-square-o"></i> Simpan Data',
 				showCancelButton: true,
 				focusConfirm: false,
@@ -734,14 +799,17 @@
 				preConfirm: async () => {
 					let formData = new FormData(document.getElementById('form_edit_account'));
 
+					$('#form_edit_account .invalid-feedback').slideUp(500)
+					$('#form_edit_account .is-invalid').removeClass('is-invalid')
+
 					let response = await axios.post("<?= base_url('auth/users/edit_account') ?>", formData)
 						.then(res => res.data.message)
 						.catch(err => {
 							let errors = err.response.data?.errors;
 							if (errors && typeof errors === 'object') {
 								Object.entries(errors).map(([key, value]) => {
-									$(`#input_ubah_${key}`).addClass('is-invalid')
-									$(`#error_ubah_${key}`).html(value).fadeIn(500)
+									$(`#form_edit_account #input_ubah_${key}`).addClass('is-invalid')
+									$(`#form_edit_account #error_ubah_${key}`).html(value).slideDown(500)
 								})
 							}
 							Swal.showValidationMessage(err.response.data.message)
@@ -768,30 +836,16 @@
 			})
 		})
 
-		$('#logout').click(async () => {
+		$('#logout').click((event) => {
+			event.preventDefault()
 			$('#form_logout').prop('action', "<?= base_url('~/logout') ?>")
 			$('#form_logout').prop('method', 'POST')
 			$('#form_logout #csrf-logout').prop('name', "<?= $this->security->get_csrf_token_name() ?>")
 			$('#form_logout #csrf-logout').val(Cookies.get(atob('<?= base64_encode(config_item('cookie_prefix') . config_item('csrf_cookie_name')) ?>')))
 			$('#form_logout').submit()
 		})
-
-		// ================================================//
-		/**
-		 * Implement hex2bin and bin2hex in JavaScript
-		 * https://gist.github.com/jasperck
-		 *
-		 * Copyright 2017, JasperChang <jasperc8@gmail.com>
-		 * Licensed under The MIT License
-		 * http://www.opensource.org/licenses/mit-license
-		 */
-
-		const _hex2bin = str => str.match(/.{1,2}/g).reduce((str, hex) => str += String.fromCharCode(parseInt(hex, 16)), '');
-
-		const _bin2hex = str => str.split('').reduce((str, glyph) => str += glyph.charCodeAt().toString(16).length < 2 ? `0${glyph.charCodeAt().toString(16)}` :
-			glyph.charCodeAt().toString(16), '');
 	</script>
-	<?= $this->load->view($script, '', true) ?>
+	<?= $this->load->view($script, [], true) ?>
 </body>
 
 </html>

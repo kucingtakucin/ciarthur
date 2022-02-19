@@ -92,6 +92,7 @@ class Mahasiswa extends MY_Controller
 	 */
 	private function _validator($status = null)
 	{
+		$this->form_validation->set_data(post());
 		$this->form_validation->set_error_delimiters('', '');
 		if ($status === 'inline') $this->form_validation->set_rules('value', post('name'), 'required|trim');
 		else {
@@ -110,7 +111,7 @@ class Mahasiswa extends MY_Controller
 				'status' => false,
 				'message' => 'Please check your input again!',
 				'errors' => $this->form_validation->error_array(),
-				'last_query' => $this->db->last_query(),
+				'payload' => post()
 			], 422);
 		}
 	}
@@ -130,19 +131,7 @@ class Mahasiswa extends MY_Controller
 		$this->_validator();
 		// ================================================ //
 
-		$config['upload_path'] = './uploads/mahasiswa/';
-		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 2048;
-		$config['encrypt_name'] = true;
-		$config['remove_spaces'] = true;
-		$this->upload->initialize($config);
-
-		if (!$this->upload->do_upload("foto")) {
-			response([
-				'status' => false,
-				'message' => $this->upload->display_errors('', '')
-			], 404);
-		}
+		$foto = upload('foto', './uploads/mahasiswa/');
 
 		$this->db->trans_begin();
 
@@ -156,7 +145,7 @@ class Mahasiswa extends MY_Controller
 				'angkatan' => post('angkatan', true),
 				'latitude' => post('latitude', true),
 				'longitude' => post('longitude', true),
-				'foto' => $this->upload->data('file_name'),
+				'foto' => $foto,
 				'is_active' => '1',
 				'created_at' => now(),
 				'created_by' => get_user_id(),
@@ -169,7 +158,8 @@ class Mahasiswa extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
@@ -178,15 +168,16 @@ class Mahasiswa extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Created successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		], 200);
 	}
 
 	/**
-	 * Keperluan CRUD get where data
+	 * Keperluan CRUD detail data
 	 *
 	 */
-	public function get_where()
+	public function detail()
 	{
 		method('get');
 		// ================================================ //
@@ -194,13 +185,14 @@ class Mahasiswa extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Found',
-			'data' => $this->Crud->get_where(
+			'data' => $this->Crud->detail(
 				[
 					'a.uuid' => post('uuid', true),
 					'a.is_active' => '1'
 				]
 			),
-			'last_query' => $this->db->last_query()
+			'query' => $this->db->last_query(),
+			'payload' => get()
 		], 200);
 	}
 
@@ -215,25 +207,14 @@ class Mahasiswa extends MY_Controller
 		$this->_validator();
 		// ================================================ //
 
-		$config['upload_path'] = './uploads/mahasiswa/';
-		$config['allowed_types'] = 'jpg|jpeg|png';
-		$config['max_size'] = 5120;
-		$config['encrypt_name'] = true;
-		$config['remove_spaces'] = true;
-		$this->upload->initialize($config);
 
-		if ($_FILES['foto']['error'] !== 4) {
+		if (@$_FILES['foto']['name'] && @$_FILES['foto']['error'] !== 4) {
 			if (file_exists("./uploads/mahasiswa/" . post('old_foto'))) {
 				unlink("./uploads/mahasiswa/" . post('old_foto'));
 			}
 
-			if (!$this->upload->do_upload("foto")) {
-				response([
-					'status' => false,
-					'message' => $this->upload->display_errors('', ''),
-				], 500);
-			}
-		}
+			$foto = upload('foto', './uploads/mahasiswa/');
+		} else $foto = post('old_foto');
 
 		$this->db->trans_begin();
 
@@ -247,8 +228,7 @@ class Mahasiswa extends MY_Controller
 				'angkatan' => post('angkatan', true),
 				'latitude' => post('latitude', true),
 				'longitude' => post('longitude', true),
-				'foto' => $_FILES['foto']['error'] === 4
-					? post('old_foto') : $this->upload->data('file_name'),
+				'foto' => $foto,
 				'is_active' => '1',
 				'updated_at' => now(),
 				'updated_by' => get_user_id(),
@@ -264,7 +244,8 @@ class Mahasiswa extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
@@ -273,7 +254,8 @@ class Mahasiswa extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Updated successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		], 200);
 	}
 
@@ -315,7 +297,8 @@ class Mahasiswa extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
@@ -324,7 +307,8 @@ class Mahasiswa extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Deleted successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 
@@ -360,7 +344,8 @@ class Mahasiswa extends MY_Controller
 				'status' => false,
 				'message' => 'Failed',
 				'errors' => $this->db->error(),
-				'last_query' => $this->db->last_query(),
+				'query' => $this->db->last_query(),
+				'payload' => post()
 			], 500);
 		}
 
@@ -369,7 +354,8 @@ class Mahasiswa extends MY_Controller
 		response([
 			'status' => true,
 			'message' => 'Updated successfuly',
-			'last_query' => $this->db->last_query(),
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		]);
 	}
 

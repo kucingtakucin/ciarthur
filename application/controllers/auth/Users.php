@@ -23,7 +23,6 @@ class Users extends MY_Controller
 
 		$this->load->model($this->_path . 'Datatable');   // Load Datatable model
 
-		role('admin');
 	}
 
 	/**
@@ -31,6 +30,7 @@ class Users extends MY_Controller
 	 */
 	public function index()
 	{
+		has_permission("access-{$this->_name}");
 		method('get');
 
 		$config = [
@@ -53,13 +53,16 @@ class Users extends MY_Controller
 	{
 		method('post');
 
+		$this->form_validation->set_data(post());
 		$this->form_validation->set_rules('username', 'username', 'required|trim');
 		$this->form_validation->set_rules('password', 'password', 'required|trim|min_length[8]');
+		$this->form_validation->set_rules('password_confirmation', 'konfirmasi password', 'required|trim|matches[password]');
 		if (!$this->form_validation->run()) {
 			response([
 				'status' => false,
 				'message' => 'Please check your input again!',
-				'errors' => $this->form_validation->error_array()
+				'errors' => $this->form_validation->error_array(),
+				'payload' => post()
 			], 422);
 		}
 
@@ -70,12 +73,15 @@ class Users extends MY_Controller
 
 		response([
 			'status' => true,
-			'message' => 'Berhasil mengupdate account'
+			'message' => 'Berhasil mengupdate account',
+			'query' => $this->db->last_query(),
+			'payload' => post()
 		], 200);
 	}
 
 	public function data_user()
 	{
+		has_permission("access-{$this->_name}");
 		method('post');
 
 		response($this->Datatable->list());
@@ -86,6 +92,7 @@ class Users extends MY_Controller
 	 */
 	public function create_user()
 	{
+		has_permission("create-{$this->_name}");
 		$this->data['title'] = $this->lang->line('create_user_heading');
 
 		$identity_column = $this->config->item('identity', 'ion_auth');
@@ -210,9 +217,14 @@ class Users extends MY_Controller
 	 *
 	 * @param int|string $id
 	 */
-	public function edit_user($id = null)
+	public function edit_user($uuid = null)
 	{
-		$id = (ctype_xdigit($id) && strlen($id) % 2 === 0) ? $this->encryption->decrypt(hex2bin($id)) : null;
+		has_permission("update-{$this->_name}");
+
+		$id = @$this->db->get_where('users', [
+			'uuid' => $uuid
+		])->row()->id;
+
 		$this->data['title'] = $this->lang->line('edit_user_heading');
 
 		$user = $this->ion_auth->user($id)->row();
@@ -341,9 +353,12 @@ class Users extends MY_Controller
 
 	public function delete_user()
 	{
+		has_permission("delete-{$this->_name}");
 		method('post');
 
-		$id = (ctype_xdigit(post('id')) && strlen(post('id')) % 2 === 0) ? $this->encryption->decrypt(hex2bin(post('id'))) : null;
+		$id = @$this->db->get_where('users', [
+			'uuid' => post('uuid')
+		])->row()->id;
 
 		$user = $this->ion_auth->user($id)->row();
 		if (!$user || !$id) show_404();
@@ -417,9 +432,7 @@ class Users extends MY_Controller
 		if (post('confirm') === 'yes') {
 			// do we have a valid request?		
 			// do we have the right userlevel?
-			if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin()) {
-				$this->ion_auth->deactivate($id);
-			}
+			$this->ion_auth->deactivate($id);
 		}
 
 		response([

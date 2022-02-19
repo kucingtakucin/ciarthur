@@ -4,9 +4,9 @@
 	</div>
 
 	<div class="card-body">
-		<form id="role_permissions" class="needs-validation" onsubmit="$role_permissions(event, '<?= urlencode($this->encryption->encrypt($group_id)) ?>')" novalidate>
+		<form id="role_permissions" class="needs-validation" onsubmit="$role_permissions(event, '<?= bin2hex($this->encryption->encrypt($group_id)) ?>')" novalidate>
 			<div class="form-group">
-				<table id="datatable-role-permissions" class="table table-striped table-hover">
+				<table id="datatable-role-permissions" class="display">
 					<thead>
 						<tr>
 							<th>#</th>
